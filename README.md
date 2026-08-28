@@ -20,7 +20,7 @@ Final-semester **Systems Engineering** student at UNAB, building my path as a fu
 
 ## 🔭 What I'm working on
 
-- **PairSync** — AI-assisted pair programming platform (my thesis project) → Laravel · React · WebSockets · LangChain · Claude
+- **PairProgamming** — AI-assisted pair programming platform (my thesis project developed with a partner) → Laravel · React · WebSockets · LangChain · Claude
 - Freelance web dev/software services for clients in Colombia and abroad
 
 ## 🧰 Stack
