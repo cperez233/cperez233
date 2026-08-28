@@ -25,7 +25,7 @@ Final-semester **Systems Engineering** student at UNAB, building my path as a fu
 
 ## 🧰 Stack
 
-![Skills](https://skillicons.dev/icons?i=js,ts,react,laravel,php,postgres,docker,git,python,linux)
+![Skills](https://skillicons.dev/icons?i=js,react,laravel,php,postgres,docker,git,python,linux)
 
 
 <div align="center">
