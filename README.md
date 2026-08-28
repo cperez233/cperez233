@@ -4,9 +4,13 @@
 Final-semester **Systems Engineering** student at UNAB, building my path as a future Software Engineer — with a foot in software development and a foot in digital content creation.
 
 🚀 Always learning things I find fun and exciting
+
 🧠 Passionate about best practices and writing clean code
+
 🎥 Content creator on TikTok, Instagram & Twitch — **Tostu / @criscx1905**
+
 📚 Constantly improving my SWE skills
+
 🎮 Gamer at heart — always down for a good challenge!
 
 ---
