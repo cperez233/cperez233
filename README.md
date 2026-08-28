@@ -19,14 +19,8 @@ Final-semester **Systems Engineering** student at UNAB, building my path as a fu
 
 ## 🧰 Stack
 
-![Skills](https://skillicons.dev/icons?i=js,ts,react,laravel,php,postgres,docker,git)
+![Skills](https://skillicons.dev/icons?i=js,ts,react,laravel,php,postgres,docker,git,python,linux)
 
-## 📊 GitHub Stats
-
-![Cris' GitHub stats](https://github-readme-stats.vercel.app/api?username=cperez233&show_icons=true&theme=radical)
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=cperez233&layout=compact&theme=radical)
-
----
 
 <div align="center">
 
