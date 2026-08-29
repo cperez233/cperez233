@@ -9,7 +9,7 @@ Final-semester **Systems Engineering** student at UNAB, building my path as a fu
 
 🎥 Content creator on TikTok, Instagram & Twitch — **Tostu / @criscx1905**
 
-💼 HR Intern @ Fundación Cardiovascular de Colombia (FCV)
+💼 Cyber Security Intern @ Fundación Cardiovascular de Colombia (FCV)
 
 📚 Constantly improving my SWE skills
 
