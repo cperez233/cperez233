@@ -1,3 +1,5 @@
+<p align="right">🇬🇧 English · <a href="README.es.md">🇪🇸 Español</a></p>
+
 # Hey, I'm Cris! 👋💻
 
 ## 💻 Software Engineer in Progress
