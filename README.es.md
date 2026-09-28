@@ -14,6 +14,8 @@
   <a href="mailto:crisperezm879@gmail.com"><img src="https://img.shields.io/badge/crisperezm879%40gmail.com-161418?style=for-the-badge&logoColor=white&logo=gmail" alt="crisperezm879@gmail.com" /></a>
   <a href="https://www.linkedin.com/in/cristianperez879m/"><img src="https://img.shields.io/badge/LinkedIn-161418?style=for-the-badge&logoColor=white&logo=linkedin" alt="LinkedIn" /></a>
   <a href="https://www.tiktok.com/@criscx1905"><img src="https://img.shields.io/badge/%40criscx1905-161418?style=for-the-badge&logoColor=white&logo=tiktok" alt="@criscx1905" /></a>
+  <a href="https://www.instagram.com/criscx1905/"><img src="https://img.shields.io/badge/Instagram-161418?style=for-the-badge&logoColor=white&logo=instagram" alt="Instagram" /></a>
+  <a href="https://www.youtube.com/channel/UCVaJSNQKWJbYBgGGED814iA"><img src="https://img.shields.io/badge/YouTube-161418?style=for-the-badge&logoColor=white&logo=youtube" alt="YouTube" /></a>
   <a href="https://www.twitch.tv/tostu"><img src="https://img.shields.io/badge/Tostu-161418?style=for-the-badge&logoColor=white&logo=twitch" alt="Tostu" /></a>
   <a href="https://linktr.ee/crxscx"><img src="https://img.shields.io/badge/Linktree-161418?style=for-the-badge&logoColor=white&logo=linktree" alt="Linktree" /></a>
 </p>
@@ -93,7 +95,7 @@ Cofundé **[Carpy](https://carpy.tech)**, un estudio de software con un equipo d
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/arsenal-es-dark.svg" />
-  <img src="./assets/arsenal-es-light.svg" alt="Stack: Python, TypeScript, JavaScript, Java, PHP, React, Next.js, Vite, Tailwind, Framer Motion, Laravel, Node.js, PostgreSQL, LangChain, Docker, Git, GitHub Actions, Vercel, Azure, Linux, Kali Linux, Burp Suite, Wireshark, OWASP, After Effects, OBS, TikTok, Twitch" width="100%" />
+  <img src="./assets/arsenal-es-light.svg" alt="Stack: Python, TypeScript, JavaScript, Java, PHP, React, Next.js, Vite, Tailwind, Framer Motion, Laravel, Node.js, PostgreSQL, LangChain, Docker, Git, GitHub Actions, Vercel, Azure, Linux, Kali Linux, Burp Suite, Wireshark, OWASP, After Effects, OBS, TikTok, Instagram, YouTube, Twitch" width="100%" />
 </picture>
 
 <p align="center">

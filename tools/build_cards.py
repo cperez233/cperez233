@@ -71,7 +71,7 @@ FEATURED = [
         },
         stat=("32K+", {"en": "followers on TikTok", "es": "seguidores en TikTok"}),
         cta={"en": "See it on TikTok", "es": "Verlo en TikTok"},
-        meta="After Effects · OBS · TikTok · Twitch",
+        meta="After Effects · OBS · TikTok · Instagram · YouTube · Twitch",
     ),
 ]
 
