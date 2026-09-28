@@ -1,0 +1,4 @@
+.preview/
+tools/.fonts/
+.venv/
+__pycache__/

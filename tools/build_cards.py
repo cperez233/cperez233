@@ -1,0 +1,202 @@
+"""Tarjetas de proyecto del README: paneles de manga con la captura del sitio.
+
+Cada tarjeta es un HTML que Chromium en modo headless convierte a JPG,
+en claro/oscuro y EN/ES. Las capturas viven en tools/shots.
+
+    .venv/bin/pip install pillow
+    .venv/bin/python tools/build_cards.py
+"""
+
+import pathlib
+import subprocess
+import tempfile
+
+from PIL import Image
+
+from build_assets import FONTS, THEMES, fetch_fonts
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+SHOTS = ROOT / "tools" / "shots"
+OUT = ROOT / "assets" / "cards"
+SCALE = 1.5
+
+FEATURED = [
+    dict(
+        key="carpy", shot="carpy.png", kana="カーピー", title="CARPY", side="left",
+        kicker={"en": "Software studio · co-founder", "es": "Estudio de software · cofundador"},
+        desc={
+            "en": "A software studio with a small team. We build custom software, websites, integrations and "
+                  "security audits for businesses in Colombia and abroad, from the first call to the deploy.",
+            "es": "Un estudio de software con un equipo pequeño. Hacemos software a la medida, páginas web, "
+                  "integraciones y auditorías para negocios en Colombia y afuera, desde la primera llamada hasta el despliegue.",
+        },
+        stat=None,
+        cta={"en": "Quotes open · carpy.tech", "es": "Cotizaciones abiertas · carpy.tech"},
+        meta="React 19 · Vite · Framer Motion",
+    ),
+    dict(
+        key="actas-fcv", shot="fcv-buscador.jpg", kana="デジタル化", title="ACTAS FCV", side="right",
+        kicker={"en": "Fundación Cardiovascular de Colombia", "es": "Fundación Cardiovascular de Colombia"},
+        desc={
+            "en": "Handwritten security-policy forms, one PDF per site, many signatures per page. An OCR pipeline "
+                  "reads them, cleans every name and ID, and builds a search tool that needs no server.",
+            "es": "Actas de seguridad escritas a mano, un PDF por sede y muchas firmas por página. Un pipeline de OCR "
+                  "las lee, limpia cada nombre y cédula, y arma un buscador que no necesita servidor.",
+        },
+        stat=("746", {"en": "records indexed", "es": "actas indexadas"}),
+        cta={"en": "Repository on GitHub", "es": "Repositorio en GitHub"},
+        meta="Python · Azure Document Intelligence",
+    ),
+    dict(
+        key="guardenv", shot="guardenv.png", kana="シークレット", title="GUARDENV", side="left",
+        kicker={"en": "Open source · security", "es": "Código abierto · seguridad"},
+        desc={
+            "en": "Catches leaked credentials before they reach your remote. Vendor signatures plus Shannon "
+                  "entropy, a pre-commit hook, SARIF for code scanning and a playground that runs offline.",
+            "es": "Atrapa credenciales filtradas antes de que lleguen al remoto. Firmas de proveedores más entropía "
+                  "de Shannon, hook de pre-commit, SARIF para code scanning y un playground que corre sin conexión.",
+        },
+        stat=("48", {"en": "vendor signatures", "es": "firmas de proveedores"}),
+        cta={"en": "Try the demo", "es": "Probar la demo"},
+        meta="Python · GitHub Actions · CodeQL",
+    ),
+    dict(
+        key="content", shot="content-social.jpg", kana="バズ", title={"en": "CONTENT", "es": "CONTENIDO"}, side="right",
+        kicker={"en": "Tostu · @criscx1905", "es": "Tostu · @criscx1905"},
+        desc={
+            "en": "Short videos, edits and live streams. I write, record and edit my own content, and I bring "
+                  "the same eye to the brands I build websites for.",
+            "es": "Videos cortos, edición y directos. Escribo, grabo y edito mi propio contenido, y llevo ese "
+                  "mismo ojo a las marcas a las que les hago páginas.",
+        },
+        stat=("32K+", {"en": "followers on TikTok", "es": "seguidores en TikTok"}),
+        cta={"en": "See it on TikTok", "es": "Verlo en TikTok"},
+        meta="After Effects · OBS · TikTok · Twitch",
+    ),
+]
+
+GRID = [
+    dict(key="master-service-quality", shot="msq.jpg", title="MASTER SERVICE QUALITY", domain="carros-2.vercel.app",
+         line={"en": "Truck rental with monthly quotes, Barrancabermeja",
+               "es": "Renta de camionetas con cotización mensual, Barrancabermeja"}),
+    dict(key="rincon-del-bebe", shot="rincon.jpg", title="EL RINCÓN DEL BEBÉ", domain="elrincondelbebebga.com",
+         line={"en": "Baby store with nationwide delivery", "es": "Tienda de bebés con envíos a todo el país"}),
+    dict(key="m10-drinks", shot="m10.jpg", title="M10 DRINKS", domain="m10drinks · Floridablanca",
+         line={"en": "Liquor store catalog with home delivery", "es": "Catálogo de licorera con domicilio"}),
+    dict(key="passguard", shot="passguard.png", title="PASSGUARD", domain="pass-guard-omega.vercel.app",
+         line={"en": "Password generator and auditor that never leaves the browser",
+               "es": "Generador y auditor de contraseñas que no sale del navegador"}),
+    dict(key="pairsync", shot="pairsync-session.jpg", title="PAIRSYNC", domain={"en": "Thesis · finished", "es": "Tesis · terminada"},
+         line={"en": "Pair programming with an AI tutor and grades synced to Moodle",
+               "es": "Pair programming con tutor de IA y notas sincronizadas con Moodle"}),
+    dict(key="portfolio", shot="portfolio.png", title="CRISTIANPEREZ.ME", domain="cristianperez.me",
+         line={"en": "My portfolio: bilingual, with a free site audit", "es": "Mi portafolio: bilingüe, con auditoría web gratis"}),
+]
+
+
+def pick(v, lang):
+    return v[lang] if isinstance(v, dict) else v
+
+
+def base_css(t):
+    return f"""
+@font-face{{font-family:Anton;src:url('{(FONTS / "Anton-Regular.ttf").as_uri()}')}}
+@font-face{{font-family:Dela;src:url('{(FONTS / "DelaGothicOne-Regular.ttf").as_uri()}')}}
+@font-face{{font-family:Archivo;src:url('{(FONTS / "Archivo.ttf").as_uri()}');font-weight:100 900}}
+*{{box-sizing:border-box;margin:0}}
+html,body{{background:{t["bg"]};overflow:hidden}}
+.card{{position:relative;overflow:hidden;background:{t["bg"]};border:4px solid {t["ink"]};font-family:Archivo;color:{t["ink"]}}}
+.tone{{position:absolute;inset:0;background-image:radial-gradient({t["ink"]}29 1.6px,transparent 1.8px);background-size:9px 9px;
+  -webkit-mask-image:radial-gradient(circle at var(--tx) var(--ty),#000 0,transparent 55%)}}
+.panel{{position:absolute;background:{t["ink"]}}}
+.panel img{{position:absolute;inset:5px;width:calc(100% - 10px);height:calc(100% - 10px);object-fit:cover;object-position:top left}}
+.go{{position:absolute;font-family:Dela;color:{t["accent"]};line-height:1;
+  text-shadow:3px 3px 0 {t["bg"]},-3px 3px 0 {t["bg"]},3px -3px 0 {t["bg"]},-3px -3px 0 {t["bg"]}}}
+.title{{font-family:Anton;line-height:.95;letter-spacing:.5px;color:{t["ink"]}}}
+.kana{{font-family:Dela;color:{t["accent"]};letter-spacing:2px}}
+.muted{{color:{t["muted"]}}}
+"""
+
+
+def featured_html(p, t, lang):
+    W, H = 1200, 540
+    left = p["side"] == "left"
+    cut = "polygon(0 0,100% 0,86% 100%,0 100%)" if left else "polygon(0 0,100% 0,100% 100%,14% 100%)"
+    panel = f"left:24px;top:24px;bottom:24px;width:690px;clip-path:{cut}" if left else \
+        f"right:24px;top:24px;bottom:24px;width:690px;clip-path:{cut}"
+    copy = "left:676px;right:44px" if left else "left:44px;right:676px"
+    go_pos = [("left:600px;bottom:36px;font-size:62px;transform:rotate(-12deg)"),
+              ("left:652px;bottom:112px;font-size:40px;transform:rotate(8deg)")] if left else \
+             [("right:600px;bottom:36px;font-size:62px;transform:rotate(12deg)"),
+              ("right:652px;bottom:112px;font-size:40px;transform:rotate(-8deg)")]
+    stat = ""
+    if p["stat"]:
+        stat = (f'<div style="display:flex;align-items:baseline;gap:14px;margin-top:22px">'
+                f'<span class="title" style="font-size:62px;color:{t["accent"]}">{p["stat"][0]}</span>'
+                f'<span class="muted" style="font-size:18px;font-weight:600">{p["stat"][1][lang]}</span></div>')
+    body = f"""
+<div class="card" style="width:{W}px;height:{H}px;--tx:{'92%' if left else '8%'};--ty:15%">
+  <div class="tone"></div>
+  <div class="panel" style="{panel}"><img src="{(SHOTS / p['shot']).as_uri()}" style="clip-path:{cut}"></div>
+  {''.join(f'<div class="go" style="{g}">ゴ</div>' for g in go_pos)}
+  <div style="position:absolute;{copy};top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;
+       {'padding-left:40px' if left else 'padding-right:40px'}">
+    <div class="muted" style="font-size:17px;font-weight:600">{p['kicker'][lang]}</div>
+    <div class="kana" style="font-size:18px;margin-top:14px">{p['kana']}</div>
+    <div class="title" style="font-size:70px;margin-top:6px">{pick(p['title'], lang)}</div>
+    <p style="font-size:18.5px;line-height:1.5;margin-top:16px;opacity:.86">{p['desc'][lang]}</p>
+    {stat}
+    <div style="margin-top:{18 if p['stat'] else 26}px;font-size:15px;font-weight:600" class="muted">{p['meta']}</div>
+    <div style="margin-top:14px;font-size:18px;font-weight:700;color:{t['accent']}">{p['cta'][lang]} &nbsp;→</div>
+  </div>
+</div>"""
+    return W, H, body
+
+
+def grid_html(p, t, lang):
+    W, H = 600, 470
+    cut = "polygon(0 0,100% 0,100% 86%,0 100%)"
+    body = f"""
+<div class="card" style="width:{W}px;height:{H}px;--tx:90%;--ty:92%">
+  <div class="tone"></div>
+  <div class="panel" style="left:18px;right:18px;top:18px;height:300px;clip-path:{cut}">
+    <img src="{(SHOTS / p['shot']).as_uri()}" style="clip-path:{cut}"></div>
+  <div class="go" style="right:22px;top:268px;font-size:50px;transform:rotate(10deg)">ゴ</div>
+  <div style="position:absolute;left:30px;right:30px;bottom:26px">
+    <div class="title" style="font-size:40px">{p['title']}</div>
+    <div style="font-size:19px;line-height:1.35;margin-top:8px;opacity:.86">{p['line'][lang]}</div>
+    <div style="font-size:15px;font-weight:700;margin-top:8px;color:{t['accent']}">{pick(p['domain'], lang)}</div>
+  </div>
+</div>"""
+    return W, H, body
+
+
+def render(W, H, body, t, target):
+    html = f"<!doctype html><meta charset=utf-8><style>{base_css(t)}</style>{body}"
+    with tempfile.TemporaryDirectory(dir=ROOT / "tools") as tmp:
+        page = pathlib.Path(tmp) / "card.html"
+        png = pathlib.Path(tmp) / "card.png"
+        page.write_text(html, encoding="utf-8")
+        subprocess.run(
+            ["chromium", "--headless=new", "--no-sandbox", "--hide-scrollbars", f"--window-size={W},{H}",
+             f"--force-device-scale-factor={SCALE}", "--virtual-time-budget=3000",
+             f"--screenshot={png}", page.as_uri()],
+            check=True, capture_output=True,
+        )
+        Image.open(png).convert("RGB").save(target, "JPEG", quality=84, optimize=True, progressive=True)
+
+
+def main():
+    fetch_fonts()
+    OUT.mkdir(parents=True, exist_ok=True)
+    for items, build in ((FEATURED, featured_html), (GRID, grid_html)):
+        for p in items:
+            for lang in ("en", "es"):
+                for mode, t in THEMES.items():
+                    target = OUT / f"{p['key']}{'' if lang == 'en' else '-es'}-{mode}.jpg"
+                    render(*build(p, t, lang), t, target)
+                    print(f"{target.relative_to(ROOT)}  {target.stat().st_size // 1024} KB")
+
+
+if __name__ == "__main__":
+    main()
