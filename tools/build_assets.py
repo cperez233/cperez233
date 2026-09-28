@@ -317,7 +317,8 @@ ARSENAL = [
     ({"en": "SECURITY", "es": "SEGURIDAD"}, "セキュリティ",
      [("kalilinux", "Kali Linux"), ("burpsuite", "Burp Suite"), ("wireshark", "Wireshark"), ("owasp", "OWASP")]),
     ({"en": "CONTENT", "es": "CONTENIDO"}, "コンテンツ",
-     [("aftereffects-plain", "After Effects"), ("obsstudio", "OBS"), ("tiktok", "TikTok"), ("twitch", "Twitch")]),
+     [("aftereffects-plain", "After Effects"), ("obsstudio", "OBS"), ("tiktok", "TikTok"), ("instagram", "Instagram"),
+      ("youtube", "YouTube"), ("twitch", "Twitch")]),
 ]
 
 
@@ -342,7 +343,7 @@ def arsenal(t, lang, anton, dela, arch, arch_r):
         b.append(anton.text(label[lang], 44, y + 56, 34, t["ink"], tracking=1.5))
         b.append(dela.text(kana, 46, y + 84, 14, t["accent"], tracking=2))
         for i, (file, name) in enumerate(items):
-            cx = 390 + i * 160
+            cx = 380 + i * 150
             b.append(icon(file, cx - 20, y + 18, 40, t["ink"]))
             b.append(arch.text(name, cx, y + 86, 15, t["muted"], anchor="middle"))
         b.append("</g>")
