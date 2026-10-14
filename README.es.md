@@ -29,7 +29,9 @@
 
 Soy Cristian, Cris: Ingeniero de Sistemas de la UNAB, desarrollador full-stack y creador de contenido en Bucaramanga, Colombia. Construyo software, páginas web y apps para negocios, y hago videos como **Tostu**, algunos de los cuales se han vuelto virales en el camino (32K+ seguidores en TikTok).
 
-Cofundé **[Carpy](https://carpy.tech)**, un estudio de software con un equipo detrás: software a la medida, páginas web, integraciones y auditorías de seguridad para clientes en Colombia y afuera. Mi tesis, PairSync, ya está terminada, y el lado de seguridad viene de trabajar con el equipo de ciberseguridad de la Fundación Cardiovascular de Colombia.
+Cofundé **[Carpy](https://carpy.tech)**, un estudio de software con un equipo detrás: software a la medida, páginas web, integraciones y auditorías de seguridad para clientes en Colombia y afuera. Mi tesis, PairSync, ya está terminada, y el lado de seguridad viene de trabajar con el equipo de ciberseguridad de la Fundación Cardiovascular de Colombia, donde hice el pipeline de OCR de las actas y **Un día cualquiera**, el juego de sensibilización del trimestre.
+
+Lo más reciente: la carta y los pedidos de **Cruz Blanca** (restaurante en Girón), **Jovi's Gioielli** (joyería en Italia, con vista previa del grabado), **Sammy Partyboom** (fiestas infantiles en Bucaramanga) y **Hotel Logístico** en Santa Marta, entre más de diez páginas ya publicadas para negocios reales.
 
 > **Cotizaciones abiertas.** Ahora mismo trabajo con clientes y recibo proyectos nuevos: una página que venda, una app que tu equipo sí use o el sistema que tu negocio ya superó. Cuéntame qué necesitas y te mando un precio.
 
@@ -54,10 +56,24 @@ Cofundé **[Carpy](https://carpy.tech)**, un estudio de software con un equipo d
 </picture>
 </a>
 
+<a href="https://cruz-blanca-red.vercel.app/">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/cruz-blanca-es-dark.jpg" />
+  <img src="./assets/cards/cruz-blanca-es-light.jpg" alt="Cruz Blanca — restaurante, café y coctelería en Girón. Carta completa para pedir, reservas y promos por WhatsApp. 260+ platos." width="100%" />
+</picture>
+</a>
+
 <a href="https://github.com/cperez233/digitalizacion-actas-fcv">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/actas-fcv-es-dark.jpg" />
   <img src="./assets/cards/actas-fcv-es-light.jpg" alt="Actas FCV — pipeline de OCR para actas manuscritas de la Fundación Cardiovascular de Colombia. 746 actas indexadas." width="100%" />
+</picture>
+</a>
+
+<a href="https://github.com/cperez233/juego-fcv-4trimestre">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/juego-fcv-es-dark.jpg" />
+  <img src="./assets/cards/juego-fcv-es-light.jpg" alt="Un día cualquiera — juego de sensibilización en ciberseguridad para el personal de la Fundación Cardiovascular de Colombia: una jornada simulada que se rebobina para mostrar las consecuencias de cada clic." width="100%" />
 </picture>
 </a>
 
@@ -76,9 +92,15 @@ Cofundé **[Carpy](https://carpy.tech)**, un estudio de software con un equipo d
 </a>
 
 <p align="center">
+  <a href="https://joyeria-liart.vercel.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/jovis-gioielli-es-dark.jpg" /><img src="./assets/cards/jovis-gioielli-es-light.jpg" alt="Jovi's Gioielli — joyería en Italia con vista previa del grabado" width="49%" /></picture></a>
+  <a href="https://github.com/cperez233/Sammy"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/sammy-partyboom-es-dark.jpg" /><img src="./assets/cards/sammy-partyboom-es-light.jpg" alt="Sammy Partyboom — animación de fiestas infantiles en Bucaramanga con cotizador por WhatsApp" width="49%" /></picture></a>
+  <a href="https://hotellogistico.com"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/hotel-logistico-es-dark.jpg" /><img src="./assets/cards/hotel-logistico-es-light.jpg" alt="Hotel Logístico — hotel en Santa Marta con reservas por WhatsApp" width="49%" /></picture></a>
   <a href="https://carros-2.vercel.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/master-service-quality-es-dark.jpg" /><img src="./assets/cards/master-service-quality-es-light.jpg" alt="Master Service Quality — renta de camionetas con cotización mensual" width="49%" /></picture></a>
+  <a href="https://the-groomers-house.vercel.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/groomers-house-es-dark.jpg" /><img src="./assets/cards/groomers-house-es-light.jpg" alt="The Groomer's House — peluquería canina en Floridablanca" width="49%" /></picture></a>
+  <a href="https://calzadoleons.com"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/leons-es-dark.jpg" /><img src="./assets/cards/leons-es-light.jpg" alt="Leons Footwear — fábrica de calzado con catálogo mayorista" width="49%" /></picture></a>
+  <a href="https://louloz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/louloz-es-dark.jpg" /><img src="./assets/cards/louloz-es-light.jpg" alt="Louloz — tienda online de calzado" width="49%" /></picture></a>
   <a href="https://elrincondelbebebga.com/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/rincon-del-bebe-es-dark.jpg" /><img src="./assets/cards/rincon-del-bebe-es-light.jpg" alt="El Rincón del Bebé — tienda de bebés con envíos a todo el país" width="49%" /></picture></a>
-  <a href="https://m10drinksversionfinal.netlify.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/m10-drinks-es-dark.jpg" /><img src="./assets/cards/m10-drinks-es-light.jpg" alt="M10 Drinks — catálogo de licorera con domicilio" width="49%" /></picture></a>
+  <a href="https://www.m10drinkslicorera.com/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/m10-drinks-es-dark.jpg" /><img src="./assets/cards/m10-drinks-es-light.jpg" alt="M10 Drinks — licorera con domicilio 24/7" width="49%" /></picture></a>
   <a href="https://github.com/cperez233/pass-guard"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/passguard-es-dark.jpg" /><img src="./assets/cards/passguard-es-light.jpg" alt="PassGuard — generador y auditor de contraseñas en el navegador" width="49%" /></picture></a>
   <a href="https://github.com/cperez233/PairProgramming"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/pairsync-es-dark.jpg" /><img src="./assets/cards/pairsync-es-light.jpg" alt="PairSync — mi tesis terminada: pair programming con tutor de IA y notas en Moodle" width="49%" /></picture></a>
   <a href="https://cristianperez.me"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/portfolio-es-dark.jpg" /><img src="./assets/cards/portfolio-es-light.jpg" alt="cristianperez.me — mi portafolio" width="49%" /></picture></a>

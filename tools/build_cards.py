@@ -22,7 +22,7 @@ SCALE = 1.5
 
 FEATURED = [
     dict(
-        key="carpy", shot="carpy.png", kana="カーピー", title="CARPY", side="left",
+        key="carpy", shot="carpy.jpg", kana="カーピー", title="CARPY", side="left",
         kicker={"en": "Software studio · co-founder", "es": "Estudio de software · cofundador"},
         desc={
             "en": "A software studio with a small team. We build custom software, websites, integrations and "
@@ -35,7 +35,20 @@ FEATURED = [
         meta="React 19 · Vite · Framer Motion",
     ),
     dict(
-        key="actas-fcv", shot="fcv-buscador.jpg", kana="デジタル化", title="ACTAS FCV", side="right",
+        key="cruz-blanca", shot="cruz-blanca.jpg", kana="レストラン", title="CRUZ BLANCA", side="right",
+        kicker={"en": "Restaurant · Girón, Santander", "es": "Restaurante · Girón, Santander"},
+        desc={
+            "en": "Restaurant, café, ice-cream parlor and cocktail bar across from the Basílica Menor. A full menu "
+                  "you can order from, table bookings, promos and the night menu, all landing on their WhatsApp.",
+            "es": "Restaurante, café, heladería y coctelería frente a la Basílica Menor. Carta completa para pedir "
+                  "desde la página, reservas de mesa, promos y la carta de noche, todo directo a su WhatsApp.",
+        },
+        stat=("260+", {"en": "dishes on the menu", "es": "platos en la carta"}),
+        cta={"en": "See the site", "es": "Ver la página"},
+        meta="React · Vite · Tailwind · Framer Motion · SSR",
+    ),
+    dict(
+        key="actas-fcv", shot="fcv-buscador.jpg", kana="デジタル化", title="ACTAS FCV", side="left",
         kicker={"en": "Fundación Cardiovascular de Colombia", "es": "Fundación Cardiovascular de Colombia"},
         desc={
             "en": "Handwritten security-policy forms, one PDF per site, many signatures per page. An OCR pipeline "
@@ -48,7 +61,20 @@ FEATURED = [
         meta="Python · Azure Document Intelligence",
     ),
     dict(
-        key="guardenv", shot="guardenv.png", kana="シークレット", title="GUARDENV", side="left",
+        key="juego-fcv", shot="juego-fcv.jpg", kana="ゲーム", title={"en": "A REGULAR DAY", "es": "UN DÍA CUALQUIERA"}, side="right",
+        kicker={"en": "Fundación Cardiovascular de Colombia", "es": "Fundación Cardiovascular de Colombia"},
+        desc={
+            "en": "A security-awareness game for the whole hospital staff. You live a simulated workday with email, "
+                  "browser and help desk, the game records what you do, then rewinds the day to show every consequence.",
+            "es": "Un juego de sensibilización en ciberseguridad para todo el personal. Vives una jornada simulada con "
+                  "correo, navegador y mesa de ayuda, el juego registra lo que haces y al final rebobina el día con cada consecuencia.",
+        },
+        stat=("120+", {"en": "automated tests", "es": "pruebas automáticas"}),
+        cta={"en": "Repository on GitHub", "es": "Repositorio en GitHub"},
+        meta="React · Vite · Node.js · Vitest",
+    ),
+    dict(
+        key="guardenv", shot="guardenv.jpg", kana="シークレット", title="GUARDENV", side="left",
         kicker={"en": "Open source · security", "es": "Código abierto · seguridad"},
         desc={
             "en": "Catches leaked credentials before they reach your remote. Vendor signatures plus Shannon "
@@ -76,20 +102,36 @@ FEATURED = [
 ]
 
 GRID = [
+    dict(key="jovis-gioielli", shot="joyeria.jpg", title="JOVI'S GIOIELLI", domain="joyeria-liart.vercel.app",
+         line={"en": "Jewelry store in Italy, with a live engraving preview",
+               "es": "Joyería en Italia, con vista previa del grabado en vivo"}),
+    dict(key="sammy-partyboom", shot="sammy.jpg", title="SAMMY PARTYBOOM", domain={"en": "Kids' parties · Bucaramanga", "es": "Fiestas infantiles · Bucaramanga"},
+         line={"en": "Kids' party entertainers with a WhatsApp quote builder",
+               "es": "Animación de fiestas infantiles con cotizador por WhatsApp"}),
+    dict(key="hotel-logistico", shot="hotel-logistico.jpg", title="HOTEL LOGÍSTICO", domain="hotellogistico.com",
+         line={"en": "Hotel in Santa Marta with bookings over WhatsApp",
+               "es": "Hotel en Santa Marta con reservas por WhatsApp"}),
     dict(key="master-service-quality", shot="msq.jpg", title="MASTER SERVICE QUALITY", domain="carros-2.vercel.app",
          line={"en": "Truck rental with monthly quotes, Barrancabermeja",
                "es": "Renta de camionetas con cotización mensual, Barrancabermeja"}),
+    dict(key="groomers-house", shot="groomers.jpg", title="THE GROOMER'S HOUSE", domain="the-groomers-house.vercel.app",
+         line={"en": "Dog grooming in Floridablanca, appointments over WhatsApp",
+               "es": "Peluquería canina en Floridablanca, citas por WhatsApp"}),
+    dict(key="leons", shot="leons.jpg", title="LEONS FOOTWEAR", domain="calzadoleons.com",
+         line={"en": "Footwear factory with a wholesale catalog", "es": "Fábrica de calzado con catálogo mayorista"}),
+    dict(key="louloz", shot="louloz.jpg", title="LOULOZ", domain="louloz.com",
+         line={"en": "Online shoe store", "es": "Tienda online de calzado"}),
     dict(key="rincon-del-bebe", shot="rincon.jpg", title="EL RINCÓN DEL BEBÉ", domain="elrincondelbebebga.com",
          line={"en": "Baby store with nationwide delivery", "es": "Tienda de bebés con envíos a todo el país"}),
-    dict(key="m10-drinks", shot="m10.jpg", title="M10 DRINKS", domain="m10drinks · Floridablanca",
-         line={"en": "Liquor store catalog with home delivery", "es": "Catálogo de licorera con domicilio"}),
-    dict(key="passguard", shot="passguard.png", title="PASSGUARD", domain="pass-guard-omega.vercel.app",
+    dict(key="m10-drinks", shot="m10.jpg", title="M10 DRINKS", domain="m10drinkslicorera.com",
+         line={"en": "Liquor store with 24/7 delivery in Floridablanca", "es": "Licorera con domicilio 24/7 en Floridablanca"}),
+    dict(key="passguard", shot="passguard.jpg", title="PASSGUARD", domain="pass-guard-omega.vercel.app",
          line={"en": "Password generator and auditor that never leaves the browser",
                "es": "Generador y auditor de contraseñas que no sale del navegador"}),
     dict(key="pairsync", shot="pairsync-session.jpg", title="PAIRSYNC", domain={"en": "Thesis · finished", "es": "Tesis · terminada"},
          line={"en": "Pair programming with an AI tutor and grades synced to Moodle",
                "es": "Pair programming con tutor de IA y notas sincronizadas con Moodle"}),
-    dict(key="portfolio", shot="portfolio.png", title="CRISTIANPEREZ.ME", domain="cristianperez.me",
+    dict(key="portfolio", shot="portfolio.jpg", title="CRISTIANPEREZ.ME", domain="cristianperez.me",
          line={"en": "My portfolio: bilingual, with a free site audit", "es": "Mi portafolio: bilingüe, con auditoría web gratis"}),
 ]
 
