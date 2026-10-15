@@ -19,6 +19,9 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SHOTS = ROOT / "tools" / "shots"
 OUT = ROOT / "assets" / "cards"
 SCALE = 1.5
+# Va en el nombre de cada tarjeta: subirlo cuando cambian las capturas, porque
+# GitHub y el navegador guardan en cache la imagen vieja si el nombre no cambia.
+VERSION = 2
 
 FEATURED = [
     dict(
@@ -235,7 +238,7 @@ def main():
         for p in items:
             for lang in ("en", "es"):
                 for mode, t in THEMES.items():
-                    target = OUT / f"{p['key']}{'' if lang == 'en' else '-es'}-{mode}.jpg"
+                    target = OUT / f"{p['key']}{'' if lang == 'en' else '-es'}-{mode}-v{VERSION}.jpg"
                     render(*build(p, t, lang), t, target)
                     print(f"{target.relative_to(ROOT)}  {target.stat().st_size // 1024} KB")
 
