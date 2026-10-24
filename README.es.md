@@ -29,7 +29,7 @@
 
 Soy Cristian, Cris: Ingeniero de Sistemas de la UNAB y desarrollador full-stack en Bucaramanga, Colombia. Hago páginas web, apps y software a la medida para negocios, de la primera llamada al despliegue, y subo videos como Tostu. Algunos se volvieron virales (32K+ seguidores en TikTok).
 
-Cofundé [Carpy](https://carpy.tech), un estudio de software pequeño. Hacemos software a la medida, páginas web, integraciones y auditorías de seguridad para clientes en Colombia y afuera. Mi tesis, PairSync, ya está terminada. Lo de seguridad viene de trabajar con el equipo de ciberseguridad de la Fundación Cardiovascular de Colombia, donde hice el pipeline de OCR de sus actas.
+Cofundé [Carpy](https://carpy.tech), un estudio de software pequeño. Hacemos software a la medida, páginas web, integraciones y auditorías de seguridad para clientes en Colombia y afuera. Mi tesis, PairSync, ya está terminada. Lo de seguridad viene de trabajar con el equipo de ciberseguridad de la Fundación Cardiovascular de Colombia.
 
 Últimamente entregué la carta y los pedidos de Cruz Blanca, un restaurante en Girón, y la página de Jovi's Gioielli, una joyería en Italia, con vista previa del grabado en vivo. También hice Sammy Partyboom (fiestas infantiles en Bucaramanga) y Hotel Logístico en Santa Marta. Hay más de diez páginas publicadas para negocios reales.
 
