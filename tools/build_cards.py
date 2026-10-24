@@ -51,19 +51,6 @@ FEATURED = [
         meta="React · Vite · Tailwind · Framer Motion · SSR",
     ),
     dict(
-        key="guardenv", shot="guardenv.jpg", kana="シークレット", title="GUARDENV", side="left",
-        kicker={"en": "Open source · security", "es": "Código abierto · seguridad"},
-        desc={
-            "en": "Catches leaked credentials before they reach your remote. Vendor signatures plus Shannon "
-                  "entropy, a pre-commit hook, SARIF for code scanning and a playground that runs offline.",
-            "es": "Atrapa credenciales filtradas antes de que lleguen al remoto. Firmas de proveedores más entropía "
-                  "de Shannon, hook de pre-commit, SARIF para code scanning y un playground que corre sin conexión.",
-        },
-        stat=("48", {"en": "vendor signatures", "es": "firmas de proveedores"}),
-        cta={"en": "Try the demo", "es": "Probar la demo"},
-        meta="Python · GitHub Actions · CodeQL",
-    ),
-    dict(
         key="content", shot="content-social.jpg", kana="バズ", title={"en": "CONTENT", "es": "CONTENIDO"}, side="right",
         kicker={"en": "Tostu · @criscx1905", "es": "Tostu · @criscx1905"},
         desc={
@@ -75,6 +62,19 @@ FEATURED = [
         stat=("32K+", {"en": "followers on TikTok", "es": "seguidores en TikTok"}),
         cta={"en": "See it on TikTok", "es": "Verlo en TikTok"},
         meta="After Effects · OBS · TikTok · Instagram · YouTube · Twitch",
+    ),
+    dict(
+        key="guardenv", shot="guardenv.jpg", kana="シークレット", title="GUARDENV", side="left",
+        kicker={"en": "Open source · security", "es": "Código abierto · seguridad"},
+        desc={
+            "en": "Catches leaked credentials before they reach your remote. Vendor signatures plus Shannon "
+                  "entropy, a pre-commit hook, SARIF for code scanning and a playground that runs offline.",
+            "es": "Atrapa credenciales filtradas antes de que lleguen al remoto. Firmas de proveedores más entropía "
+                  "de Shannon, hook de pre-commit, SARIF para code scanning y un playground que corre sin conexión.",
+        },
+        stat=("48", {"en": "vendor signatures", "es": "firmas de proveedores"}),
+        cta={"en": "Try the demo", "es": "Probar la demo"},
+        meta="Python · GitHub Actions · CodeQL",
     ),
 ]
 

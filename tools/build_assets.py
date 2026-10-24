@@ -7,6 +7,8 @@ navegador sin cargar fuentes. Cada pieza sale en claro/oscuro y en EN/ES.
     .venv/bin/python tools/build_assets.py
 """
 
+import json
+import datetime
 import math
 import pathlib
 import urllib.request
@@ -353,6 +355,91 @@ def arsenal(t, lang, anton, dela, arch, arch_r):
     return svg(W, H, label, "".join(b), style)
 
 
+# --- Lenguajes: el pastel, en tinta ---------------------------------------------
+
+MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
+LANG_STATS = pathlib.Path(__file__).resolve().parent / "languages.json"
+
+
+def languages(t, lang, anton, dela, arch, arch_r):
+    """Dona con las líneas de código por lenguaje (tools/language_stats.py)."""
+    data = json.loads(LANG_STATS.read_text())
+    shown = {k: v for k, v in data["languages"].items() if v / sum(data["languages"].values()) >= 0.01}
+    total = sum(shown.values())
+    W, H = 1200, 500
+    cx, cy, R, r = 270, 262, 176, 96
+    ink, acc, bg = t["ink"], t["accent"], t["bg"]
+    fills = [(acc, 1), (ink, 1), (acc, .55), (ink, .6), ("tone", 1), (acc, .3), (ink, .35), (ink, .18)]
+    copy = {
+        "en": ("LANGUAGES", "言語", "From the interface to the server.",
+               f'{data["repos"]} repositories · lines of code · {datetime.date.fromisoformat(data["date"]).strftime("%b %Y")}',
+               "LINES OF CODE", "Languages"),
+        "es": ("LENGUAJES", "言語", "De la interfaz al servidor.",
+               f'{data["repos"]} repositorios · líneas de código · {MESES[datetime.date.fromisoformat(data["date"]).month - 1]} {datetime.date.fromisoformat(data["date"]).year}',
+               "LÍNEAS DE CÓDIGO", "Lenguajes"),
+    }[lang]
+
+    def paint(i):
+        color, op = fills[i]
+        return ('url(#tone)', "") if color == "tone" else (color, f' fill-opacity="{op}"')
+
+    b = [f'<rect width="{W}" height="{H}" fill="{bg}"/>', halftone(t, "hl", 1060, 110, 300)]
+    b.append(
+        f'<defs><pattern id="tone" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">'
+        f'<rect width="7" height="7" fill="{bg}"/><circle cx="3.5" cy="3.5" r="1.9" fill="{ink}"/></pattern></defs>'
+    )
+    b.append(f'<rect x="0" y="0" width="{W}" height="3" fill="{ink}"/>')
+
+    # Dona
+    wedges, a0 = [], -math.pi / 2
+    for i, (name, n) in enumerate(shown.items()):
+        a1 = a0 + 2 * math.pi * n / total
+        big = 1 if a1 - a0 > math.pi else 0
+        x0, y0, x1, y1 = cx + R * math.cos(a0), cy + R * math.sin(a0), cx + R * math.cos(a1), cy + R * math.sin(a1)
+        x2, y2, x3, y3 = cx + r * math.cos(a1), cy + r * math.sin(a1), cx + r * math.cos(a0), cy + r * math.sin(a0)
+        fill, extra = paint(i)
+        wedges.append(
+            f'<path d="M{x0:.1f} {y0:.1f}A{R} {R} 0 {big} 1 {x1:.1f} {y1:.1f}L{x2:.1f} {y2:.1f}A{r} {r} 0 {big} 0 {x3:.1f} {y3:.1f}Z" '
+            f'fill="{fill}"{extra} stroke="{bg}" stroke-width="4" stroke-linejoin="round"/>'
+        )
+        a0 = a1
+    b.append(f'<circle cx="{cx}" cy="{cy}" r="{R + 12}" fill="none" stroke="{ink}" stroke-width="3"/>')
+    b.append(f'<circle cx="{cx}" cy="{cy}" r="{r - 12}" fill="none" stroke="{ink}" stroke-width="1.5" stroke-opacity=".5"/>')
+    b.append(f'<g class="pie">{"".join(wedges)}</g>')
+    b.append(anton.text(f"{round(total / 1000)}K", cx, cy + 14, 58, ink, anchor="middle", tracking=1))
+    b.append(arch.text(copy[4], cx, cy + 40, 13, t["muted"], anchor="middle", tracking=1.5))
+
+    # Título
+    b.append(anton.text(copy[0], 540, 118, 84, ink, tracking=1))
+    b.append(dela.text(copy[1], 1156, 118, 26, acc, tracking=4, anchor="end"))
+    b.append(f'<rect x="544" y="138" width="56" height="4" fill="{ink}"/>')
+    b.append(arch.text(copy[2], 540, 176, 22, ink))
+
+    # Leyenda: dos columnas de cuatro
+    for i, (name, n) in enumerate(shown.items()):
+        col, row = divmod(i, 4)
+        x, y = 544 + col * 320, 222 + row * 62
+        fill, extra = paint(i)
+        b.append(f'<g class="row" style="animation-delay:{i * 0.08:.2f}s">')
+        b.append(f'<rect x="{x}" y="{y}" width="30" height="30" fill="{fill}"{extra} stroke="{ink}" stroke-width="2"/>')
+        b.append(arch.text(name, x + 46, y + 22, 21, ink))
+        b.append(anton.text(f"{n / total * 100:.0f}%" if n / total >= .095 else f"{n / total * 100:.1f}%",
+                            x + 288, y + 26, 32, acc, anchor="end"))
+        b.append(f'<rect x="{x}" y="{y + 40}" width="288" height="1.5" fill="{ink}" fill-opacity=".22"/>')
+        b.append("</g>")
+    b.append(arch_r.text(copy[3], 544, H - 30, 15, t["muted"]))
+    b.append(menacing(dela, t, [(1060, 76, 44, -10), (1118, 50, 32, 8)]))
+
+    style = (
+        GO_CSS
+        + f".pie{{transform-origin:{cx}px {cy}px;animation:pie 1.2s cubic-bezier(.2,.9,.2,1.1) both .2s}}"
+        "@keyframes pie{from{transform:rotate(-140deg) scale(.55);opacity:0}}"
+        ".row{animation:row .7s cubic-bezier(.2,.8,.2,1) both}@keyframes row{from{opacity:0;transform:translateX(-16px)}}"
+    )
+    label = f'{copy[5]}: ' + ", ".join(f"{k} {v / total * 100:.0f}%" for k, v in shown.items())
+    return svg(W, H, label, "".join(b), style)
+
+
 # --- Final: To Be Continued ------------------------------------------------------
 
 def to_be_continued(t, lang, anton, dela, arch, arch_r):
@@ -378,7 +465,7 @@ def main():
     arch = Face("Archivo.ttf", wght=600, wdth=100)
     arch_r = Face("Archivo.ttf", wght=400, wdth=100)
     OUT.mkdir(exist_ok=True)
-    pieces = [("cover", cover), ("stand", stand), ("approach", approach), ("arsenal", arsenal),
+    pieces = [("cover", cover), ("stand", stand), ("approach", approach), ("arsenal", arsenal), ("languages", languages),
               ("tbc", to_be_continued)] + [(k, part(k)) for k in PARTS]
     for name, build in pieces:
         for lang in ("en", "es"):
