@@ -64,17 +64,17 @@ FEATURED = [
         meta="Python · Azure Document Intelligence",
     ),
     dict(
-        key="juego-fcv", shot="juego-fcv.jpg", kana="ゲーム", title={"en": "A REGULAR DAY", "es": "UN DÍA CUALQUIERA"}, side="right",
-        kicker={"en": "Fundación Cardiovascular de Colombia", "es": "Fundación Cardiovascular de Colombia"},
+        key="content", shot="content-social.jpg", kana="バズ", title={"en": "CONTENT", "es": "CONTENIDO"}, side="right",
+        kicker={"en": "Tostu · @criscx1905", "es": "Tostu · @criscx1905"},
         desc={
-            "en": "A security-awareness game for the whole hospital staff. You live a simulated workday with email, "
-                  "browser and help desk, the game records what you do, then rewinds the day to show every consequence.",
-            "es": "Un juego de sensibilización en ciberseguridad para todo el personal. Vives una jornada simulada con "
-                  "correo, navegador y mesa de ayuda, el juego registra lo que haces y al final rebobina el día con cada consecuencia.",
+            "en": "Short videos, edits and live streams. I write, record and edit my own content, and I bring "
+                  "the same eye to the brands I build websites for.",
+            "es": "Videos cortos, edición y directos. Escribo, grabo y edito mi propio contenido, y llevo ese "
+                  "mismo ojo a las marcas a las que les hago páginas.",
         },
-        stat=("120+", {"en": "automated tests", "es": "pruebas automáticas"}),
-        cta={"en": "Repository on GitHub", "es": "Repositorio en GitHub"},
-        meta="React · Vite · Node.js · Vitest",
+        stat=("32K+", {"en": "followers on TikTok", "es": "seguidores en TikTok"}),
+        cta={"en": "See it on TikTok", "es": "Verlo en TikTok"},
+        meta="After Effects · OBS · TikTok · Instagram · YouTube · Twitch",
     ),
     dict(
         key="guardenv", shot="guardenv.jpg", kana="シークレット", title="GUARDENV", side="left",
@@ -88,19 +88,6 @@ FEATURED = [
         stat=("48", {"en": "vendor signatures", "es": "firmas de proveedores"}),
         cta={"en": "Try the demo", "es": "Probar la demo"},
         meta="Python · GitHub Actions · CodeQL",
-    ),
-    dict(
-        key="content", shot="content-social.jpg", kana="バズ", title={"en": "CONTENT", "es": "CONTENIDO"}, side="right",
-        kicker={"en": "Tostu · @criscx1905", "es": "Tostu · @criscx1905"},
-        desc={
-            "en": "Short videos, edits and live streams. I write, record and edit my own content, and I bring "
-                  "the same eye to the brands I build websites for.",
-            "es": "Videos cortos, edición y directos. Escribo, grabo y edito mi propio contenido, y llevo ese "
-                  "mismo ojo a las marcas a las que les hago páginas.",
-        },
-        stat=("32K+", {"en": "followers on TikTok", "es": "seguidores en TikTok"}),
-        cta={"en": "See it on TikTok", "es": "Verlo en TikTok"},
-        meta="After Effects · OBS · TikTok · Instagram · YouTube · Twitch",
     ),
 ]
 

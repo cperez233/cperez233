@@ -27,11 +27,11 @@
   <img src="./assets/part-1-light.svg" alt="Part 1 — Stand user" width="100%" />
 </picture>
 
-I'm Cristian, Cris for short: a Systems Engineer from UNAB, full-stack developer and content creator based in Bucaramanga, Colombia. I build software, websites and apps for businesses, and I make videos as **Tostu**, some of which have gone viral along the way (32K+ followers on TikTok).
+I'm Cristian, Cris for short: a Systems Engineer from UNAB and a full-stack developer based in Bucaramanga, Colombia. I build websites, apps and custom software for businesses, from the first call to the deploy, and I make videos as Tostu. Some of them went viral (32K+ followers on TikTok).
 
-I co-founded **[Carpy](https://carpy.tech)**, a software studio with a team behind it: custom software, websites, integrations and security audits for clients in Colombia and abroad. My thesis, PairSync, is done, and the security side comes from working with the cybersecurity team at Fundación Cardiovascular de Colombia, where I built the OCR pipeline for their records and **A Regular Day**, this quarter's security-awareness game.
+I co-founded [Carpy](https://carpy.tech), a small software studio. We make custom software, websites, integrations and security audits for clients in Colombia and abroad. My thesis, PairSync, is finished. The security side comes from working with the cybersecurity team at Fundación Cardiovascular de Colombia, where I built the OCR pipeline for their records.
 
-Most recent: the menu and ordering site for **Cruz Blanca** (a restaurant in Girón), **Jovi's Gioielli** (a jewelry store in Italy, with a live engraving preview), **Sammy Partyboom** (kids' parties in Bucaramanga) and **Hotel Logístico** in Santa Marta, among more than ten sites already live for real businesses.
+Lately I've shipped the menu and ordering site for Cruz Blanca, a restaurant in Girón, and the site for Jovi's Gioielli, a jewelry store in Italy, with a live engraving preview. I also built Sammy Partyboom (kids' parties in Bucaramanga) and Hotel Logístico in Santa Marta. More than ten sites are live for real businesses.
 
 > **Quotes are open.** I'm working with clients right now and taking new projects: a website that sells, an app your team will actually use, or the system your business already outgrew. Tell me what you need and I'll send you a price.
 
@@ -70,10 +70,10 @@ Most recent: the menu and ordering site for **Cruz Blanca** (a restaurant in Gir
 </picture>
 </a>
 
-<a href="https://github.com/cperez233/juego-fcv-4trimestre">
+<a href="https://www.tiktok.com/@criscx1905">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/juego-fcv-dark-v2.jpg" />
-  <img src="./assets/cards/juego-fcv-light-v2.jpg" alt="A Regular Day — security-awareness game for Fundación Cardiovascular de Colombia staff: a simulated workday that rewinds to show the consequences of every click." width="100%" />
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/content-dark-v2.jpg" />
+  <img src="./assets/cards/content-light-v2.jpg" alt="Content — videos, edits and streams as Tostu. 32K+ followers on TikTok." width="100%" />
 </picture>
 </a>
 
@@ -81,13 +81,6 @@ Most recent: the menu and ordering site for **Cruz Blanca** (a restaurant in Gir
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/guardenv-dark-v2.jpg" />
   <img src="./assets/cards/guardenv-light-v2.jpg" alt="GuardEnv — open-source secret scanner with 48 vendor signatures and Shannon entropy." width="100%" />
-</picture>
-</a>
-
-<a href="https://www.tiktok.com/@criscx1905">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/content-dark-v2.jpg" />
-  <img src="./assets/cards/content-light-v2.jpg" alt="Content — videos, edits and streams as Tostu. 32K+ followers on TikTok." width="100%" />
 </picture>
 </a>
 
@@ -118,6 +111,11 @@ Most recent: the menu and ordering site for **Cruz Blanca** (a restaurant in Gir
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/arsenal-dark.svg" />
   <img src="./assets/arsenal-light.svg" alt="Stack: Python, TypeScript, JavaScript, Java, PHP, React, Next.js, Vite, Tailwind, Framer Motion, Laravel, Node.js, PostgreSQL, LangChain, Docker, Git, GitHub Actions, Vercel, Azure, Linux, Kali Linux, Burp Suite, Wireshark, OWASP, After Effects, OBS, TikTok, Instagram, YouTube, Twitch" width="100%" />
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/languages-dark.svg" />
+  <img src="./assets/languages-light.svg" alt="Languages by lines of code across my repositories: TypeScript 43%, JavaScript 21%, CSS 15%, Python 7%, Java 6%, HTML 4%, PHP 2%, SQL 2%" width="100%" />
 </picture>
 
 <p align="center">

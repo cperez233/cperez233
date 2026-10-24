@@ -1,0 +1,125 @@
+{
+  "date": "2026-10-24",
+  "unit": "non-blank lines",
+  "repos": 22,
+  "languages": {
+    "TypeScript": 58161,
+    "JavaScript": 28739,
+    "CSS": 20684,
+    "Python": 9383,
+    "Java": 8718,
+    "HTML": 5465,
+    "PHP": 2525,
+    "SQL": 2376,
+    "Shell": 292
+  },
+  "by_repo": {
+    "activos": {
+      "Shell": 208,
+      "HTML": 1692,
+      "SQL": 2376,
+      "JavaScript": 286,
+      "Java": 8718
+    },
+    "api-barber": {
+      "HTML": 924
+    },
+    "carpy": {
+      "HTML": 51,
+      "TypeScript": 4782,
+      "CSS": 292,
+      "JavaScript": 179
+    },
+    "carros": {
+      "HTML": 12,
+      "TypeScript": 1153,
+      "CSS": 23
+    },
+    "carros-2": {
+      "HTML": 24,
+      "TypeScript": 3467,
+      "CSS": 81,
+      "Python": 62,
+      "JavaScript": 30
+    },
+    "codetogether": {},
+    "colodion-ceniza": {},
+    "cperez233.github.io": {},
+    "cruz-blanca": {
+      "HTML": 43,
+      "TypeScript": 3770,
+      "CSS": 174,
+      "JavaScript": 74,
+      "Python": 342
+    },
+    "digitalizacion-actas-fcv": {
+      "CSS": 1072,
+      "JavaScript": 767,
+      "Python": 888,
+      "HTML": 225,
+      "Shell": 12
+    },
+    "ecommerce-backend": {
+      "JavaScript": 39,
+      "PHP": 2367,
+      "CSS": 0
+    },
+    "guardenv": {
+      "JavaScript": 55,
+      "TypeScript": 7018,
+      "HTML": 96,
+      "Python": 3998,
+      "CSS": 239
+    },
+    "joyeria": {
+      "HTML": 47,
+      "TypeScript": 2117,
+      "CSS": 125,
+      "JavaScript": 66
+    },
+    "juego-fcv-4trimestre": {
+      "JavaScript": 13433,
+      "HTML": 344,
+      "CSS": 8168
+    },
+    "loose-end": {},
+    "napi-barber": {
+      "HTML": 1481
+    },
+    "pass-guard": {
+      "JavaScript": 2413,
+      "HTML": 92,
+      "CSS": 230
+    },
+    "portfolio-web": {
+      "JavaScript": 22,
+      "TypeScript": 15430,
+      "CSS": 4056
+    },
+    "radar-kpop": {
+      "JavaScript": 301,
+      "Python": 3639,
+      "HTML": 370,
+      "CSS": 1560
+    },
+    "sammy": {
+      "JavaScript": 208,
+      "HTML": 39,
+      "TypeScript": 2879,
+      "CSS": 121
+    },
+    "tostrivia-gg": {
+      "HTML": 25,
+      "TypeScript": 17545,
+      "CSS": 4543,
+      "JavaScript": 9476,
+      "Python": 74
+    },
+    "wiki-fcv": {
+      "Shell": 72,
+      "PHP": 158,
+      "Python": 380,
+      "JavaScript": 1390
+    }
+  }
+}

@@ -27,11 +27,11 @@
   <img src="./assets/part-1-es-light.svg" alt="Parte 1 — Usuario del Stand" width="100%" />
 </picture>
 
-Soy Cristian, Cris: Ingeniero de Sistemas de la UNAB, desarrollador full-stack y creador de contenido en Bucaramanga, Colombia. Construyo software, páginas web y apps para negocios, y hago videos como **Tostu**, algunos de los cuales se han vuelto virales en el camino (32K+ seguidores en TikTok).
+Soy Cristian, Cris: Ingeniero de Sistemas de la UNAB y desarrollador full-stack en Bucaramanga, Colombia. Hago páginas web, apps y software a la medida para negocios, de la primera llamada al despliegue, y subo videos como Tostu. Algunos se volvieron virales (32K+ seguidores en TikTok).
 
-Cofundé **[Carpy](https://carpy.tech)**, un estudio de software con un equipo detrás: software a la medida, páginas web, integraciones y auditorías de seguridad para clientes en Colombia y afuera. Mi tesis, PairSync, ya está terminada, y el lado de seguridad viene de trabajar con el equipo de ciberseguridad de la Fundación Cardiovascular de Colombia, donde hice el pipeline de OCR de las actas y **Un día cualquiera**, el juego de sensibilización del trimestre.
+Cofundé [Carpy](https://carpy.tech), un estudio de software pequeño. Hacemos software a la medida, páginas web, integraciones y auditorías de seguridad para clientes en Colombia y afuera. Mi tesis, PairSync, ya está terminada. Lo de seguridad viene de trabajar con el equipo de ciberseguridad de la Fundación Cardiovascular de Colombia, donde hice el pipeline de OCR de sus actas.
 
-Lo más reciente: la carta y los pedidos de **Cruz Blanca** (restaurante en Girón), **Jovi's Gioielli** (joyería en Italia, con vista previa del grabado), **Sammy Partyboom** (fiestas infantiles en Bucaramanga) y **Hotel Logístico** en Santa Marta, entre más de diez páginas ya publicadas para negocios reales.
+Últimamente entregué la carta y los pedidos de Cruz Blanca, un restaurante en Girón, y la página de Jovi's Gioielli, una joyería en Italia, con vista previa del grabado en vivo. También hice Sammy Partyboom (fiestas infantiles en Bucaramanga) y Hotel Logístico en Santa Marta. Hay más de diez páginas publicadas para negocios reales.
 
 > **Cotizaciones abiertas.** Ahora mismo trabajo con clientes y recibo proyectos nuevos: una página que venda, una app que tu equipo sí use o el sistema que tu negocio ya superó. Cuéntame qué necesitas y te mando un precio.
 
@@ -70,10 +70,10 @@ Lo más reciente: la carta y los pedidos de **Cruz Blanca** (restaurante en Gir�
 </picture>
 </a>
 
-<a href="https://github.com/cperez233/juego-fcv-4trimestre">
+<a href="https://www.tiktok.com/@criscx1905">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/juego-fcv-es-dark-v2.jpg" />
-  <img src="./assets/cards/juego-fcv-es-light-v2.jpg" alt="Un día cualquiera — juego de sensibilización en ciberseguridad para el personal de la Fundación Cardiovascular de Colombia: una jornada simulada que se rebobina para mostrar las consecuencias de cada clic." width="100%" />
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/content-es-dark-v2.jpg" />
+  <img src="./assets/cards/content-es-light-v2.jpg" alt="Contenido — videos, edición y directos como Tostu. 32K+ seguidores en TikTok." width="100%" />
 </picture>
 </a>
 
@@ -81,13 +81,6 @@ Lo más reciente: la carta y los pedidos de **Cruz Blanca** (restaurante en Gir�
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/guardenv-es-dark-v2.jpg" />
   <img src="./assets/cards/guardenv-es-light-v2.jpg" alt="GuardEnv — escáner de secretos de código abierto con 48 firmas de proveedores y entropía de Shannon." width="100%" />
-</picture>
-</a>
-
-<a href="https://www.tiktok.com/@criscx1905">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/content-es-dark-v2.jpg" />
-  <img src="./assets/cards/content-es-light-v2.jpg" alt="Contenido — videos, edición y directos como Tostu. 32K+ seguidores en TikTok." width="100%" />
 </picture>
 </a>
 
@@ -118,6 +111,11 @@ Lo más reciente: la carta y los pedidos de **Cruz Blanca** (restaurante en Gir�
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/arsenal-es-dark.svg" />
   <img src="./assets/arsenal-es-light.svg" alt="Stack: Python, TypeScript, JavaScript, Java, PHP, React, Next.js, Vite, Tailwind, Framer Motion, Laravel, Node.js, PostgreSQL, LangChain, Docker, Git, GitHub Actions, Vercel, Azure, Linux, Kali Linux, Burp Suite, Wireshark, OWASP, After Effects, OBS, TikTok, Instagram, YouTube, Twitch" width="100%" />
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/languages-es-dark.svg" />
+  <img src="./assets/languages-es-light.svg" alt="Lenguajes por líneas de código en mis repositorios: TypeScript 43%, JavaScript 21%, CSS 15%, Python 7%, Java 6%, HTML 4%, PHP 2%, SQL 2%" width="100%" />
 </picture>
 
 <p align="center">
