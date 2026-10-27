@@ -34,7 +34,7 @@
 
 I'm Cristian, Cris for short: a Systems Engineer from UNAB and a full-stack developer based in Bucaramanga, Colombia. I build websites, apps and custom software for businesses, from the first call to the deploy, and I make videos as Tostu. Some of them went viral (32K+ followers on TikTok).
 
-I co-founded [Carpy](https://carpy.tech), a small software studio. We make custom software, websites, integrations and security audits for clients in Colombia and abroad. My thesis, PairSync, is finished. The security side comes from working with the cybersecurity team at Fundación Cardiovascular de Colombia.
+I co-founded [Carpy](https://carpy.tech), a small software studio. We make custom software, websites, integrations and security audits for clients in Colombia and abroad. My thesis, PairSync, is finished. The security side comes from working with the cybersecurity team at Fundación Cardiovascular de Colombia. There I built the app that manages information assets (Java and Spring Boot, instead of an Excel matrix) and gave the team's wiki its own theme and search.
 
 More than ten sites are live for real businesses, like Cruz Blanca (a restaurant in Girón with online ordering) and Jovi's Gioielli (a jewelry store in Italy with a live engraving preview). For fun, I also made [Tostrivia](https://tostrivia-gg.vercel.app), a trivia game you can play with friends, and [Radar K-pop](https://radar-kpop.vercel.app), a globe that shows where K-pop groups tour next.
 
@@ -75,15 +75,21 @@ More than ten sites are live for real businesses, like Cruz Blanca (a restaurant
 </picture>
 </a>
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/activos-fcv-dark-v4.jpg" />
+  <img src="./assets/cards/activos-fcv-light-v4.jpg" alt="Activos FCV — internal tool for FCV's cybersecurity team to manage information assets, with CIA classification, risks, controls and an audit log. 165 automated tests. Screenshot shows demo data." width="100%" />
+</picture>
+
 <a href="https://www.tiktok.com/@criscx1905">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/content-dark-v4.jpg" />
-  <img src="./assets/cards/content-light-v4.jpg" alt="Content — videos, edits and streams as Tostu. 32K+ followers on TikTok." width="100%" />
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/content-dark-v5.jpg" />
+  <img src="./assets/cards/content-light-v5.jpg" alt="Content — videos, edits and streams as Tostu. 32K+ followers on TikTok." width="100%" />
 </picture>
 </a>
 
 <p align="center">
   <a href="https://github.com/cperez233/digitalizacion-actas-fcv"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/actas-fcv-dark-v4.jpg" /><img src="./assets/cards/actas-fcv-light-v4.jpg" alt="Actas FCV — OCR pipeline for handwritten security-policy forms at Fundación Cardiovascular de Colombia. 746 records indexed." width="32%" /></picture></a>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/ciber-wiki-dark-v4.jpg" /><img src="./assets/cards/ciber-wiki-light-v4.jpg" alt="Ciber Wiki — the cybersecurity team's internal wiki: MediaWiki theme, instant search and 100+ pages" width="32%" /></picture>
   <a href="https://github.com/cperez233/guardenv"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/guardenv-dark-v4.jpg" /><img src="./assets/cards/guardenv-light-v4.jpg" alt="GuardEnv — open-source secret scanner with 48 vendor signatures and Shannon entropy." width="32%" /></picture></a>
   <a href="https://joyeria-liart.vercel.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/jovis-gioielli-dark-v4.jpg" /><img src="./assets/cards/jovis-gioielli-light-v4.jpg" alt="Jovi's Gioielli — jewelry store in Italy with a live engraving preview" width="32%" /></picture></a>
   <a href="https://sammy-three-alpha.vercel.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/sammy-partyboom-dark-v4.jpg" /><img src="./assets/cards/sammy-partyboom-light-v4.jpg" alt="Sammy Partyboom — kids' party entertainers in Bucaramanga with a WhatsApp quote builder" width="32%" /></picture></a>
@@ -115,7 +121,7 @@ More than ten sites are live for real businesses, like Cruz Blanca (a restaurant
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/languages-dark.svg" />
-  <img src="./assets/languages-light.svg" alt="Languages by lines of code across my repositories: TypeScript 43%, JavaScript 21%, CSS 15%, Python 7%, Java 6%, HTML 4%, PHP 2%, SQL 2%" width="100%" />
+  <img src="./assets/languages-light.svg" alt="Languages by lines of code across my repositories, public and private: TypeScript 41%, JavaScript 20%, CSS 15%, Java 9%, Python 7%, HTML 4%, SQL 2%, PHP 2%" width="100%" />
 </picture>
 
 <br />

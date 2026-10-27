@@ -78,7 +78,22 @@ FEATURED = [
         meta="React · Vite · Tailwind · Framer Motion · SSR",
     ),
     dict(
-        key="content", shot="content-social.jpg", kana="バズ", title={"en": "CONTENT", "es": "CONTENIDO"}, side="left",
+        key="activos-fcv", shot="activos.jpg", kana="資産", title="ACTIVOS FCV", side="left", link=False,
+        kicker={"en": "Internal tool · FCV Cybersecurity", "es": "Herramienta interna · Ciberseguridad FCV"},
+        desc={
+            "en": "Replaces the Excel matrix of information assets. Each asset is rated for confidentiality, integrity "
+                  "and availability, with roles by area, risks, controls, action plans, personal-data tracking, "
+                  "a dashboard and an audit log. Security-first, for a server that gets scanned.",
+            "es": "Reemplaza la matriz de Excel de activos de información. Cada activo se califica en confidencialidad, "
+                  "integridad y disponibilidad, con roles por área, riesgos, controles, planes de acción, datos "
+                  "personales, dashboard y bitácora. Seguridad desde el día uno, para un servidor que se escanea.",
+        },
+        stat=("165", {"en": "automated tests", "es": "pruebas automáticas"}),
+        cta={"en": "Private repository · demo data shown", "es": "Repositorio privado · datos de demostración"},
+        meta="Java 17 · Spring Boot · MariaDB · Thymeleaf · Flyway",
+    ),
+    dict(
+        key="content", shot="content-social.jpg", kana="バズ", title={"en": "CONTENT", "es": "CONTENIDO"}, side="right", ver=5,
         kicker={"en": "Tostu · @criscx1905", "es": "Tostu · @criscx1905"},
         desc={
             "en": "Short videos, edits and live streams. I write, record and edit my own content, and I bring "
@@ -127,6 +142,9 @@ GRID = [
     dict(key="actas-fcv", shot="fcv-buscador.jpg", title="ACTAS FCV", domain="Fundación Cardiovascular de Colombia",
          line={"en": "OCR pipeline for handwritten forms, 746 records indexed",
                "es": "Pipeline de OCR para actas manuscritas, 746 actas indexadas"}),
+    dict(key="ciber-wiki", shot="wiki.jpg", title="CIBER WIKI", domain={"en": "Internal · private repository", "es": "Interna · repositorio privado"},
+         line={"en": "MediaWiki theme, instant search and 100+ pages for the cybersecurity team",
+               "es": "Tema de MediaWiki, buscador instantáneo y 100+ páginas para el equipo de ciberseguridad"}),
     dict(key="guardenv", shot="guardenv.jpg", title="GUARDENV", domain={"en": "Open source · security", "es": "Código abierto · seguridad"},
          line={"en": "Secret scanner with 48 vendor signatures and Shannon entropy",
                "es": "Escáner de secretos con 48 firmas de proveedores y entropía de Shannon"}),
@@ -181,7 +199,7 @@ def featured_html(p, t, lang):
     <p style="font-size:18.5px;line-height:1.5;margin-top:16px;opacity:.86">{p['desc'][lang]}</p>
     {stat}
     <div style="margin-top:{18 if p['stat'] else 26}px;font-size:15px;font-weight:600" class="muted">{p['meta']}</div>
-    <div style="margin-top:14px;font-size:18px;font-weight:700;color:{t['accent']}">{p['cta'][lang]} &nbsp;→</div>
+    <div style="margin-top:14px;font-size:18px;font-weight:700;color:{t['accent']}">{p['cta'][lang]}{' &nbsp;→' if p.get('link', True) else ''}</div>
   </div>
 </div>"""
     return W, H, body
@@ -227,7 +245,7 @@ def main():
         for p in items:
             for lang in ("en", "es"):
                 for mode, t in THEMES.items():
-                    target = OUT / f"{p['key']}{'' if lang == 'en' else '-es'}-{mode}-v{VERSION}.jpg"
+                    target = OUT / f"{p['key']}{'' if lang == 'en' else '-es'}-{mode}-v{p.get('ver', VERSION)}.jpg"
                     render(*build(p, t, lang), t, target)
                     print(f"{target.relative_to(ROOT)}  {target.stat().st_size // 1024} KB")
 

@@ -4,22 +4,22 @@
   "repos": 22,
   "languages": {
     "TypeScript": 58161,
-    "JavaScript": 28739,
+    "JavaScript": 28857,
     "CSS": 20684,
+    "Java": 12542,
     "Python": 9383,
-    "Java": 8718,
-    "HTML": 5465,
+    "HTML": 6116,
+    "SQL": 2602,
     "PHP": 2525,
-    "SQL": 2376,
     "Shell": 292
   },
   "by_repo": {
     "activos": {
       "Shell": 208,
-      "HTML": 1692,
-      "SQL": 2376,
-      "JavaScript": 286,
-      "Java": 8718
+      "HTML": 2343,
+      "SQL": 2602,
+      "JavaScript": 404,
+      "Java": 12542
     },
     "api-barber": {
       "HTML": 924
