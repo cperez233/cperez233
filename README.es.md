@@ -31,7 +31,7 @@ Soy Cristian, Cris: Ingeniero de Sistemas de la UNAB y desarrollador full-stack 
 
 Cofundé [Carpy](https://carpy.tech), un estudio de software pequeño. Hacemos software a la medida, páginas web, integraciones y auditorías de seguridad para clientes en Colombia y afuera. Mi tesis, PairSync, ya está terminada. Lo de seguridad viene de trabajar con el equipo de ciberseguridad de la Fundación Cardiovascular de Colombia.
 
-Últimamente entregué la carta y los pedidos de Cruz Blanca, un restaurante en Girón, y la página de Jovi's Gioielli, una joyería en Italia, con vista previa del grabado en vivo. También hice Sammy Partyboom (fiestas infantiles en Bucaramanga) y Hotel Logístico en Santa Marta. Hay más de diez páginas publicadas para negocios reales. Por diversión también hice [Tostrivia](https://tostrivia-gg.vercel.app), un juego de trivia para jugar con amigos.
+Últimamente entregué la carta y los pedidos de Cruz Blanca, un restaurante en Girón, y la página de Jovi's Gioielli, una joyería en Italia, con vista previa del grabado en vivo. También hice Sammy Partyboom (fiestas infantiles en Bucaramanga) y Hotel Logístico en Santa Marta. Hay más de diez páginas publicadas para negocios reales. Por diversión también hice [Tostrivia](https://tostrivia-gg.vercel.app), un juego de trivia para jugar con amigos y [Radar K-pop](https://radar-kpop.vercel.app), un globo que muestra dónde de gira van los grupos de K-pop.
 
 > **Cotizaciones abiertas.** Ahora mismo trabajo con clientes y recibo proyectos nuevos: una página que venda, una app que tu equipo sí use o el sistema que tu negocio ya superó. Cuéntame qué necesitas y te mando un precio.
 
@@ -53,6 +53,13 @@ Cofundé [Carpy](https://carpy.tech), un estudio de software pequeño. Hacemos s
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/tostrivia-es-dark-v3.jpg" />
   <img src="./assets/cards/tostrivia-es-light-v3.jpg" alt="Tostrivia — juego de trivia de anime, videojuegos, series y películas. Una ruleta, 5.300+ preguntas y salas de hasta 10 jugadores." width="100%" />
+</picture>
+</a>
+
+<a href="https://radar-kpop.vercel.app">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/radar-kpop-es-dark-v3.jpg" />
+  <img src="./assets/cards/radar-kpop-es-light-v3.jpg" alt="Radar K-pop — página de fans que muestra dónde toca después cada grupo de K-pop en un globo 3D, con chibis hechos a mano." width="100%" />
 </picture>
 </a>
 

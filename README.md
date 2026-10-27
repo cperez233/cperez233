@@ -31,7 +31,7 @@ I'm Cristian, Cris for short: a Systems Engineer from UNAB and a full-stack deve
 
 I co-founded [Carpy](https://carpy.tech), a small software studio. We make custom software, websites, integrations and security audits for clients in Colombia and abroad. My thesis, PairSync, is finished. The security side comes from working with the cybersecurity team at Fundación Cardiovascular de Colombia.
 
-Lately I've shipped the menu and ordering site for Cruz Blanca, a restaurant in Girón, and the site for Jovi's Gioielli, a jewelry store in Italy, with a live engraving preview. I also built Sammy Partyboom (kids' parties in Bucaramanga) and Hotel Logístico in Santa Marta. More than ten sites are live for real businesses. For fun, I also made [Tostrivia](https://tostrivia-gg.vercel.app), a trivia game you can play with friends.
+Lately I've shipped the menu and ordering site for Cruz Blanca, a restaurant in Girón, and the site for Jovi's Gioielli, a jewelry store in Italy, with a live engraving preview. I also built Sammy Partyboom (kids' parties in Bucaramanga) and Hotel Logístico in Santa Marta. More than ten sites are live for real businesses. For fun, I also made [Tostrivia](https://tostrivia-gg.vercel.app), a trivia game you can play with friends and [Radar K-pop](https://radar-kpop.vercel.app), a globe that shows where K-pop groups tour next.
 
 > **Quotes are open.** I'm working with clients right now and taking new projects: a website that sells, an app your team will actually use, or the system your business already outgrew. Tell me what you need and I'll send you a price.
 
@@ -53,6 +53,13 @@ Lately I've shipped the menu and ordering site for Cruz Blanca, a restaurant in 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/tostrivia-dark-v3.jpg" />
   <img src="./assets/cards/tostrivia-light-v3.jpg" alt="Tostrivia — trivia game on anime, games, series and movies. A wheel, 5,300+ questions and rooms of up to 10 players." width="100%" />
+</picture>
+</a>
+
+<a href="https://radar-kpop.vercel.app">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/radar-kpop-dark-v3.jpg" />
+  <img src="./assets/cards/radar-kpop-light-v3.jpg" alt="Radar K-pop — fan site that shows where each K-pop group plays next on a 3D globe, with hand-made chibis." width="100%" />
 </picture>
 </a>
 
