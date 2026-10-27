@@ -201,11 +201,11 @@ def stand(t, lang, anton, dela, arch, arch_r):
     W, H = 1200, 600
     cx, cy, R = 858, 296, 148
     copy = {
-        "en": ("STAND", "Stand user — Cristian Pérez",
+        "en": ("STAND USER", "Stand user — Cristian Pérez",
                "Builds software, websites and apps that businesses actually use, and makes content that "
                "goes viral. Has a cybersecurity streak: checks the locks before handing over the keys.",
                "Power · Speed · Range · Stamina · Precision · Potential"),
-        "es": ("STAND", "Usuario del Stand — Cristian Pérez",
+        "es": ("USUARIO DEL STAND", "Usuario del Stand — Cristian Pérez",
                "Construye software, páginas web y apps que los negocios usan de verdad, y crea contenido que "
                "se vuelve viral. Tiene aires de ciberseguridad: revisa las cerraduras antes de entregar las llaves.",
                "Poder · Velocidad · Alcance · Resistencia · Precisión · Potencial"),
@@ -214,7 +214,9 @@ def stand(t, lang, anton, dela, arch, arch_r):
     b = [f'<rect width="{W}" height="{H}" fill="{t["bg"]}"/>', halftone(t, "hs", cx, cy, 300)]
     b.append(f'<rect x="24" y="24" width="{W - 48}" height="{H - 48}" fill="none" stroke="{t["ink"]}" stroke-width="3"/>')
 
-    b.append(arch.text(copy[0], 72, 104, 18, t["muted"], tracking=3))
+    part_label = "PART 1" if lang == "en" else "PARTE 1"
+    b.append(anton.text(part_label, 72, 98, 26, t["accent"], tracking=3))
+    b.append(arch.text(copy[0], 72 + anton.width(part_label, 26, 3) + 18, 97, 17, t["muted"], tracking=3))
     b.append(dela.text("「", 58, 190, 64, t["accent"]))
     b.append(anton.text("PARANOID", 118, 180, 84, t["ink"], tracking=1))
     b.append(anton.text("ANDROID", 118, 268, 84, t["ink"], tracking=1))
@@ -264,8 +266,8 @@ def stand(t, lang, anton, dela, arch, arch_r):
 def approach(t, lang, anton, dela, arch, arch_r):
     W, H = 1200, 250
     line, sub = {
-        "en": ("OH? YOU'RE APPROACHING ME?", "Websites, apps and custom software for your business. Quotes are open."),
-        "es": ("¿OH? ¿TE ACERCAS A MÍ?", "Páginas web, apps y software a la medida para tu negocio. Cotizaciones abiertas."),
+        "en": ("OH? YOU'RE APPROACHING ME?", "Websites, apps and custom software for your business."),
+        "es": ("¿OH? ¿TE ACERCAS A MÍ?", "Páginas web, apps y software a la medida para tu negocio."),
     }[lang]
     size = 80
     b = [f'<rect width="{W}" height="{H}" fill="{t["bg"]}"/>', halftone(t, "ha", 1040, 125, 260)]
@@ -281,7 +283,6 @@ def approach(t, lang, anton, dela, arch, arch_r):
 # --- Encabezados de sección: cada parte, como las partes de JoJo ---------------
 
 PARTS = {
-    "part-1": (1, {"en": "STAND USER", "es": "USUARIO DEL STAND"}, "スタンド使い"),
     "part-2": (2, {"en": "SELECTED WORK", "es": "TRABAJO SELECCIONADO"}, "作品集"),
     "part-3": (3, {"en": "ARSENAL", "es": "ARSENAL"}, "武器"),
     "part-4": (4, {"en": "ORA ORA ORA", "es": "ORA ORA ORA"}, "オラオラ"),
@@ -292,15 +293,14 @@ def part(key):
     num, title, kana = PARTS[key]
 
     def build(t, lang, anton, dela, arch, arch_r):
-        W, H = 1200, 200
-        b = [f'<rect width="{W}" height="{H}" fill="{t["bg"]}"/>', halftone(t, "hp", 1050, 100, 260)]
-        b.append(anton.text(f'{"PART" if lang == "en" else "PARTE"} {num}', 44, 62, 26, t["accent"], tracking=3))
-        b.append(anton.text(title[lang], 40, 160, 92, t["ink"], tracking=1))
-        b.append(dela.text(kana, 1156, 160, 26, t["accent"], tracking=4, anchor="end"))
-        b.append(f'<rect x="44" y="184" width="{W - 88}" height="4" fill="{t["ink"]}"/>')
-        b.append(menacing(dela, t, [(1080, 76, 46, -10), (1140, 58, 34, 8)]))
+        W, H = 1200, 132
+        b = [f'<rect width="{W}" height="{H}" fill="{t["bg"]}"/>', halftone(t, "hp", 1060, 66, 220)]
+        b.append(anton.text(f'{"PART" if lang == "en" else "PARTE"} {num}', 44, 40, 22, t["accent"], tracking=3))
+        b.append(anton.text(title[lang], 40, 104, 66, t["ink"], tracking=1))
+        b.append(dela.text(kana, 1156, 104, 24, t["accent"], tracking=4, anchor="end"))
+        b.append(f'<rect x="44" y="118" width="{W - 88}" height="4" fill="{t["ink"]}"/>')
         label = f'{"Part" if lang == "en" else "Parte"} {num} — {title[lang].title()}'
-        return svg(W, H, label, "".join(b), GO_CSS)
+        return svg(W, H, label, "".join(b))
 
     return build
 
@@ -367,15 +367,15 @@ def languages(t, lang, anton, dela, arch, arch_r):
     data = json.loads(LANG_STATS.read_text())
     shown = {k: v for k, v in data["languages"].items() if v / sum(data["languages"].values()) >= 0.01}
     total = sum(shown.values())
-    W, H = 1200, 500
-    cx, cy, R, r = 270, 262, 176, 96
+    W, H = 1200, 400
+    cx, cy, R, r = 250, 206, 150, 82
     ink, acc, bg = t["ink"], t["accent"], t["bg"]
     fills = [(acc, 1), (ink, 1), (acc, .55), (ink, .6), ("tone", 1), (acc, .3), (ink, .35), (ink, .18)]
     copy = {
-        "en": ("LANGUAGES", "言語", "From the interface to the server.",
+        "en": ("BY THE NUMBERS", "数字", "From the interface to the server.",
                f'{data["repos"]} repositories · lines of code · {datetime.date.fromisoformat(data["date"]).strftime("%b %Y")}',
                "LINES OF CODE", "Languages"),
-        "es": ("LENGUAJES", "言語", "De la interfaz al servidor.",
+        "es": ("EN NÚMEROS", "数字", "De la interfaz al servidor.",
                f'{data["repos"]} repositorios · líneas de código · {MESES[datetime.date.fromisoformat(data["date"]).month - 1]} {datetime.date.fromisoformat(data["date"]).year}',
                "LÍNEAS DE CÓDIGO", "Lenguajes"),
     }[lang]
@@ -384,7 +384,7 @@ def languages(t, lang, anton, dela, arch, arch_r):
         color, op = fills[i]
         return ('url(#tone)', "") if color == "tone" else (color, f' fill-opacity="{op}"')
 
-    b = [f'<rect width="{W}" height="{H}" fill="{bg}"/>', halftone(t, "hl", 1060, 110, 300)]
+    b = [f'<rect width="{W}" height="{H}" fill="{bg}"/>', halftone(t, "hl", 1060, 110, 260)]
     b.append(
         f'<defs><pattern id="tone" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">'
         f'<rect width="7" height="7" fill="{bg}"/><circle cx="3.5" cy="3.5" r="1.9" fill="{ink}"/></pattern></defs>'
@@ -407,19 +407,19 @@ def languages(t, lang, anton, dela, arch, arch_r):
     b.append(f'<circle cx="{cx}" cy="{cy}" r="{R + 12}" fill="none" stroke="{ink}" stroke-width="3"/>')
     b.append(f'<circle cx="{cx}" cy="{cy}" r="{r - 12}" fill="none" stroke="{ink}" stroke-width="1.5" stroke-opacity=".5"/>')
     b.append(f'<g class="pie">{"".join(wedges)}</g>')
-    b.append(anton.text(f"{round(total / 1000)}K", cx, cy + 14, 58, ink, anchor="middle", tracking=1))
+    b.append(anton.text(f"{round(total / 1000)}K", cx, cy + 14, 52, ink, anchor="middle", tracking=1))
     b.append(arch.text(copy[4], cx, cy + 40, 13, t["muted"], anchor="middle", tracking=1.5))
 
     # Título
-    b.append(anton.text(copy[0], 540, 118, 84, ink, tracking=1))
-    b.append(dela.text(copy[1], 1156, 118, 26, acc, tracking=4, anchor="end"))
-    b.append(f'<rect x="544" y="138" width="56" height="4" fill="{ink}"/>')
-    b.append(arch.text(copy[2], 540, 176, 22, ink))
+    b.append(anton.text(copy[0], 540, 76, 44, ink, tracking=1))
+    b.append(dela.text(copy[1], 1156, 76, 22, acc, tracking=4, anchor="end"))
+    b.append(f'<rect x="544" y="92" width="56" height="4" fill="{ink}"/>')
+    b.append(arch.text(copy[2], 540, 128, 20, t["muted"]))
 
     # Leyenda: dos columnas de cuatro
     for i, (name, n) in enumerate(shown.items()):
         col, row = divmod(i, 4)
-        x, y = 544 + col * 320, 222 + row * 62
+        x, y = 544 + col * 320, 156 + row * 56
         fill, extra = paint(i)
         b.append(f'<g class="row" style="animation-delay:{i * 0.08:.2f}s">')
         b.append(f'<rect x="{x}" y="{y}" width="30" height="30" fill="{fill}"{extra} stroke="{ink}" stroke-width="2"/>')
@@ -428,8 +428,7 @@ def languages(t, lang, anton, dela, arch, arch_r):
                             x + 288, y + 26, 32, acc, anchor="end"))
         b.append(f'<rect x="{x}" y="{y + 40}" width="288" height="1.5" fill="{ink}" fill-opacity=".22"/>')
         b.append("</g>")
-    b.append(arch_r.text(copy[3], 544, H - 30, 15, t["muted"]))
-    b.append(menacing(dela, t, [(1060, 76, 44, -10), (1118, 50, 32, 8)]))
+    b.append(arch_r.text(copy[3], 544, H - 22, 15, t["muted"]))
 
     style = (
         GO_CSS
@@ -462,14 +461,14 @@ BUTTONS = [
 
 def button(label, sub, icon_file, primary, anton, arch, arch_r):
     """Panel inclinado: pestaña con el ícono a la izquierda, texto a la derecha."""
-    H, tab, pad = 48, 54, 18
+    H, tab, pad = 40, 46, 16
     body_fill, edge = (BTN_GOLD, BTN_INK) if primary else (BTN_INK, BTN_GOLD)
     tab_fill, tab_ink = (BTN_INK, BTN_GOLD) if primary else (BTN_GOLD, BTN_INK)
     text_ink, sub_ink = (BTN_INK, BTN_INK) if primary else (BTN_CREAM, "#b9b2a4")
-    label_w = anton.width(label, 21, 1.5)
-    sub_w = arch_r.width(sub, 12.5) if sub else 0
+    label_w = anton.width(label, 18, 1.4)
+    sub_w = arch_r.width(sub, 11.5) if sub else 0
     W = int(tab + pad + max(label_w, sub_w) + pad + SKEW)
-    sh = 4  # sombra dura
+    sh = 3  # sombra dura
 
     def para(x0, x1):
         return f"{x0 + SKEW},0 {x1},0 {x1 - SKEW},{H} {x0},{H}"
@@ -483,16 +482,16 @@ def button(label, sub, icon_file, primary, anton, arch, arch_r):
     ]
     cx, cy = (tab + SKEW) / 2 + 1, H / 2
     if icon_file:
-        b.append(icon(icon_file, cx - 12, cy - 12, 24, tab_ink))
+        b.append(icon(icon_file, cx - 10, cy - 10, 20, tab_ink))
     else:  # flecha ↗ para enlaces sin marca
-        b.append(f'<path d="M{cx - 8} {cy + 8}L{cx + 8} {cy - 8}M{cx - 3} {cy - 8}H{cx + 8}V{cy + 3}" fill="none" '
-                 f'stroke="{tab_ink}" stroke-width="3.2" stroke-linecap="square"/>')
+        b.append(f'<path d="M{cx - 7} {cy + 7}L{cx + 7} {cy - 7}M{cx - 3} {cy - 7}H{cx + 7}V{cy + 3}" fill="none" '
+                 f'stroke="{tab_ink}" stroke-width="3" stroke-linecap="square"/>')
     tx = tab + SKEW + pad - 4
     if sub:
-        b.append(anton.text(label, tx, 22, 21, text_ink, tracking=1.5))
-        b.append(arch_r.text(sub, tx, 39, 12.5, sub_ink))
+        b.append(anton.text(label, tx, 18, 18, text_ink, tracking=1.4))
+        b.append(arch_r.text(sub, tx, 33, 11.5, sub_ink))
     else:
-        b.append(anton.text(label, tx, 31, 21, text_ink, tracking=1.5))
+        b.append(anton.text(label, tx, 26, 18, text_ink, tracking=1.4))
     return W + sh, H + sh, "".join(b)
 
 
