@@ -33,7 +33,9 @@ MONTHS = {
 
 # Barrage: cada 9 s tres puños cruzan la gráfica (de T0 a T0+DUR). Los días con actividad
 # reciben el golpe justo cuando el puño pasa por su columna.
-CYCLE, T0, DUR, TRAVEL, LEAD = 9.0, 0.5, 5.6, 1100, 20
+# Los puños entran desde fuera del cuadro (borde delantero en FRONT0 < 0), cruzan a velocidad constante y
+# salen por la derecha sin desvanecerse: TRAVEL deja incluso la estela fuera del lienzo.
+CYCLE, T0, DUR, TRAVEL, FRONT0, LEAD = 10.0, 0.3, 8.0, 1600, -20, 10
 GX, GY, PITCH, CELL = 70, 276, 20, 16
 
 
@@ -95,7 +97,7 @@ def stats(cal):
 
 def hit_time(col):
     """Segundo del ciclo en que el puño líder llega a la columna `col`."""
-    return T0 + (col * PITCH + LEAD) / (TRAVEL / DUR)
+    return T0 + (GX + col * PITCH - LEAD - FRONT0) / (TRAVEL / DUR)
 
 
 def star(cx, cy, r_out=15, r_in=6, n=8):
@@ -110,8 +112,9 @@ def star(cx, cy, r_out=15, r_in=6, n=8):
 def shake_keyframes():
     """La cuadrícula tiembla mientras pasan los puños: saltos de ~1 px cada 80 ms."""
     offs = [(1.2, 0), (-1, .8), (.8, -1), (-1.2, 0), (0, 1), (1, -.6)]
-    p0, p1 = T0 / CYCLE * 100, (T0 + DUR) / CYCLE * 100
-    steps, n = [], int(DUR / .08)
+    shake_len = (1200 + 100 - FRONT0) / (TRAVEL / DUR)  # mientras algún puño está dentro del lienzo
+    p0, p1 = T0 / CYCLE * 100, (T0 + shake_len) / CYCLE * 100
+    steps, n = [], int(shake_len / .08)
     for i in range(n):
         x, y = offs[i % len(offs)]
         steps.append(f"{p0 + (p1 - p0) * i / n:.2f}%{{transform:translate({x}px,{y}px)}}")
@@ -222,12 +225,13 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
     gw = dela.width(glyphs, 22, 2)
     for k, row in enumerate((1, 3, 5)):
         y = GY + row * PITCH + CELL / 2
-        x = GX - LEAD - 8 - k * 40
+        x = FRONT0 - 8 - k * 40
         lines = "".join(f'<rect x="{-58 - gw - 70 + j * 18:.0f}" y="{-8 + j * 8}" width="{62 - j * 14}" height="2.5" '
                         f'fill="{acc}" fill-opacity=".7"/>' for j in range(3))
         glyph = (f'<path d="{dela.path(glyphs, -58, 8, 22, 2, anchor="end")}" fill="{acc}" stroke="{bg}" '
                  f'stroke-width="3.5" stroke-linejoin="round" paint-order="stroke"/>')
-        b.append(f'<g transform="translate({x} {y})"><g class="sw">{lines}{glyph}{fist(t)}</g></g>')
+        b.append(f'<g transform="translate({x} {y})"><g class="sw"><g class="ln">{lines}</g>'
+                 f'<g class="bob" style="animation-delay:-{k * .11:.2f}s">{glyph}{fist(t)}</g></g></g>')
 
     # Leyenda y nota
     ly = GY + 7 * PITCH + 56
@@ -265,9 +269,13 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
         f".cb{{transform-box:fill-box;transform-origin:center;animation:cb {CYCLE}s linear infinite}}"
         "@keyframes cb{0%,8%,100%{transform:none}1.5%{transform:scale(1.7)}3.5%{transform:scale(.9)}5%{transform:scale(1.15)}}"
         # puños y temblor
-        f".sw{{opacity:0;animation:sweep {CYCLE}s linear infinite}}"
-        f"@keyframes sweep{{0%,{p0:.2f}%{{opacity:0;transform:translateX(0)}}{p0 + .6:.2f}%{{opacity:1}}"
-        f"{p1 - .6:.2f}%{{opacity:1}}{p1:.2f}%,100%{{opacity:0;transform:translateX({TRAVEL}px)}}}}"
+        f".sw{{animation:sweep {CYCLE}s linear infinite}}"
+        f"@keyframes sweep{{0%,{p0:.2f}%{{transform:translateX(0)}}{p1:.2f}%,100%{{transform:translateX({TRAVEL}px)}}}}"
+        # vaivén de golpe del puño y estela de líneas que parpadea
+        ".bob{transform-box:fill-box;transform-origin:center;animation:bob .32s ease-in-out infinite alternate}"
+        "@keyframes bob{from{transform:translateY(-2px) rotate(-3deg)}to{transform:translateY(2px) rotate(3deg)}}"
+        ".ln{animation:ln .14s steps(2,end) infinite alternate}"
+        "@keyframes ln{from{opacity:.35;transform:translateX(-6px)}to{opacity:1;transform:translateX(5px)}}"
         f".shake{{animation:shake {CYCLE}s steps(1,end) infinite}}" + shake_keyframes()
     )
     label = {
