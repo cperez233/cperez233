@@ -88,7 +88,7 @@ def stats(cal):
     while end - current >= 0 and counts[end - current]:
         current += 1
     top = max(counts)
-    return dict(total=cal["totalContributions"], active=sum(1 for c in counts if c), top=top, streak=best,
+    return dict(days=days, cur_span=(end - current + 1, end) if current else None, total=cal["totalContributions"], active=sum(1 for c in counts if c), top=top, streak=best,
                 current=current, span=best_span, top_at=counts.index(top) if top else None,
                 first=datetime.date.fromisoformat(days[0]["date"]), last=datetime.date.fromisoformat(days[-1]["date"]))
 
@@ -156,13 +156,13 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
     b.append(f'<rect x="44" y="196" width="56" height="4" fill="{ink}"/>')
     b.append(arch.text(copy[1], 44, 232, 21, ink))
 
-    # Cuatro cifras
-    vals = [num(st["active"], lang), str(st["top"]), str(st["streak"]), str(st["current"])]
-    for i, (v, label) in enumerate(zip(vals, copy[2])):
-        x = 482 + i * 175
-        b.append(anton.text(v, x, 150, 66, acc))
-        b.append(f'<rect x="{x}" y="164" width="36" height="3" fill="{ink}"/>')
-        b.append(arch.text(label, x, 192, 13, t["muted"], tracking=1.2))
+    # Dos cifras grandes (las rachas viven en su propia tarjeta, justo debajo)
+    vals = [num(st["active"], lang), str(st["top"])]
+    for i, (v, label) in enumerate(zip(vals, copy[2][:2])):
+        x = 560 + i * 280
+        b.append(anton.text(v, x, 158, 88, acc))
+        b.append(f'<rect x="{x}" y="174" width="44" height="3" fill="{ink}"/>')
+        b.append(arch.text(label, x, 204, 14, t["muted"], tracking=1.4))
 
     # Cuadrícula: 53 semanas × 7 días, cada columna entra como una ráfaga
     fills = {1: (acc, .35), 2: (acc, .65), 3: (acc, 1), 4: (ink, 1)}
@@ -279,6 +279,97 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
     return svg(W, H, label, "".join(b), style)
 
 
+def fmt_day(d, lang):
+    mo = MONTHS[lang][d.month - 1]
+    return f"{mo} {d.day}" if lang == "en" else f"{d.day} {mo}"
+
+
+def span_text(days, span, lang):
+    a, z = (datetime.date.fromisoformat(days[i]["date"]) for i in span)
+    return fmt_day(a, lang) if a == z else f"{fmt_day(a, lang)} – {fmt_day(z, lang)}"
+
+
+FLAME = ("M0 -15C3 -9 10 -5 10 3C10 10 5 15 0 15C-5 15 -10 10 -10 3C-10 -1 -7 -4 -5 -7C-4 -4 -2 -3 0 -4C1 -8 0 -11 0 -15Z")
+
+
+def streak_card(cal, t, lang, anton, dela, arch, arch_r):
+    """Rachas: la actual en un anillo, la más larga en grande y los últimos 30 días en una tira."""
+    st = stats(cal)
+    days = st["days"]
+    W, H = 1200, 262
+    ink, acc, bg = t["ink"], t["accent"], t["bg"]
+    copy = {
+        "en": ("CURRENT STREAK", "LONGEST STREAK", "LAST 30 DAYS", "DAYS", "No active streak", "active days"),
+        "es": ("RACHA ACTUAL", "RACHA MÁS LARGA", "ÚLTIMOS 30 DÍAS", "DÍAS", "Sin racha activa", "días activos"),
+    }[lang]
+    b = [f'<rect width="{W}" height="{H}" fill="{bg}"/>', halftone(t, "hk", 600, 120, 420)]
+    b.append(f'<rect x="0" y="0" width="{W}" height="3" fill="{ink}"/>')
+    for x in (420, 820):
+        b.append(f'<rect x="{x}" y="44" width="1.5" height="170" fill="{ink}" fill-opacity=".22"/>')
+
+    # A · racha actual: anillo que se llena según la racha más larga, con llama arriba
+    cx, cy, r = 232, 112, 64
+    circ = 2 * math.pi * r
+    frac = min(1, st["current"] / max(st["streak"], 1))
+    b.append(f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="{ink}" stroke-opacity=".12" stroke-width="10"/>')
+    if st["current"]:
+        b.append(f'<circle class="ring" cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="{acc}" stroke-width="10" stroke-linecap="butt" '
+                 f'stroke-dasharray="{circ * frac:.1f} {circ:.1f}" transform="rotate(-90 {cx} {cy})" style="--len:{circ * frac:.1f}"/>')
+    b.append(f'<circle cx="{cx}" cy="{cy - r}" r="22" fill="{bg}"/>')
+    b.append(f'<g transform="translate({cx} {cy - r})"><g class="fl"><path d="{FLAME}" fill="{acc}" stroke="{ink}" stroke-width="2.5" stroke-linejoin="round"/>'
+             f'<path d="M0 3C3 6 4 9 0 12C-4 9 -3 6 0 3Z" fill="{bg}"/></g></g>')
+    b.append(anton.text(str(st["current"]), cx, cy + 26, 76, ink, anchor="middle"))
+    b.append(anton.text(copy[0], cx, 216, 21, acc, tracking=2.5, anchor="middle"))
+    sub = span_text(days, st["cur_span"], lang) if st["cur_span"] else copy[4]
+    b.append(arch_r.text(sub, cx, 241, 15, t["muted"], anchor="middle"))
+
+    # B · racha más larga, en grande
+    mx = 620
+    num_s = str(st["streak"])
+    nw, uw = anton.width(num_s, 128, 1), anton.width(copy[3], 26, 2)
+    x0 = mx - (nw + 16 + uw) / 2
+    b.append(anton.text(num_s, x0, 150, 128, ink, tracking=1))
+    b.append(anton.text(copy[3], x0 + nw + 16, 150, 26, acc, tracking=2))
+    b.append(f'<rect x="{mx - 22}" y="168" width="44" height="3" fill="{ink}"/>')
+    b.append(anton.text(copy[1], mx, 216, 21, acc, tracking=2.5, anchor="middle"))
+    if st["streak"]:
+        b.append(arch_r.text(span_text(days, st["span"], lang), mx, 241, 15, t["muted"], anchor="middle"))
+
+    # C · últimos 30 días: 3 filas × 10, el hoy es el último cuadro
+    last = days[-30:]
+    cur = set(range(len(days) - 30, len(days))) & (set(range(st["cur_span"][0], st["cur_span"][1] + 1)) if st["cur_span"] else set())
+    cell, pitch = 26, 32
+    gx0, gy0 = 988 - (10 * pitch - 6) / 2, 62
+    levels = {1: (acc, .35), 2: (acc, .65), 3: (acc, 1), 4: (ink, 1)}
+    for i, d in enumerate(last):
+        lvl = LEVELS.get(d["contributionLevel"], 0)
+        x, y = gx0 + (i % 10) * pitch, gy0 + (i // 10) * pitch
+        if lvl == 0:
+            rect = f'<rect x="{x:.0f}" y="{y}" width="{cell}" height="{cell}" fill="{ink}" fill-opacity=".08"/>'
+        else:
+            f, op = levels[lvl]
+            edge = f' stroke="{ink}" stroke-width="2.2"' if (len(days) - 30 + i) in cur else ""
+            rect = f'<rect x="{x:.0f}" y="{y}" width="{cell}" height="{cell}" fill="{f}" fill-opacity="{op}"{edge}/>'
+        b.append(f'<g class="dot" style="animation-delay:{i * .03:.2f}s">{rect}</g>')
+    active = sum(1 for d in last if d["contributionCount"])
+    b.append(anton.text(copy[2], 988, 216, 21, acc, tracking=2.5, anchor="middle"))
+    b.append(arch_r.text(f"{active} {copy[5]}", 988, 241, 15, t["muted"], anchor="middle"))
+
+    style = (
+        ".fl{transform-box:fill-box;transform-origin:50% 100%;animation:fl 1.1s ease-in-out infinite}"
+        "@keyframes fl{0%,100%{transform:scale(1,1)}50%{transform:scale(.92,1.1) rotate(-3deg)}}"
+        ".ring{animation:ring 1.4s cubic-bezier(.2,.8,.2,1) both .2s}"
+        "@keyframes ring{from{stroke-dasharray:0 1000}}"
+        ".dot{transform-box:fill-box;transform-origin:center;animation:dot .45s cubic-bezier(.2,.9,.2,1.3) both}"
+        "@keyframes dot{from{opacity:0;transform:scale(.3)}}"
+    )
+    label = {
+        "en": f'Streaks: current {st["current"]} days, longest {st["streak"]} days. {active} active days in the last 30.',
+        "es": f'Rachas: actual de {st["current"]} días, más larga de {st["streak"]} días. {active} días activos en los últimos 30.',
+    }[lang]
+    return svg(W, H, label, "".join(b), style)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--user", default=os.environ.get("GITHUB_REPOSITORY_OWNER", "cperez233"))
@@ -301,9 +392,10 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     for lang in ("en", "es"):
         for mode, t in THEMES.items():
-            path = out / f"ora{'' if lang == 'en' else '-es'}-{mode}.svg"
-            path.write_text(ora(cal, t, lang, anton, dela, arch, arch_r), encoding="utf-8")
-            print(f"{path}  {path.stat().st_size // 1024} KB")
+            for name, build in (("ora", ora), ("streak", streak_card)):
+                path = out / f"{name}{'' if lang == 'en' else '-es'}-{mode}.svg"
+                path.write_text(build(cal, t, lang, anton, dela, arch, arch_r), encoding="utf-8")
+                print(f"{path}  {path.stat().st_size // 1024} KB")
 
 
 if __name__ == "__main__":

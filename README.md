@@ -132,6 +132,11 @@ More than ten sites are live for real businesses, like Cruz Blanca (a restaurant
 </picture>
 </a>
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/cperez233/cperez233/output/streak-dark.svg" />
+  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/streak-light.svg" alt="Contribution streaks: current, longest and the last 30 days" width="100%" />
+</picture>
+
 <br />
 
 <picture>

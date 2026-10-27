@@ -198,8 +198,8 @@ GRADE = {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1}
 
 
 def stand(t, lang, anton, dela, arch, arch_r):
-    W, H = 1200, 600
-    cx, cy, R = 858, 296, 148
+    W = 1200
+    R = 152
     copy = {
         "en": ("STAND USER", "Stand user — Cristian Pérez",
                "Builds software, websites and apps that businesses actually use, and makes content that "
@@ -211,6 +211,17 @@ def stand(t, lang, anton, dela, arch, arch_r):
                "Poder · Velocidad · Alcance · Resistencia · Precisión · Potencial"),
     }[lang]
 
+    # El texto manda: la altura de la tarjeta sale de cuántas líneas ocupa la descripción
+    lines = wrap(arch_r, copy[2], 22, 470)
+    for w in range(470, 400, -10):  # reparte las líneas para no dejar una palabra suelta al final
+        alt = wrap(arch_r, copy[2], 22, w)
+        if len(alt) == len(lines) and arch_r.width(alt[-1], 22) >= .45 * max(arch_r.width(x, 22) for x in alt):
+            lines = alt
+            break
+    foot = 440 + (len(lines) - 1) * 34 + 56
+    H = foot + 44
+    cx, cy = 856, H // 2 + 8
+
     b = [f'<rect width="{W}" height="{H}" fill="{t["bg"]}"/>', halftone(t, "hs", cx, cy, 300)]
     b.append(f'<rect x="24" y="24" width="{W - 48}" height="{H - 48}" fill="none" stroke="{t["ink"]}" stroke-width="3"/>')
 
@@ -221,10 +232,10 @@ def stand(t, lang, anton, dela, arch, arch_r):
     b.append(anton.text("PARANOID", 118, 180, 84, t["ink"], tracking=1))
     b.append(anton.text("ANDROID", 118, 268, 84, t["ink"], tracking=1))
     b.append(dela.text("」", 118 + anton.width("ANDROID", 84, 1) + 8, 286, 64, t["accent"]))
-    b.append(dela.text("パラノイド・アンドロイド", 74, 322, 20, t["accent"], tracking=2))
-    b.append(arch.text(copy[1], 72, 382, 22, t["ink"]))
-    for i, line in enumerate(wrap(arch_r, copy[2], 19, 460)):
-        b.append(arch_r.text(line, 72, 426 + i * 29, 19, t["muted"]))
+    b.append(dela.text("パラノイド・アンドロイド", 74, 328, 22, t["accent"], tracking=2))
+    b.append(arch.text(copy[1], 72, 392, 29, t["ink"]))
+    for i, line in enumerate(lines):
+        b.append(arch_r.text(line, 72, 440 + i * 34, 22, t["ink"], extra=' fill-opacity=".78"'))
 
     def pt(i, r):
         a = math.radians(-90 + i * 60)
@@ -248,7 +259,7 @@ def stand(t, lang, anton, dela, arch, arch_r):
         off = 0 if i in (0, 3) else (34 if i in (1, 2) else -34)
         anchor = "middle" if i in (0, 3) else ("start" if i in (1, 2) else "end")
         b.append(dela.text(jp, lx + off, ly + 7, 18, t["ink"], anchor=anchor))
-    b.append(arch_r.text(copy[3], 72, H - 50, 15, t["muted"]))
+    b.append(arch_r.text(copy[3], 72, foot, 17, t["muted"]))
 
     style = (
         f".val{{transform-origin:{cx}px {cy}px;animation:val 1.4s cubic-bezier(.2,.9,.2,1.15) both .3s}}"

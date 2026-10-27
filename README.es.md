@@ -132,6 +132,11 @@ Hay más de diez páginas publicadas para negocios reales, como Cruz Blanca (un 
 </picture>
 </a>
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/cperez233/cperez233/output/streak-es-dark.svg" />
+  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/streak-es-light.svg" alt="Rachas de contribuciones: actual, más larga y últimos 30 días" width="100%" />
+</picture>
+
 <br />
 
 <picture>
