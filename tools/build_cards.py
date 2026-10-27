@@ -7,6 +7,7 @@ en claro/oscuro y EN/ES. Las capturas viven en tools/shots.
     .venv/bin/python tools/build_cards.py
 """
 
+import os
 import pathlib
 import subprocess
 import tempfile
@@ -21,7 +22,7 @@ OUT = ROOT / "assets" / "cards"
 SCALE = 1.5
 # Va en el nombre de cada tarjeta: subirlo cuando cambian las capturas, porque
 # GitHub y el navegador guardan en cache la imagen vieja si el nombre no cambia.
-VERSION = 3
+VERSION = 4
 
 FEATURED = [
     dict(
@@ -163,10 +164,6 @@ def featured_html(p, t, lang):
     panel = f"left:24px;top:24px;bottom:24px;width:690px;clip-path:{cut}" if left else \
         f"right:24px;top:24px;bottom:24px;width:690px;clip-path:{cut}"
     copy = "left:676px;right:44px" if left else "left:44px;right:676px"
-    go_pos = [("left:600px;bottom:36px;font-size:62px;transform:rotate(-12deg)"),
-              ("left:652px;bottom:112px;font-size:40px;transform:rotate(8deg)")] if left else \
-             [("right:600px;bottom:36px;font-size:62px;transform:rotate(12deg)"),
-              ("right:652px;bottom:112px;font-size:40px;transform:rotate(-8deg)")]
     stat = ""
     if p["stat"]:
         stat = (f'<div style="display:flex;align-items:baseline;gap:14px;margin-top:22px">'
@@ -176,7 +173,6 @@ def featured_html(p, t, lang):
 <div class="card" style="width:{W}px;height:{H}px;--tx:{'92%' if left else '8%'};--ty:15%">
   <div class="tone"></div>
   <div class="panel" style="{panel}"><img src="{(SHOTS / p['shot']).as_uri()}" style="clip-path:{cut}"></div>
-  {''.join(f'<div class="go" style="{g}">ゴ</div>' for g in go_pos)}
   <div style="position:absolute;{copy};top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;
        {'padding-left:40px' if left else 'padding-right:40px'}">
     <div class="muted" style="font-size:17px;font-weight:600">{p['kicker'][lang]}</div>
@@ -192,18 +188,18 @@ def featured_html(p, t, lang):
 
 
 def grid_html(p, t, lang):
-    W, H = 600, 470
-    cut = "polygon(0 0,100% 0,100% 86%,0 100%)"
+    """Tarjeta chica para la cuadrícula de 3 columnas (~285 px en GitHub, de ahí el lienzo de 420)."""
+    W, H = 420, 372
+    cut = "polygon(0 0,100% 0,100% 88%,0 100%)"
     body = f"""
-<div class="card" style="width:{W}px;height:{H}px;--tx:90%;--ty:92%">
+<div class="card" style="width:{W}px;height:{H}px;border-width:3px;--tx:90%;--ty:92%">
   <div class="tone"></div>
-  <div class="panel" style="left:18px;right:18px;top:18px;height:300px;clip-path:{cut}">
+  <div class="panel" style="left:14px;right:14px;top:14px;height:208px;clip-path:{cut}">
     <img src="{(SHOTS / p['shot']).as_uri()}" style="clip-path:{cut}"></div>
-  <div class="go" style="right:22px;top:268px;font-size:50px;transform:rotate(10deg)">ゴ</div>
-  <div style="position:absolute;left:30px;right:30px;bottom:26px">
-    <div class="title" style="font-size:40px">{p['title']}</div>
-    <div style="font-size:19px;line-height:1.35;margin-top:8px;opacity:.86">{p['line'][lang]}</div>
-    <div style="font-size:15px;font-weight:700;margin-top:8px;color:{t['accent']}">{pick(p['domain'], lang)}</div>
+  <div style="position:absolute;left:22px;right:22px;top:236px">
+    <div class="title" style="font-size:31px">{p['title']}</div>
+    <div style="font-size:15.5px;line-height:1.35;margin-top:7px;opacity:.86">{p['line'][lang]}</div>
+    <div style="font-size:13.5px;font-weight:700;margin-top:7px;color:{t['accent']}">{pick(p['domain'], lang)}</div>
   </div>
 </div>"""
     return W, H, body
@@ -216,7 +212,7 @@ def render(W, H, body, t, target):
         png = pathlib.Path(tmp) / "card.png"
         page.write_text(html, encoding="utf-8")
         subprocess.run(
-            ["chromium", "--headless=new", "--no-sandbox", "--hide-scrollbars", f"--window-size={W},{H}",
+            [os.environ.get("CHROMIUM", "chromium"), "--headless=new", "--no-sandbox", "--hide-scrollbars", f"--window-size={W},{H}",
              f"--force-device-scale-factor={SCALE}", "--virtual-time-budget=3000",
              f"--screenshot={png}", page.as_uri()],
             check=True, capture_output=True,
