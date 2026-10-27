@@ -384,10 +384,10 @@ def languages(t, lang, anton, dela, arch, arch_r):
     fills = [(acc, 1), (ink, 1), (acc, .55), (ink, .6), ("tone", 1), (acc, .3), (ink, .35), (ink, .18)]
     copy = {
         "en": ("BY THE NUMBERS", "数字", "From the interface to the server.",
-               f'{data["repos"]} repositories · lines of code · {datetime.date.fromisoformat(data["date"]).strftime("%b %Y")}',
+               f'{data["repos"]} repositories, public and private · lines of code · {datetime.date.fromisoformat(data["date"]).strftime("%b %Y")}',
                "LINES OF CODE", "Languages"),
         "es": ("EN NÚMEROS", "数字", "De la interfaz al servidor.",
-               f'{data["repos"]} repositorios · líneas de código · {MESES[datetime.date.fromisoformat(data["date"]).month - 1]} {datetime.date.fromisoformat(data["date"]).year}',
+               f'{data["repos"]} repositorios, públicos y privados · líneas de código · {MESES[datetime.date.fromisoformat(data["date"]).month - 1]} {datetime.date.fromisoformat(data["date"]).year}',
                "LÍNEAS DE CÓDIGO", "Lenguajes"),
     }[lang]
 

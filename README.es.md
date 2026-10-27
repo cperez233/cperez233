@@ -34,7 +34,7 @@
 
 Soy Cristian, Cris: Ingeniero de Sistemas de la UNAB y desarrollador full-stack en Bucaramanga, Colombia. Hago páginas web, apps y software a la medida para negocios, de la primera llamada al despliegue, y subo videos como Tostu. Algunos se volvieron virales (32K+ seguidores en TikTok).
 
-Cofundé [Carpy](https://carpy.tech), un estudio de software pequeño. Hacemos software a la medida, páginas web, integraciones y auditorías de seguridad para clientes en Colombia y afuera. Mi tesis, PairSync, ya está terminada.
+Cofundé [Carpy](https://carpy.tech), un estudio de software pequeño. Hacemos software a la medida, páginas web, integraciones y auditorías de seguridad para clientes en Colombia y afuera. Mi tesis, PairSync, ya está terminada. Allá hice la app que gestiona los activos de información (Java y Spring Boot, en lugar de una matriz de Excel) y le puse tema y buscador propios a la wiki del equipo.
 
 Hay más de diez páginas publicadas para negocios reales, como Cruz Blanca (un restaurante en Girón con pedidos en línea) y Jovi's Gioielli (una joyería en Italia con vista previa del grabado en vivo). Por diversión también hice [Tostrivia](https://tostrivia-gg.vercel.app), un juego de trivia para jugar con amigos, y [Radar K-pop](https://radar-kpop.vercel.app), un globo que muestra dónde de gira van los grupos de K-pop.
 
@@ -77,13 +77,13 @@ Hay más de diez páginas publicadas para negocios reales, como Cruz Blanca (un 
 
 <a href="https://www.tiktok.com/@criscx1905">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/content-es-dark-v4.jpg" />
-  <img src="./assets/cards/content-es-light-v4.jpg" alt="Contenido — videos, edición y directos como Tostu. 32K+ seguidores en TikTok." width="100%" />
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/content-es-dark-v5.jpg" />
+  <img src="./assets/cards/content-es-light-v5.jpg" alt="Contenido — videos, edición y directos como Tostu. 32K+ seguidores en TikTok." width="100%" />
 </picture>
 </a>
 
 <p align="center">
-    <a href="https://github.com/cperez233/guardenv"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/guardenv-es-dark-v4.jpg" /><img src="./assets/cards/guardenv-es-light-v4.jpg" alt="GuardEnv — escáner de secretos de código abierto con 48 firmas de proveedores y entropía de Shannon." width="32%" /></picture></a>
+      <a href="https://github.com/cperez233/guardenv"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/guardenv-es-dark-v4.jpg" /><img src="./assets/cards/guardenv-es-light-v4.jpg" alt="GuardEnv — escáner de secretos de código abierto con 48 firmas de proveedores y entropía de Shannon." width="32%" /></picture></a>
   <a href="https://joyeria-liart.vercel.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/jovis-gioielli-es-dark-v4.jpg" /><img src="./assets/cards/jovis-gioielli-es-light-v4.jpg" alt="Jovi's Gioielli — joyería en Italia con vista previa del grabado" width="32%" /></picture></a>
   <a href="https://sammy-three-alpha.vercel.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/sammy-partyboom-es-dark-v4.jpg" /><img src="./assets/cards/sammy-partyboom-es-light-v4.jpg" alt="Sammy Partyboom — animación de fiestas infantiles en Bucaramanga con cotizador por WhatsApp" width="32%" /></picture></a>
   <a href="https://hotellogistico.com"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/hotel-logistico-es-dark-v4.jpg" /><img src="./assets/cards/hotel-logistico-es-light-v4.jpg" alt="Hotel Logístico — hotel en Santa Marta con reservas por WhatsApp" width="32%" /></picture></a>
@@ -114,7 +114,7 @@ Hay más de diez páginas publicadas para negocios reales, como Cruz Blanca (un 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/languages-es-dark.svg" />
-  <img src="./assets/languages-es-light.svg" alt="Lenguajes por líneas de código en mis repositorios: TypeScript 43%, JavaScript 21%, CSS 15%, Python 7%, Java 6%, HTML 4%, PHP 2%, SQL 2%" width="100%" />
+  <img src="./assets/languages-es-light.svg" alt="Lenguajes por líneas de código en mis repositorios, públicos y privados: TypeScript 41%, JavaScript 20%, CSS 15%, Java 9%, Python 7%, HTML 4%, SQL 2%, PHP 2%" width="100%" />
 </picture>
 
 <br />
