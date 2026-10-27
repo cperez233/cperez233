@@ -57,6 +57,11 @@ def sample_calendar():
     return {"totalContributions": total, "weeks": weeks}
 
 
+# Barrage: cada 9 s, tres ráfagas de オラ cruzan la gráfica. Los días con actividad
+# reciben el golpe justo cuando el puño pasa por su columna.
+CYCLE, T0, DUR, TRAVEL, LEAD = 9.0, 0.5, 5.6, 1100, 20
+
+
 def num(n, lang):
     s = f"{n:,}"
     return s if lang == "en" else s.replace(",", ".")
@@ -118,12 +123,13 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
     cells, marks, last_month = [], [], None
     fills = {1: (acc, .35), 2: (acc, .65), 3: (acc, 1), 4: (ink, 1)}
 
-    def square(x, y, lvl):
+    def square(x, y, lvl, hit=None):
         if lvl == 0:
             return f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" fill="{ink}" fill-opacity=".08"/>'
         f, op = fills[lvl]
         edge = f' stroke="{ink}" stroke-width="2"' if lvl >= 3 else ""
-        return f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" fill="{f}" fill-opacity="{op}"{edge}/>'
+        punch = f' class="p" style="animation-delay:{hit:.2f}s"' if hit is not None else ""
+        return f'<rect{punch} x="{x}" y="{y}" width="{cell}" height="{cell}" fill="{f}" fill-opacity="{op}"{edge}/>'
 
     for c, week in enumerate(cal["weeks"]):
         first = week["contributionDays"][0]
@@ -136,10 +142,25 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
             last_month = mo
         col = []
         for d in week["contributionDays"]:
-            col.append(square(gx + c * pitch, gy + d["weekday"] * pitch, LEVELS.get(d["contributionLevel"], 0)))
+            hit = T0 + (c * pitch + LEAD) / (TRAVEL / DUR)
+            col.append(square(gx + c * pitch, gy + d["weekday"] * pitch, LEVELS.get(d["contributionLevel"], 0), hit))
         cells.append(f'<g class="col" style="animation-delay:{c * 0.025:.3f}s">{"".join(col)}</g>')
     labels = [arch.text(name, gx + c * pitch, gy - 12, 13, t["muted"]) for c, name in marks]
     b += labels + cells
+
+    # Las ráfagas van encima de la cuadrícula
+    glyphs = "オラオラ"
+    gw = dela.width(glyphs, 26, 2)
+    for k, row in enumerate((1, 3, 5)):
+        y = gy + row * pitch + cell / 2
+        x = gx - LEAD - gw - k * 36
+        lines = "".join(
+            f'<rect x="{-90 + j * 14}" y="{-9 + j * 7}" width="{60 - j * 12}" height="2.5" fill="{acc}" fill-opacity=".7"/>'
+            for j in range(3))
+        b.append(
+            f'<g transform="translate({x:.0f} {y:.0f})"><g class="sw"><g transform="translate(0 9)">{lines}'
+            f'<path d="{dela.path(glyphs, 0, 0, 26, 2)}" fill="{acc}" stroke="{bg}" stroke-width="3.5" '
+            f'stroke-linejoin="round" paint-order="stroke"/></g></g></g>')
 
     # Leyenda y nota
     ly = gy + 7 * pitch + 32
@@ -154,6 +175,14 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
         GO_CSS
         + ".col{transform-box:fill-box;transform-origin:bottom;animation:col .5s cubic-bezier(.2,.9,.2,1.2) both}"
         "@keyframes col{from{opacity:0;transform:translateX(-10px) scaleY(.4)}}"
+        f".p{{transform-box:fill-box;transform-origin:center;animation:punch {CYCLE}s linear infinite}}"
+        "@keyframes punch{0%,5%,100%{transform:none}1.2%{transform:scale(1.55) rotate(-8deg)}"
+        "2.6%{transform:scale(.8) rotate(4deg)}3.8%{transform:scale(1.12)}}"
+        f".sw{{opacity:0;animation:sweep {CYCLE}s linear infinite}}"
+        f"@keyframes sweep{{0%,{T0 / CYCLE * 100:.2f}%{{opacity:0;transform:translateX(0)}}"
+        f"{T0 / CYCLE * 100 + .6:.2f}%{{opacity:1}}"
+        f"{(T0 + DUR) / CYCLE * 100 - .6:.2f}%{{opacity:1}}"
+        f"{(T0 + DUR) / CYCLE * 100:.2f}%,100%{{opacity:0;transform:translateX({TRAVEL}px)}}}}"
     )
     label = {
         "en": f'Contribution graph: {st["total"]} contributions in the last year, {st["active"]} active days, longest streak {st["streak"]} days.',
