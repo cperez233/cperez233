@@ -1,0 +1,49 @@
+# Dibuja el calendario de contribuciones como ORA ORA ORA (tools/build_ora.py).
+# El resultado va a la rama `output`, que es la que lee el README.
+name: Contribution graph
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/ora.yml"
+      - "tools/build_ora.py"
+      - "tools/build_assets.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ora
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install fonttools
+        run: pip install fonttools
+
+      - name: Draw the graph
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python tools/build_ora.py --user "${{ github.repository_owner }}" --out dist
+
+      - name: Publish to the output branch
+        uses: crazy-max/ghaction-github-pages@v4
+        with:
+          target_branch: output
+          build_dir: dist
+          commit_message: "chore: update contribution graph"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

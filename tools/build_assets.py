@@ -270,7 +270,7 @@ def approach(t, lang, anton, dela, arch, arch_r):
     size = 80
     b = [f'<rect width="{W}" height="{H}" fill="{t["bg"]}"/>', halftone(t, "ha", 1040, 125, 260)]
     b.append(f'<rect x="0" y="0" width="{W}" height="3" fill="{t["ink"]}"/>')
-    b.append(anton.text(("PART 4" if lang == "en" else "PARTE 4"), 44, 58, 24, t["accent"], tracking=3))
+    b.append(anton.text(("PART 5" if lang == "en" else "PARTE 5"), 44, 58, 24, t["accent"], tracking=3))
     b.append(anton.text(line, 40, 150, size, t["ink"], tracking=1))
     b.append(arch_r.text(sub, 44, 202, 20, t["muted"]))
     b.append(menacing(dela, t, [(1020, 112, 52, -10), (1084, 150, 66, -4), (1148, 110, 54, 8)]))
@@ -284,6 +284,7 @@ PARTS = {
     "part-1": (1, {"en": "STAND USER", "es": "USUARIO DEL STAND"}, "スタンド使い"),
     "part-2": (2, {"en": "SELECTED WORK", "es": "TRABAJO SELECCIONADO"}, "作品集"),
     "part-3": (3, {"en": "ARSENAL", "es": "ARSENAL"}, "武器"),
+    "part-4": (4, {"en": "ORA ORA ORA", "es": "ORA ORA ORA"}, "オラオラ"),
 }
 
 
@@ -440,6 +441,76 @@ def languages(t, lang, anton, dela, arch, arch_r):
     return svg(W, H, label, "".join(b), style)
 
 
+# --- Botones: enlaces como paneles inclinados, con sombra dura de manga ----------
+
+BTN_INK, BTN_CREAM, BTN_GOLD = "#161418", "#ece6d8", "#e3b341"
+SKEW = 10  # desplazamiento horizontal de la inclinación (≈ 12°)
+BUTTONS = [
+    # clave, etiqueta {en, es}, subtítulo, ícono
+    ("web", {"en": "WEB", "es": "WEB"}, "cristianperez.me", "vercel"),
+    ("email", {"en": "EMAIL", "es": "CORREO"}, "crisperezm879@gmail.com", "gmail"),
+    ("linkedin", {"en": "LINKEDIN", "es": "LINKEDIN"}, "cristianperez879m", "linkedin"),
+    ("tiktok", {"en": "TIKTOK", "es": "TIKTOK"}, "@criscx1905 · 32K+", "tiktok"),
+    ("instagram", {"en": "INSTAGRAM", "es": "INSTAGRAM"}, "@criscx1905", "instagram"),
+    ("youtube", {"en": "YOUTUBE", "es": "YOUTUBE"}, "Tostu", "youtube"),
+    ("twitch", {"en": "TWITCH", "es": "TWITCH"}, "tostu", "twitch"),
+    ("linktree", {"en": "LINKTREE", "es": "LINKTREE"}, "crxscx", "linktree"),
+    ("carpy", {"en": "CARPY", "es": "CARPY"}, "carpy.tech", None),
+    ("quote", {"en": "REQUEST A QUOTE", "es": "PEDIR COTIZACIÓN"}, None, "gmail"),
+]
+
+
+def button(label, sub, icon_file, primary, anton, arch, arch_r):
+    """Panel inclinado: pestaña con el ícono a la izquierda, texto a la derecha."""
+    H, tab, pad = 48, 54, 18
+    body_fill, edge = (BTN_GOLD, BTN_INK) if primary else (BTN_INK, BTN_GOLD)
+    tab_fill, tab_ink = (BTN_INK, BTN_GOLD) if primary else (BTN_GOLD, BTN_INK)
+    text_ink, sub_ink = (BTN_INK, BTN_INK) if primary else (BTN_CREAM, "#b9b2a4")
+    label_w = anton.width(label, 21, 1.5)
+    sub_w = arch_r.width(sub, 12.5) if sub else 0
+    W = int(tab + pad + max(label_w, sub_w) + pad + SKEW)
+    sh = 4  # sombra dura
+
+    def para(x0, x1):
+        return f"{x0 + SKEW},0 {x1},0 {x1 - SKEW},{H} {x0},{H}"
+
+    shadow = (f'fill="{BTN_INK}" stroke="{BTN_GOLD}" stroke-width="1.5"' if primary
+              else f'fill="{BTN_GOLD}" fill-opacity=".9"')
+    b = [
+        f'<polygon points="{para(0, W)}" transform="translate({sh} {sh})" {shadow}/>',
+        f'<polygon points="{para(0, W)}" fill="{body_fill}" stroke="{edge}" stroke-width="2.5" stroke-linejoin="miter"/>',
+        f'<polygon points="{para(0, tab + SKEW)}" fill="{tab_fill}"/>',
+    ]
+    cx, cy = (tab + SKEW) / 2 + 1, H / 2
+    if icon_file:
+        b.append(icon(icon_file, cx - 12, cy - 12, 24, tab_ink))
+    else:  # flecha ↗ para enlaces sin marca
+        b.append(f'<path d="M{cx - 8} {cy + 8}L{cx + 8} {cy - 8}M{cx - 3} {cy - 8}H{cx + 8}V{cy + 3}" fill="none" '
+                 f'stroke="{tab_ink}" stroke-width="3.2" stroke-linecap="square"/>')
+    tx = tab + SKEW + pad - 4
+    if sub:
+        b.append(anton.text(label, tx, 22, 21, text_ink, tracking=1.5))
+        b.append(arch_r.text(sub, tx, 39, 12.5, sub_ink))
+    else:
+        b.append(anton.text(label, tx, 31, 21, text_ink, tracking=1.5))
+    return W + sh, H + sh, "".join(b)
+
+
+def build_buttons(anton, arch, arch_r):
+    made = []
+    for key, labels, sub, icon_file in BUTTONS:
+        for lang in ("en", "es"):
+            if lang == "es" and labels["es"] == labels["en"] and key != "quote":
+                continue
+            w, h, body = button(labels[lang], sub, icon_file, key == "quote", anton, arch, arch_r)
+            name = f"btn-{key}{'' if lang == 'en' else '-es'}.svg"
+            alt = labels[lang].title() + (f" — {sub}" if sub else "")
+            (OUT / name).write_text(svg(w, h, alt, body), encoding="utf-8")
+            made.append((name, (OUT / name).stat().st_size))
+    for name, size in made:
+        print(f"assets/{name}  {size} B")
+
+
 # --- Final: To Be Continued ------------------------------------------------------
 
 def to_be_continued(t, lang, anton, dela, arch, arch_r):
@@ -474,6 +545,7 @@ def main():
                 path = OUT / f"{name}{suffix}-{mode}.svg"
                 path.write_text(build(t, lang, anton, dela, arch, arch_r), encoding="utf-8")
                 print(f"{path.relative_to(ROOT)}  {path.stat().st_size // 1024} KB")
+    build_buttons(anton, arch, arch_r)
 
 
 if __name__ == "__main__":

@@ -10,14 +10,17 @@
 </p>
 
 <p align="center">
-  <a href="https://cristianperez.me"><img src="https://img.shields.io/badge/cristianperez.me-161418?style=for-the-badge&logoColor=white&logo=vercel" alt="cristianperez.me" /></a>
-  <a href="mailto:crisperezm879@gmail.com"><img src="https://img.shields.io/badge/crisperezm879%40gmail.com-161418?style=for-the-badge&logoColor=white&logo=gmail" alt="crisperezm879@gmail.com" /></a>
-  <a href="https://www.linkedin.com/in/cristianperez879m/"><img src="https://img.shields.io/badge/LinkedIn-161418?style=for-the-badge&logoColor=white&logo=linkedin" alt="LinkedIn" /></a>
-  <a href="https://www.tiktok.com/@criscx1905"><img src="https://img.shields.io/badge/%40criscx1905-161418?style=for-the-badge&logoColor=white&logo=tiktok" alt="@criscx1905" /></a>
-  <a href="https://www.instagram.com/criscx1905/"><img src="https://img.shields.io/badge/Instagram-161418?style=for-the-badge&logoColor=white&logo=instagram" alt="Instagram" /></a>
-  <a href="https://www.youtube.com/channel/UCVaJSNQKWJbYBgGGED814iA"><img src="https://img.shields.io/badge/YouTube-161418?style=for-the-badge&logoColor=white&logo=youtube" alt="YouTube" /></a>
-  <a href="https://www.twitch.tv/tostu"><img src="https://img.shields.io/badge/Tostu-161418?style=for-the-badge&logoColor=white&logo=twitch" alt="Tostu" /></a>
-  <a href="https://linktr.ee/crxscx"><img src="https://img.shields.io/badge/Linktree-161418?style=for-the-badge&logoColor=white&logo=linktree" alt="Linktree" /></a>
+  <a href="https://cristianperez.me"><img src="./assets/btn-web.svg" alt="cristianperez.me" height="48" /></a>
+  <a href="mailto:crisperezm879@gmail.com"><img src="./assets/btn-email.svg" alt="crisperezm879@gmail.com" height="48" /></a>
+  <a href="https://www.linkedin.com/in/cristianperez879m/"><img src="./assets/btn-linkedin.svg" alt="LinkedIn" height="48" /></a>
+</p>
+
+<p align="center">
+  <a href="https://www.tiktok.com/@criscx1905"><img src="./assets/btn-tiktok.svg" alt="TikTok @criscx1905" height="48" /></a>
+  <a href="https://www.instagram.com/criscx1905/"><img src="./assets/btn-instagram.svg" alt="Instagram @criscx1905" height="48" /></a>
+  <a href="https://www.youtube.com/channel/UCVaJSNQKWJbYBgGGED814iA"><img src="./assets/btn-youtube.svg" alt="YouTube Tostu" height="48" /></a>
+  <a href="https://www.twitch.tv/tostu"><img src="./assets/btn-twitch.svg" alt="Twitch tostu" height="48" /></a>
+  <a href="https://linktr.ee/crxscx"><img src="./assets/btn-linktree.svg" alt="Linktree crxscx" height="48" /></a>
 </p>
 
 <br />
@@ -27,6 +30,13 @@
   <img src="./assets/part-1-light.svg" alt="Part 1 — Stand user" width="100%" />
 </picture>
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/stand-dark.svg" />
+  <img src="./assets/stand-light.svg" alt="JoJo-style Stand card. Stand: Paranoid Android. User: Cristian Pérez. Builds software, websites and apps, makes content that goes viral, with a cybersecurity streak." width="100%" />
+</picture>
+
+<br />
+
 I'm Cristian, Cris for short: a Systems Engineer from UNAB and a full-stack developer based in Bucaramanga, Colombia. I build websites, apps and custom software for businesses, from the first call to the deploy, and I make videos as Tostu. Some of them went viral (32K+ followers on TikTok).
 
 I co-founded [Carpy](https://carpy.tech), a small software studio. We make custom software, websites, integrations and security audits for clients in Colombia and abroad. My thesis, PairSync, is finished. The security side comes from working with the cybersecurity team at Fundación Cardiovascular de Colombia.
@@ -34,13 +44,6 @@ I co-founded [Carpy](https://carpy.tech), a small software studio. We make custo
 Lately I've shipped the menu and ordering site for Cruz Blanca, a restaurant in Girón, and the site for Jovi's Gioielli, a jewelry store in Italy, with a live engraving preview. I also built Sammy Partyboom (kids' parties in Bucaramanga) and Hotel Logístico in Santa Marta. More than ten sites are live for real businesses. For fun, I also made [Tostrivia](https://tostrivia-gg.vercel.app), a trivia game you can play with friends and [Radar K-pop](https://radar-kpop.vercel.app), a globe that shows where K-pop groups tour next.
 
 > **Quotes are open.** I'm working with clients right now and taking new projects: a website that sells, an app your team will actually use, or the system your business already outgrew. Tell me what you need and I'll send you a price.
-
-<br />
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/stand-dark.svg" />
-  <img src="./assets/stand-light.svg" alt="JoJo-style Stand card. Stand: Paranoid Android. User: Cristian Pérez. Builds software, websites and apps, makes content that goes viral, with a cybersecurity streak." width="100%" />
-</picture>
 
 <br />
 
@@ -120,6 +123,20 @@ Lately I've shipped the menu and ordering site for Cruz Blanca, a restaurant in 
   <img src="./assets/languages-light.svg" alt="Languages by lines of code across my repositories: TypeScript 43%, JavaScript 21%, CSS 15%, Python 7%, Java 6%, HTML 4%, PHP 2%, SQL 2%" width="100%" />
 </picture>
 
+<br />
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/part-4-dark.svg" />
+  <img src="./assets/part-4-light.svg" alt="Part 4 — Ora ora ora: contributions" width="100%" />
+</picture>
+
+<a href="https://github.com/cperez233">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-dark.svg" />
+  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-light.svg" alt="GitHub contribution graph for the last year" width="100%" />
+</picture>
+</a>
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://streak-stats.demolab.com/?user=cperez233&hide_border=true&border_radius=0&background=111013&stroke=2A272C&ring=E3B341&fire=E3B341&currStreakNum=ECE6D8&sideNums=ECE6D8&currStreakLabel=E3B341&sideLabels=9A948A&dates=9A948A" />
@@ -131,13 +148,13 @@ Lately I've shipped the menu and ordering site for Cruz Blanca, a restaurant in 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/approach-dark.svg" />
-  <img src="./assets/approach-light.svg" alt="Part 4 — Oh? You're approaching me? Websites, apps and custom software for your business. Quotes are open." width="100%" />
+  <img src="./assets/approach-light.svg" alt="Part 5 — Oh? You're approaching me? Websites, apps and custom software for your business. Quotes are open." width="100%" />
 </picture>
 
 <p align="center">
-  <a href="mailto:crisperezm879@gmail.com?subject=Quote%20request"><img src="https://img.shields.io/badge/Request%20a%20quote-9A6A0C?style=for-the-badge&logoColor=white&logo=gmail" alt="Request a quote" /></a>
-  <a href="https://carpy.tech"><img src="https://img.shields.io/badge/carpy.tech-161418?style=for-the-badge&logoColor=white" alt="carpy.tech" /></a>
-  <a href="https://www.linkedin.com/in/cristianperez879m/"><img src="https://img.shields.io/badge/LinkedIn-161418?style=for-the-badge&logoColor=white&logo=linkedin" alt="LinkedIn" /></a>
+  <a href="mailto:crisperezm879@gmail.com?subject=Quote%20request"><img src="./assets/btn-quote.svg" alt="Request a quote" height="48" /></a>
+  <a href="https://carpy.tech"><img src="./assets/btn-carpy.svg" alt="carpy.tech" height="48" /></a>
+  <a href="https://www.linkedin.com/in/cristianperez879m/"><img src="./assets/btn-linkedin.svg" alt="LinkedIn" height="48" /></a>
 </p>
 
 <p align="center"><sub>Or write straight to <a href="mailto:crisperezm879@gmail.com">crisperezm879@gmail.com</a></sub></p>

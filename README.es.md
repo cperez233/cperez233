@@ -10,14 +10,17 @@
 </p>
 
 <p align="center">
-  <a href="https://cristianperez.me/es"><img src="https://img.shields.io/badge/cristianperez.me-161418?style=for-the-badge&logoColor=white&logo=vercel" alt="cristianperez.me" /></a>
-  <a href="mailto:crisperezm879@gmail.com"><img src="https://img.shields.io/badge/crisperezm879%40gmail.com-161418?style=for-the-badge&logoColor=white&logo=gmail" alt="crisperezm879@gmail.com" /></a>
-  <a href="https://www.linkedin.com/in/cristianperez879m/"><img src="https://img.shields.io/badge/LinkedIn-161418?style=for-the-badge&logoColor=white&logo=linkedin" alt="LinkedIn" /></a>
-  <a href="https://www.tiktok.com/@criscx1905"><img src="https://img.shields.io/badge/%40criscx1905-161418?style=for-the-badge&logoColor=white&logo=tiktok" alt="@criscx1905" /></a>
-  <a href="https://www.instagram.com/criscx1905/"><img src="https://img.shields.io/badge/Instagram-161418?style=for-the-badge&logoColor=white&logo=instagram" alt="Instagram" /></a>
-  <a href="https://www.youtube.com/channel/UCVaJSNQKWJbYBgGGED814iA"><img src="https://img.shields.io/badge/YouTube-161418?style=for-the-badge&logoColor=white&logo=youtube" alt="YouTube" /></a>
-  <a href="https://www.twitch.tv/tostu"><img src="https://img.shields.io/badge/Tostu-161418?style=for-the-badge&logoColor=white&logo=twitch" alt="Tostu" /></a>
-  <a href="https://linktr.ee/crxscx"><img src="https://img.shields.io/badge/Linktree-161418?style=for-the-badge&logoColor=white&logo=linktree" alt="Linktree" /></a>
+  <a href="https://cristianperez.me/es"><img src="./assets/btn-web.svg" alt="cristianperez.me" height="48" /></a>
+  <a href="mailto:crisperezm879@gmail.com"><img src="./assets/btn-email-es.svg" alt="crisperezm879@gmail.com" height="48" /></a>
+  <a href="https://www.linkedin.com/in/cristianperez879m/"><img src="./assets/btn-linkedin.svg" alt="LinkedIn" height="48" /></a>
+</p>
+
+<p align="center">
+  <a href="https://www.tiktok.com/@criscx1905"><img src="./assets/btn-tiktok.svg" alt="TikTok @criscx1905" height="48" /></a>
+  <a href="https://www.instagram.com/criscx1905/"><img src="./assets/btn-instagram.svg" alt="Instagram @criscx1905" height="48" /></a>
+  <a href="https://www.youtube.com/channel/UCVaJSNQKWJbYBgGGED814iA"><img src="./assets/btn-youtube.svg" alt="YouTube Tostu" height="48" /></a>
+  <a href="https://www.twitch.tv/tostu"><img src="./assets/btn-twitch.svg" alt="Twitch tostu" height="48" /></a>
+  <a href="https://linktr.ee/crxscx"><img src="./assets/btn-linktree.svg" alt="Linktree crxscx" height="48" /></a>
 </p>
 
 <br />
@@ -27,6 +30,13 @@
   <img src="./assets/part-1-es-light.svg" alt="Parte 1 — Usuario del Stand" width="100%" />
 </picture>
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/stand-es-dark.svg" />
+  <img src="./assets/stand-es-light.svg" alt="Tarjeta de Stand estilo JoJo. Stand: Paranoid Android. Usuario: Cristian Pérez. Construye software, páginas web y apps, crea contenido viral y tiene aires de ciberseguridad." width="100%" />
+</picture>
+
+<br />
+
 Soy Cristian, Cris: Ingeniero de Sistemas de la UNAB y desarrollador full-stack en Bucaramanga, Colombia. Hago páginas web, apps y software a la medida para negocios, de la primera llamada al despliegue, y subo videos como Tostu. Algunos se volvieron virales (32K+ seguidores en TikTok).
 
 Cofundé [Carpy](https://carpy.tech), un estudio de software pequeño. Hacemos software a la medida, páginas web, integraciones y auditorías de seguridad para clientes en Colombia y afuera. Mi tesis, PairSync, ya está terminada. Lo de seguridad viene de trabajar con el equipo de ciberseguridad de la Fundación Cardiovascular de Colombia.
@@ -34,13 +44,6 @@ Cofundé [Carpy](https://carpy.tech), un estudio de software pequeño. Hacemos s
 Últimamente entregué la carta y los pedidos de Cruz Blanca, un restaurante en Girón, y la página de Jovi's Gioielli, una joyería en Italia, con vista previa del grabado en vivo. También hice Sammy Partyboom (fiestas infantiles en Bucaramanga) y Hotel Logístico en Santa Marta. Hay más de diez páginas publicadas para negocios reales. Por diversión también hice [Tostrivia](https://tostrivia-gg.vercel.app), un juego de trivia para jugar con amigos y [Radar K-pop](https://radar-kpop.vercel.app), un globo que muestra dónde de gira van los grupos de K-pop.
 
 > **Cotizaciones abiertas.** Ahora mismo trabajo con clientes y recibo proyectos nuevos: una página que venda, una app que tu equipo sí use o el sistema que tu negocio ya superó. Cuéntame qué necesitas y te mando un precio.
-
-<br />
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/stand-es-dark.svg" />
-  <img src="./assets/stand-es-light.svg" alt="Tarjeta de Stand estilo JoJo. Stand: Paranoid Android. Usuario: Cristian Pérez. Construye software, páginas web y apps, crea contenido viral y tiene aires de ciberseguridad." width="100%" />
-</picture>
 
 <br />
 
@@ -120,6 +123,20 @@ Cofundé [Carpy](https://carpy.tech), un estudio de software pequeño. Hacemos s
   <img src="./assets/languages-es-light.svg" alt="Lenguajes por líneas de código en mis repositorios: TypeScript 43%, JavaScript 21%, CSS 15%, Python 7%, Java 6%, HTML 4%, PHP 2%, SQL 2%" width="100%" />
 </picture>
 
+<br />
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/part-4-es-dark.svg" />
+  <img src="./assets/part-4-es-light.svg" alt="Parte 4 — Ora ora ora: contribuciones" width="100%" />
+</picture>
+
+<a href="https://github.com/cperez233">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-es-dark.svg" />
+  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-es-light.svg" alt="Gráfica de contribuciones de GitHub del último año" width="100%" />
+</picture>
+</a>
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://streak-stats.demolab.com/?user=cperez233&locale=es&hide_border=true&border_radius=0&background=111013&stroke=2A272C&ring=E3B341&fire=E3B341&currStreakNum=ECE6D8&sideNums=ECE6D8&currStreakLabel=E3B341&sideLabels=9A948A&dates=9A948A" />
@@ -131,13 +148,13 @@ Cofundé [Carpy](https://carpy.tech), un estudio de software pequeño. Hacemos s
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/approach-es-dark.svg" />
-  <img src="./assets/approach-es-light.svg" alt="Parte 4 — ¿Oh? ¿Te acercas a mí? Páginas web, apps y software a la medida para tu negocio. Cotizaciones abiertas." width="100%" />
+  <img src="./assets/approach-es-light.svg" alt="Parte 5 — ¿Oh? ¿Te acercas a mí? Páginas web, apps y software a la medida para tu negocio. Cotizaciones abiertas." width="100%" />
 </picture>
 
 <p align="center">
-  <a href="mailto:crisperezm879@gmail.com?subject=Cotizaci%C3%B3n"><img src="https://img.shields.io/badge/Pedir%20cotizaci%C3%B3n-9A6A0C?style=for-the-badge&logoColor=white&logo=gmail" alt="Pedir cotización" /></a>
-  <a href="https://carpy.tech"><img src="https://img.shields.io/badge/carpy.tech-161418?style=for-the-badge&logoColor=white" alt="carpy.tech" /></a>
-  <a href="https://www.linkedin.com/in/cristianperez879m/"><img src="https://img.shields.io/badge/LinkedIn-161418?style=for-the-badge&logoColor=white&logo=linkedin" alt="LinkedIn" /></a>
+  <a href="mailto:crisperezm879@gmail.com?subject=Cotizaci%C3%B3n"><img src="./assets/btn-quote-es.svg" alt="Pedir cotización" height="48" /></a>
+  <a href="https://carpy.tech"><img src="./assets/btn-carpy.svg" alt="carpy.tech" height="48" /></a>
+  <a href="https://www.linkedin.com/in/cristianperez879m/"><img src="./assets/btn-linkedin.svg" alt="LinkedIn" height="48" /></a>
 </p>
 
 <p align="center"><sub>O escríbeme directo a <a href="mailto:crisperezm879@gmail.com">crisperezm879@gmail.com</a></sub></p>
