@@ -31,7 +31,7 @@ I'm Cristian, Cris for short: a Systems Engineer from UNAB and a full-stack deve
 
 I co-founded [Carpy](https://carpy.tech), a small software studio. We make custom software, websites, integrations and security audits for clients in Colombia and abroad. My thesis, PairSync, is finished. The security side comes from working with the cybersecurity team at Fundación Cardiovascular de Colombia.
 
-Lately I've shipped the menu and ordering site for Cruz Blanca, a restaurant in Girón, and the site for Jovi's Gioielli, a jewelry store in Italy, with a live engraving preview. I also built Sammy Partyboom (kids' parties in Bucaramanga) and Hotel Logístico in Santa Marta. More than ten sites are live for real businesses.
+Lately I've shipped the menu and ordering site for Cruz Blanca, a restaurant in Girón, and the site for Jovi's Gioielli, a jewelry store in Italy, with a live engraving preview. I also built Sammy Partyboom (kids' parties in Bucaramanga) and Hotel Logístico in Santa Marta. More than ten sites are live for real businesses. For fun, I also made [Tostrivia](https://tostrivia-gg.vercel.app), a trivia game you can play with friends.
 
 > **Quotes are open.** I'm working with clients right now and taking new projects: a website that sells, an app your team will actually use, or the system your business already outgrew. Tell me what you need and I'll send you a price.
 
@@ -49,54 +49,49 @@ Lately I've shipped the menu and ordering site for Cruz Blanca, a restaurant in 
   <img src="./assets/part-2-light.svg" alt="Part 2 — Selected work" width="100%" />
 </picture>
 
+<a href="https://tostrivia-gg.vercel.app">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/tostrivia-dark-v3.jpg" />
+  <img src="./assets/cards/tostrivia-light-v3.jpg" alt="Tostrivia — trivia game on anime, games, series and movies. A wheel, 5,300+ questions and rooms of up to 10 players." width="100%" />
+</picture>
+</a>
+
 <a href="https://carpy.tech">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/carpy-dark-v2.jpg" />
-  <img src="./assets/cards/carpy-light-v2.jpg" alt="Carpy — software studio I co-founded. Custom software, websites, integrations and audits." width="100%" />
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/carpy-dark-v3.jpg" />
+  <img src="./assets/cards/carpy-light-v3.jpg" alt="Carpy — software studio I co-founded. Custom software, websites, integrations and audits." width="100%" />
 </picture>
 </a>
 
 <a href="https://cruz-blanca-red.vercel.app/">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/cruz-blanca-dark-v2.jpg" />
-  <img src="./assets/cards/cruz-blanca-light-v2.jpg" alt="Cruz Blanca — restaurant, café and cocktail bar in Girón. Full menu with ordering, bookings and promos over WhatsApp. 260+ dishes." width="100%" />
-</picture>
-</a>
-
-<a href="https://github.com/cperez233/digitalizacion-actas-fcv">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/actas-fcv-dark-v2.jpg" />
-  <img src="./assets/cards/actas-fcv-light-v2.jpg" alt="Actas FCV — OCR pipeline for handwritten security-policy forms at Fundación Cardiovascular de Colombia. 746 records indexed." width="100%" />
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/cruz-blanca-dark-v3.jpg" />
+  <img src="./assets/cards/cruz-blanca-light-v3.jpg" alt="Cruz Blanca — restaurant, café and cocktail bar in Girón. Full menu with ordering, bookings and promos over WhatsApp. 260+ dishes." width="100%" />
 </picture>
 </a>
 
 <a href="https://www.tiktok.com/@criscx1905">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/content-dark-v2.jpg" />
-  <img src="./assets/cards/content-light-v2.jpg" alt="Content — videos, edits and streams as Tostu. 32K+ followers on TikTok." width="100%" />
-</picture>
-</a>
-
-<a href="https://github.com/cperez233/guardenv">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/guardenv-dark-v2.jpg" />
-  <img src="./assets/cards/guardenv-light-v2.jpg" alt="GuardEnv — open-source secret scanner with 48 vendor signatures and Shannon entropy." width="100%" />
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/content-dark-v3.jpg" />
+  <img src="./assets/cards/content-light-v3.jpg" alt="Content — videos, edits and streams as Tostu. 32K+ followers on TikTok." width="100%" />
 </picture>
 </a>
 
 <p align="center">
-  <a href="https://joyeria-liart.vercel.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/jovis-gioielli-dark-v2.jpg" /><img src="./assets/cards/jovis-gioielli-light-v2.jpg" alt="Jovi's Gioielli — jewelry store in Italy with a live engraving preview" width="49%" /></picture></a>
-  <a href="https://github.com/cperez233/Sammy"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/sammy-partyboom-dark-v2.jpg" /><img src="./assets/cards/sammy-partyboom-light-v2.jpg" alt="Sammy Partyboom — kids' party entertainers in Bucaramanga with a WhatsApp quote builder" width="49%" /></picture></a>
-  <a href="https://hotellogistico.com"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/hotel-logistico-dark-v2.jpg" /><img src="./assets/cards/hotel-logistico-light-v2.jpg" alt="Hotel Logístico — hotel in Santa Marta with bookings over WhatsApp" width="49%" /></picture></a>
-  <a href="https://carros-2.vercel.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/master-service-quality-dark-v2.jpg" /><img src="./assets/cards/master-service-quality-light-v2.jpg" alt="Master Service Quality — truck rental with monthly quotes" width="49%" /></picture></a>
-  <a href="https://the-groomers-house.vercel.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/groomers-house-dark-v2.jpg" /><img src="./assets/cards/groomers-house-light-v2.jpg" alt="The Groomer's House — dog grooming in Floridablanca" width="49%" /></picture></a>
-  <a href="https://calzadoleons.com"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/leons-dark-v2.jpg" /><img src="./assets/cards/leons-light-v2.jpg" alt="Leons Footwear — footwear factory with a wholesale catalog" width="49%" /></picture></a>
-  <a href="https://louloz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/louloz-dark-v2.jpg" /><img src="./assets/cards/louloz-light-v2.jpg" alt="Louloz — online shoe store" width="49%" /></picture></a>
-  <a href="https://elrincondelbebebga.com/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/rincon-del-bebe-dark-v2.jpg" /><img src="./assets/cards/rincon-del-bebe-light-v2.jpg" alt="El Rincón del Bebé — baby store with nationwide delivery" width="49%" /></picture></a>
-  <a href="https://www.m10drinkslicorera.com/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/m10-drinks-dark-v2.jpg" /><img src="./assets/cards/m10-drinks-light-v2.jpg" alt="M10 Drinks — liquor store with 24/7 delivery" width="49%" /></picture></a>
-  <a href="https://github.com/cperez233/pass-guard"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/passguard-dark-v2.jpg" /><img src="./assets/cards/passguard-light-v2.jpg" alt="PassGuard — password generator and auditor that runs in the browser" width="49%" /></picture></a>
-  <a href="https://github.com/cperez233/PairProgramming"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/pairsync-dark-v2.jpg" /><img src="./assets/cards/pairsync-light-v2.jpg" alt="PairSync — my finished thesis: pair programming with an AI tutor and Moodle grades" width="49%" /></picture></a>
-  <a href="https://cristianperez.me"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/portfolio-dark-v2.jpg" /><img src="./assets/cards/portfolio-light-v2.jpg" alt="cristianperez.me — my portfolio" width="49%" /></picture></a>
+  <a href="https://github.com/cperez233/digitalizacion-actas-fcv"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/actas-fcv-dark-v3.jpg" /><img src="./assets/cards/actas-fcv-light-v3.jpg" alt="Actas FCV — OCR pipeline for handwritten security-policy forms at Fundación Cardiovascular de Colombia. 746 records indexed." width="49%" /></picture></a>
+  <a href="https://github.com/cperez233/guardenv"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/guardenv-dark-v3.jpg" /><img src="./assets/cards/guardenv-light-v3.jpg" alt="GuardEnv — open-source secret scanner with 48 vendor signatures and Shannon entropy." width="49%" /></picture></a>
+  <a href="https://joyeria-liart.vercel.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/jovis-gioielli-dark-v3.jpg" /><img src="./assets/cards/jovis-gioielli-light-v3.jpg" alt="Jovi's Gioielli — jewelry store in Italy with a live engraving preview" width="49%" /></picture></a>
+  <a href="https://github.com/cperez233/Sammy"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/sammy-partyboom-dark-v3.jpg" /><img src="./assets/cards/sammy-partyboom-light-v3.jpg" alt="Sammy Partyboom — kids' party entertainers in Bucaramanga with a WhatsApp quote builder" width="49%" /></picture></a>
+  <a href="https://hotellogistico.com"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/hotel-logistico-dark-v3.jpg" /><img src="./assets/cards/hotel-logistico-light-v3.jpg" alt="Hotel Logístico — hotel in Santa Marta with bookings over WhatsApp" width="49%" /></picture></a>
+  <a href="https://carros-2.vercel.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/master-service-quality-dark-v3.jpg" /><img src="./assets/cards/master-service-quality-light-v3.jpg" alt="Master Service Quality — truck rental with monthly quotes" width="49%" /></picture></a>
+  <a href="https://the-groomers-house.vercel.app/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/groomers-house-dark-v3.jpg" /><img src="./assets/cards/groomers-house-light-v3.jpg" alt="The Groomer's House — dog grooming in Floridablanca" width="49%" /></picture></a>
+  <a href="https://calzadoleons.com"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/leons-dark-v3.jpg" /><img src="./assets/cards/leons-light-v3.jpg" alt="Leons Footwear — footwear factory with a wholesale catalog" width="49%" /></picture></a>
+  <a href="https://louloz.com"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/louloz-dark-v3.jpg" /><img src="./assets/cards/louloz-light-v3.jpg" alt="Louloz — online shoe store" width="49%" /></picture></a>
+  <a href="https://elrincondelbebebga.com/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/rincon-del-bebe-dark-v3.jpg" /><img src="./assets/cards/rincon-del-bebe-light-v3.jpg" alt="El Rincón del Bebé — baby store with nationwide delivery" width="49%" /></picture></a>
+  <a href="https://www.m10drinkslicorera.com/"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/m10-drinks-dark-v3.jpg" /><img src="./assets/cards/m10-drinks-light-v3.jpg" alt="M10 Drinks — liquor store with 24/7 delivery" width="49%" /></picture></a>
+  <a href="https://github.com/cperez233/pass-guard"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/passguard-dark-v3.jpg" /><img src="./assets/cards/passguard-light-v3.jpg" alt="PassGuard — password generator and auditor that runs in the browser" width="49%" /></picture></a>
+  <a href="https://github.com/cperez233/PairProgramming"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/pairsync-dark-v3.jpg" /><img src="./assets/cards/pairsync-light-v3.jpg" alt="PairSync — my finished thesis: pair programming with an AI tutor and Moodle grades" width="49%" /></picture></a>
+  <a href="https://cristianperez.me"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/cards/portfolio-dark-v3.jpg" /><img src="./assets/cards/portfolio-light-v3.jpg" alt="cristianperez.me — my portfolio" width="49%" /></picture></a>
 </p>
 
 <p align="center"><a href="https://cristianperez.me"><b>More work and prices on cristianperez.me →</b></a></p>

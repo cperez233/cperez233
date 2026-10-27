@@ -21,11 +21,24 @@ OUT = ROOT / "assets" / "cards"
 SCALE = 1.5
 # Va en el nombre de cada tarjeta: subirlo cuando cambian las capturas, porque
 # GitHub y el navegador guardan en cache la imagen vieja si el nombre no cambia.
-VERSION = 2
+VERSION = 3
 
 FEATURED = [
     dict(
-        key="carpy", shot="carpy.jpg", kana="カーピー", title="CARPY", side="left",
+        key="tostrivia", shot="tostrivia.jpg", kana="クイズ", title="TOSTRIVIA", side="left",
+        kicker={"en": "Trivia game · play solo or with friends", "es": "Juego de trivia · solo o con amigos"},
+        desc={
+            "en": "Spin the wheel and answer against the clock: anime, games, series and movies. Guess an opening "
+                  "from its sound or a poster from a blur. Rooms of up to 10 players, each on their own phone.",
+            "es": "Gira la ruleta y responde contra el reloj: anime, juegos, series y películas. Adivina un opening "
+                  "por su sonido o un póster desde el desenfoque. Salas de hasta 10 jugadores, cada uno en su celular.",
+        },
+        stat=("5,300+", {"en": "questions, in English and Spanish", "es": "preguntas, en inglés y español"}),
+        cta={"en": "Play it now", "es": "Jugar ahora"},
+        meta="React · Vite · PeerJS (WebRTC) · Vercel",
+    ),
+    dict(
+        key="carpy", shot="carpy.jpg", kana="カーピー", title="CARPY", side="right",
         kicker={"en": "Software studio · co-founder", "es": "Estudio de software · cofundador"},
         desc={
             "en": "A software studio with a small team. We build custom software, websites, integrations and "
@@ -38,7 +51,7 @@ FEATURED = [
         meta="React 19 · Vite · Framer Motion",
     ),
     dict(
-        key="cruz-blanca", shot="cruz-blanca.jpg", kana="レストラン", title="CRUZ BLANCA", side="right",
+        key="cruz-blanca", shot="cruz-blanca.jpg", kana="レストラン", title="CRUZ BLANCA", side="left",
         kicker={"en": "Restaurant · Girón, Santander", "es": "Restaurante · Girón, Santander"},
         desc={
             "en": "Restaurant, café, ice-cream parlor and cocktail bar across from the Basílica Menor. A full menu "
@@ -49,19 +62,6 @@ FEATURED = [
         stat=("260+", {"en": "dishes on the menu", "es": "platos en la carta"}),
         cta={"en": "See the site", "es": "Ver la página"},
         meta="React · Vite · Tailwind · Framer Motion · SSR",
-    ),
-    dict(
-        key="actas-fcv", shot="fcv-buscador.jpg", kana="デジタル化", title="ACTAS FCV", side="left",
-        kicker={"en": "Fundación Cardiovascular de Colombia", "es": "Fundación Cardiovascular de Colombia"},
-        desc={
-            "en": "Handwritten security-policy forms, one PDF per site, many signatures per page. An OCR pipeline "
-                  "reads them, cleans every name and ID, and builds a search tool that needs no server.",
-            "es": "Actas de seguridad escritas a mano, un PDF por sede y muchas firmas por página. Un pipeline de OCR "
-                  "las lee, limpia cada nombre y cédula, y arma un buscador que no necesita servidor.",
-        },
-        stat=("746", {"en": "records indexed", "es": "actas indexadas"}),
-        cta={"en": "Repository on GitHub", "es": "Repositorio en GitHub"},
-        meta="Python · Azure Document Intelligence",
     ),
     dict(
         key="content", shot="content-social.jpg", kana="バズ", title={"en": "CONTENT", "es": "CONTENIDO"}, side="right",
@@ -75,19 +75,6 @@ FEATURED = [
         stat=("32K+", {"en": "followers on TikTok", "es": "seguidores en TikTok"}),
         cta={"en": "See it on TikTok", "es": "Verlo en TikTok"},
         meta="After Effects · OBS · TikTok · Instagram · YouTube · Twitch",
-    ),
-    dict(
-        key="guardenv", shot="guardenv.jpg", kana="シークレット", title="GUARDENV", side="left",
-        kicker={"en": "Open source · security", "es": "Código abierto · seguridad"},
-        desc={
-            "en": "Catches leaked credentials before they reach your remote. Vendor signatures plus Shannon "
-                  "entropy, a pre-commit hook, SARIF for code scanning and a playground that runs offline.",
-            "es": "Atrapa credenciales filtradas antes de que lleguen al remoto. Firmas de proveedores más entropía "
-                  "de Shannon, hook de pre-commit, SARIF para code scanning y un playground que corre sin conexión.",
-        },
-        stat=("48", {"en": "vendor signatures", "es": "firmas de proveedores"}),
-        cta={"en": "Try the demo", "es": "Probar la demo"},
-        meta="Python · GitHub Actions · CodeQL",
     ),
 ]
 
@@ -123,6 +110,12 @@ GRID = [
                "es": "Pair programming con tutor de IA y notas sincronizadas con Moodle"}),
     dict(key="portfolio", shot="portfolio.jpg", title="CRISTIANPEREZ.ME", domain="cristianperez.me",
          line={"en": "My portfolio: bilingual, with a free site audit", "es": "Mi portafolio: bilingüe, con auditoría web gratis"}),
+    dict(key="actas-fcv", shot="fcv-buscador.jpg", title="ACTAS FCV", domain="Fundación Cardiovascular de Colombia",
+         line={"en": "OCR pipeline for handwritten forms, 746 records indexed",
+               "es": "Pipeline de OCR para actas manuscritas, 746 actas indexadas"}),
+    dict(key="guardenv", shot="guardenv.jpg", title="GUARDENV", domain={"en": "Open source · security", "es": "Código abierto · seguridad"},
+         line={"en": "Secret scanner with 48 vendor signatures and Shannon entropy",
+               "es": "Escáner de secretos con 48 firmas de proveedores y entropía de Shannon"}),
 ]
 
 
