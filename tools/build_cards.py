@@ -38,7 +38,20 @@ FEATURED = [
         meta="React · Vite · PeerJS (WebRTC) · Vercel",
     ),
     dict(
-        key="carpy", shot="carpy.jpg", kana="カーピー", title="CARPY", side="right",
+        key="radar-kpop", shot="radar-kpop.jpg", kana="レーダー", title="RADAR K-POP", side="right",
+        kicker={"en": "Fan site · K-pop tours", "es": "Página de fans · giras de K-pop"},
+        desc={
+            "en": "Where do ten K-pop groups play next? Each one stands on its next tour stop on a small 3D globe, "
+                  "drawn as chibis, with a countdown, the distance to you and a pastel map of the venue.",
+            "es": "¿Dónde tocan después diez grupos de K-pop? Cada uno aparece en su próxima parada de gira en un "
+                  "globo 3D, dibujado como chibis, con cuenta regresiva, distancia a ti y un mapa pastel del recinto.",
+        },
+        stat=("68", {"en": "hand-made chibi stickers", "es": "chibis hechos a mano"}),
+        cta={"en": "Open the radar", "es": "Abrir el radar"},
+        meta="JavaScript · MapLibre · GitHub Actions · PWA",
+    ),
+    dict(
+        key="carpy", shot="carpy.jpg", kana="カーピー", title="CARPY", side="left",
         kicker={"en": "Software studio · co-founder", "es": "Estudio de software · cofundador"},
         desc={
             "en": "A software studio with a small team. We build custom software, websites, integrations and "
@@ -51,7 +64,7 @@ FEATURED = [
         meta="React 19 · Vite · Framer Motion",
     ),
     dict(
-        key="cruz-blanca", shot="cruz-blanca.jpg", kana="レストラン", title="CRUZ BLANCA", side="left",
+        key="cruz-blanca", shot="cruz-blanca.jpg", kana="レストラン", title="CRUZ BLANCA", side="right",
         kicker={"en": "Restaurant · Girón, Santander", "es": "Restaurante · Girón, Santander"},
         desc={
             "en": "Restaurant, café, ice-cream parlor and cocktail bar across from the Basílica Menor. A full menu "
@@ -64,7 +77,7 @@ FEATURED = [
         meta="React · Vite · Tailwind · Framer Motion · SSR",
     ),
     dict(
-        key="content", shot="content-social.jpg", kana="バズ", title={"en": "CONTENT", "es": "CONTENIDO"}, side="right",
+        key="content", shot="content-social.jpg", kana="バズ", title={"en": "CONTENT", "es": "CONTENIDO"}, side="left",
         kicker={"en": "Tostu · @criscx1905", "es": "Tostu · @criscx1905"},
         desc={
             "en": "Short videos, edits and live streams. I write, record and edit my own content, and I bring "
