@@ -325,9 +325,9 @@ ARSENAL = [
     ({"en": "FRONT END", "es": "FRONT END"}, "フロント",
      [("react", "React"), ("nextdotjs", "Next.js"), ("vite", "Vite"), ("tailwindcss", "Tailwind"), ("framer", "Framer Motion")]),
     ({"en": "BACK END", "es": "BACK END"}, "バックエンド",
-     [("laravel", "Laravel"), ("nodedotjs", "Node.js"), ("postgresql", "PostgreSQL"), ("langchain", "LangChain"), ("docker", "Docker")]),
+     [("laravel", "Laravel"), ("nodedotjs", "Node.js"), ("postgresql", "PostgreSQL"), ("supabase", "Supabase"), ("langchain", "LangChain"), ("docker", "Docker")]),
     ({"en": "DEPLOY", "es": "DESPLIEGUE"}, "デプロイ",
-     [("git", "Git"), ("githubactions", "GitHub Actions"), ("vercel", "Vercel"), ("azure-plain", "Azure"), ("linux", "Linux")]),
+     [("git", "Git"), ("githubactions", "GitHub Actions"), ("vercel", "Vercel"), ("cloudflare", "Cloudflare"), ("azure-plain", "Azure"), ("linux", "Linux")]),
     ({"en": "SECURITY", "es": "SEGURIDAD"}, "セキュリティ",
      [("kalilinux", "Kali Linux"), ("burpsuite", "Burp Suite"), ("wireshark", "Wireshark"), ("owasp", "OWASP")]),
     ({"en": "CONTENT", "es": "CONTENIDO"}, "コンテンツ",
@@ -467,7 +467,11 @@ BUTTONS = [
     ("linktree", {"en": "LINKTREE", "es": "LINKTREE"}, "crxscx", "linktree"),
     ("carpy", {"en": "CARPY", "es": "CARPY"}, "carpy.tech", None),
     ("quote", {"en": "REQUEST A QUOTE", "es": "PEDIR COTIZACIÓN"}, None, "gmail"),
+    # Cambio de idioma: el botón de cada README apunta al otro idioma
+    ("lang-es", {"en": "ESPAÑOL", "es": "ESPAÑOL"}, "Léelo en español", "globe"),
+    ("lang-en", {"en": "ENGLISH", "es": "ENGLISH"}, "Read it in English", "globe"),
 ]
+PRIMARY = {"quote", "lang-es", "lang-en"}
 
 
 def button(label, sub, icon_file, primary, anton, arch, arch_r):
@@ -499,8 +503,9 @@ def button(label, sub, icon_file, primary, anton, arch, arch_r):
                  f'stroke="{tab_ink}" stroke-width="3" stroke-linecap="square"/>')
     tx = tab + SKEW + pad - 4
     if sub:
-        b.append(anton.text(label, tx, 18, 18, text_ink, tracking=1.4))
-        b.append(arch_r.text(sub, tx, 33, 11.5, sub_ink))
+        low = 0 if label.isascii() else 3  # Ñ, É...: la tilde necesita aire arriba
+        b.append(anton.text(label, tx, 18 + low, 18, text_ink, tracking=1.4))
+        b.append(arch_r.text(sub, tx, 33 + low / 2, 11.5, sub_ink))
     else:
         b.append(anton.text(label, tx, 26, 18, text_ink, tracking=1.4))
     return W + sh, H + sh, "".join(b)
@@ -512,7 +517,7 @@ def build_buttons(anton, arch, arch_r):
         for lang in ("en", "es"):
             if lang == "es" and labels["es"] == labels["en"] and key != "quote":
                 continue
-            w, h, body = button(labels[lang], sub, icon_file, key == "quote", anton, arch, arch_r)
+            w, h, body = button(labels[lang], sub, icon_file, key in PRIMARY, anton, arch, arch_r)
             name = f"btn-{key}{'' if lang == 'en' else '-es'}.svg"
             alt = labels[lang].title() + (f" — {sub}" if sub else "")
             (OUT / name).write_text(svg(w, h, alt, body), encoding="utf-8")

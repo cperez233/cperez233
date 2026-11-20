@@ -22,7 +22,7 @@ OUT = ROOT / "assets" / "cards"
 SCALE = 1.5
 # Va en el nombre de cada tarjeta: subirlo cuando cambian las capturas, porque
 # GitHub y el navegador guardan en cache la imagen vieja si el nombre no cambia.
-VERSION = 4
+VERSION = 6
 
 FEATURED = [
     dict(
@@ -34,12 +34,26 @@ FEATURED = [
             "es": "Gira la ruleta y responde contra el reloj: anime, juegos, series y películas. Adivina un opening "
                   "por su sonido o un póster desde el desenfoque. Salas de hasta 10 jugadores, cada uno en su celular.",
         },
-        stat=("5,300+", {"en": "questions, in English and Spanish", "es": "preguntas, en inglés y español"}),
+        stat=("8,500+", {"en": "questions, in English and Spanish", "es": "preguntas, en inglés y español"}),
         cta={"en": "Play it now", "es": "Jugar ahora"},
         meta="React · Vite · PeerJS (WebRTC) · Vercel",
     ),
     dict(
-        key="radar-kpop", shot="radar-kpop.jpg", kana="レーダー", title="RADAR K-POP", side="right",
+        key="loose-thread", shot="loose-end.jpg", kana="ゲーム", title="LOOSE THREAD", side="right",
+        kicker={"en": "Game · in the browser, on PC and phone", "es": "Videojuego · en el navegador, PC y celular"},
+        desc={
+            "en": "Survive endless hordes as Zero, a nobody with no universe, in an anime crossover where time broke. "
+                  "Pick a weapon, mix powers and gadgets, and when you die time rewinds so you can buy permanent upgrades.",
+            "es": "Sobrevive a hordas infinitas como Zero, un don nadie sin universo, en un crossover de anime donde el "
+                  "tiempo se rompió. Elige un arma, mezcla poderes y objetos, y cuando mueres el tiempo se rebobina "
+                  "para comprar mejoras permanentes.",
+        },
+        stat=("6", {"en": "zones and a final boss", "es": "zonas y un jefe final"}),
+        cta={"en": "Play it now", "es": "Jugar ahora"},
+        meta="Phaser 3 · TypeScript · Vite · Cloudflare",
+    ),
+    dict(
+        key="radar-kpop", shot="radar-kpop.jpg", kana="レーダー", title="RADAR K-POP", side="left",
         kicker={"en": "Fan site · K-pop tours", "es": "Página de fans · giras de K-pop"},
         desc={
             "en": "Where do ten K-pop groups play next? Each one stands on its next tour stop on a small 3D globe, "
@@ -50,6 +64,19 @@ FEATURED = [
         stat=("68", {"en": "hand-made chibi stickers", "es": "chibis hechos a mano"}),
         cta={"en": "Open the radar", "es": "Abrir el radar"},
         meta="JavaScript · MapLibre · GitHub Actions · PWA",
+    ),
+    dict(
+        key="zoomies", shot="zoomies.jpg", kana="ペット", title="ZOOMIES", side="right",
+        kicker={"en": "Web app · a mate or a friend for your pet", "es": "App web · pareja o amigos para tu mascota"},
+        desc={
+            "en": "Swipe pets of the same species; the chat opens only when both families like each other's profile. "
+                  "For responsible breeding it blocks matches that make no sense, and it never asks for an exact location.",
+            "es": "Desliza mascotas de su misma especie; el chat solo se abre cuando a las dos familias les gusta el "
+                  "perfil de la otra. Para el cruce responsable bloquea combinaciones sin sentido y nunca pide la ubicación exacta.",
+        },
+        stat=("6", {"en": "species with their own breeding rules", "es": "especies con reglas de cruce propias"}),
+        cta={"en": "Try the demo", "es": "Probar la demo"},
+        meta="React 19 · TypeScript · Tailwind · Supabase · Cloudflare",
     ),
     dict(
         key="carpy", shot="carpy.jpg", kana="カーピー", title="CARPY", side="left",
@@ -78,7 +105,7 @@ FEATURED = [
         meta="React · Vite · Tailwind · Framer Motion · SSR",
     ),
     dict(
-        key="content", shot="content-social.jpg", kana="バズ", title={"en": "CONTENT", "es": "CONTENIDO"}, side="right", ver=5,
+        key="content", shot="content-social.jpg", kana="バズ", title={"en": "CONTENT", "es": "CONTENIDO"}, side="left",
         kicker={"en": "Tostu · @criscx1905", "es": "Tostu · @criscx1905"},
         desc={
             "en": "Short videos, edits and live streams. I write, record and edit my own content, and I bring "
