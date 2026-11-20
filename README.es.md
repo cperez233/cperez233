@@ -57,7 +57,7 @@ Hay más de diez páginas publicadas para negocios reales, como Cruz Blanca (un 
 <a href="https://loose-end.tutoscristianyt.workers.dev/">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/loose-thread-es-dark-v6.jpg" />
-  <img src="./assets/cards/loose-thread-es-light-v6.jpg" alt="Loose Thread — videojuego de sobrevivir a hordas en el navegador, en PC y celular. Zero, un don nadie sin universo, en un crossover de anime. 6 zonas y un jefe final." width="100%" />
+  <img src="./assets/cards/loose-thread-es-light-v6.jpg" alt="Loose Thread: videojuego de sobrevivir a hordas en el navegador, en PC y celular. Zero, un don nadie sin universo, en un crossover de anime. 6 zonas y un jefe final." width="100%" />
 </picture>
 </a>
 
@@ -70,8 +70,8 @@ Hay más de diez páginas publicadas para negocios reales, como Cruz Blanca (un 
 
 <a href="https://zoomies.tutoscristianyt.workers.dev/">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/zoomies-es-dark-v6.jpg" />
-  <img src="./assets/cards/zoomies-es-light-v6.jpg" alt="Zoomies — app web para encontrar pareja o amigos a tu mascota: deslizas, y el chat se abre solo cuando a las dos familias les gusta el perfil. 6 especies con reglas de cruce propias." width="100%" />
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/zoomies-es-dark-v7.jpg" />
+  <img src="./assets/cards/zoomies-es-light-v7.jpg" alt="Zoomies: app web para encontrar pareja o amigos a tu mascota: deslizas, y el chat se abre solo cuando a las dos familias les gusta el perfil. 6 especies con reglas de cruce propias." width="100%" />
 </picture>
 </a>
 

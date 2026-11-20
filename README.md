@@ -57,7 +57,7 @@ More than ten sites are live for real businesses, like Cruz Blanca (a restaurant
 <a href="https://loose-end.tutoscristianyt.workers.dev/">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/loose-thread-dark-v6.jpg" />
-  <img src="./assets/cards/loose-thread-light-v6.jpg" alt="Loose Thread — horde-survival game that runs in the browser, on PC and phone. Zero, a nobody with no universe, in an anime crossover. 6 zones and a final boss." width="100%" />
+  <img src="./assets/cards/loose-thread-light-v6.jpg" alt="Loose Thread: horde-survival game that runs in the browser, on PC and phone. Zero, a nobody with no universe, in an anime crossover. 6 zones and a final boss." width="100%" />
 </picture>
 </a>
 
@@ -70,8 +70,8 @@ More than ten sites are live for real businesses, like Cruz Blanca (a restaurant
 
 <a href="https://zoomies.tutoscristianyt.workers.dev/">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/zoomies-dark-v6.jpg" />
-  <img src="./assets/cards/zoomies-light-v6.jpg" alt="Zoomies — web app to find a mate or a friend for your pet: you swipe, and the chat opens only when both families like each other. 6 species with their own breeding rules." width="100%" />
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/cards/zoomies-dark-v7.jpg" />
+  <img src="./assets/cards/zoomies-light-v7.jpg" alt="Zoomies: web app to find a mate or a friend for your pet: you swipe, and the chat opens only when both families like each other. 6 species with their own breeding rules." width="100%" />
 </picture>
 </a>
 

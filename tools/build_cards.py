@@ -66,7 +66,7 @@ FEATURED = [
         meta="JavaScript · MapLibre · GitHub Actions · PWA",
     ),
     dict(
-        key="zoomies", shot="zoomies.jpg", kana="ペット", title="ZOOMIES", side="right",
+        key="zoomies", shot={"en": "zoomies.jpg", "es": "zoomies-es.jpg"}, kana="ペット", title="ZOOMIES", side="right", ver=7,
         kicker={"en": "Web app · a mate or a friend for your pet", "es": "App web · pareja o amigos para tu mascota"},
         desc={
             "en": "Swipe pets of the same species; the chat opens only when both families like each other's profile. "
@@ -196,7 +196,7 @@ def featured_html(p, t, lang):
     body = f"""
 <div class="card" style="width:{W}px;height:{H}px;--tx:{'92%' if left else '8%'};--ty:15%">
   <div class="tone"></div>
-  <div class="panel" style="{panel}"><img src="{(SHOTS / p['shot']).as_uri()}" style="clip-path:{cut}"></div>
+  <div class="panel" style="{panel}"><img src="{(SHOTS / pick(p['shot'], lang)).as_uri()}" style="clip-path:{cut}"></div>
   <div style="position:absolute;{copy};top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;
        {'padding-left:40px' if left else 'padding-right:40px'}">
     <div class="muted" style="font-size:17px;font-weight:600">{p['kicker'][lang]}</div>
@@ -219,7 +219,7 @@ def grid_html(p, t, lang):
 <div class="card" style="width:{W}px;height:{H}px;border-width:3px;--tx:90%;--ty:92%">
   <div class="tone"></div>
   <div class="panel" style="left:14px;right:14px;top:14px;height:208px;clip-path:{cut}">
-    <img src="{(SHOTS / p['shot']).as_uri()}" style="clip-path:{cut}"></div>
+    <img src="{(SHOTS / pick(p['shot'], lang)).as_uri()}" style="clip-path:{cut}"></div>
   <div style="position:absolute;left:22px;right:22px;top:236px">
     <div class="title" style="font-size:31px">{p['title']}</div>
     <div style="font-size:15.5px;line-height:1.35;margin-top:7px;opacity:.86">{p['line'][lang]}</div>
