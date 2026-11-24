@@ -1,5 +1,5 @@
 # Dibuja el calendario de contribuciones como ORA ORA ORA (tools/build_ora.py).
-# El resultado va a la rama `output`, que es la que lee el README.
+# El resultado va a la rama `output`, que es la que lee el README (y contributions.json, el portfolio).
 name: Contribution graph
 
 on:
@@ -37,6 +37,8 @@ jobs:
       - name: Draw the graph
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Token personal (opcional) para contar también los repos privados; ver tools/build_ora.py
+          ORA_TOKEN: ${{ secrets.ORA_TOKEN }}
         run: python tools/build_ora.py --user "${{ github.repository_owner }}" --out dist
 
       - name: Publish to the output branch

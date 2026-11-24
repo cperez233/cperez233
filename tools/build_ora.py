@@ -8,7 +8,13 @@ La animación depende de los datos: tres puños cruzan el calendario, cada día 
 actividad recibe el golpe cuando el puño pasa por su columna, y la racha más
 larga se encadena como un combo.
 
-    GITHUB_TOKEN=... .venv/bin/python tools/build_ora.py --user cperez233 --out dist
+Repos privados: el GITHUB_TOKEN de Actions solo ve lo público, salvo que el perfil tenga activado
+"Private contributions". Con ORA_TOKEN (token personal de la cuenta, scope `repo`) la consulta se hace
+como el propio usuario y el calendario trae también lo privado (solo conteos, nunca nombres de repos).
+
+Además de los SVG escribe contributions.json, que lee el tablero 3D de portfolio-web.
+
+    ORA_TOKEN=... .venv/bin/python tools/build_ora.py --user cperez233 --out dist
     .venv/bin/python tools/build_ora.py --sample --out .preview   # datos falsos, solo para probar el diseño
 """
 
@@ -23,8 +29,9 @@ import urllib.request
 
 from build_assets import THEMES, Face, fetch_fonts, halftone, svg
 
-QUERY = """query($login: String!) { user(login: $login) { contributionsCollection { contributionCalendar {
-  totalContributions weeks { contributionDays { date weekday contributionCount contributionLevel } } } } } }"""
+QUERY = """query($login: String!) { user(login: $login) { contributionsCollection {
+  contributionYears restrictedContributionsCount
+  contributionCalendar { totalContributions weeks { contributionDays { date weekday contributionCount contributionLevel } } } } } }"""
 LEVELS = {"NONE": 0, "FIRST_QUARTILE": 1, "SECOND_QUARTILE": 2, "THIRD_QUARTILE": 3, "FOURTH_QUARTILE": 4}
 MONTHS = {
     "en": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
@@ -39,17 +46,40 @@ CYCLE, T0, DUR, TRAVEL, FRONT0, LEAD = 10.0, 0.3, 8.0, 1600, -20, 10
 GX, GY, PITCH, CELL = 70, 276, 20, 16
 
 
-def fetch_calendar(user, token):
+def graphql(query, variables, token):
     req = urllib.request.Request(
         "https://api.github.com/graphql",
-        data=json.dumps({"query": QUERY, "variables": {"login": user}}).encode(),
+        data=json.dumps({"query": query, "variables": variables}).encode(),
         headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json", "User-Agent": "build_ora"},
     )
     with urllib.request.urlopen(req, timeout=30) as res:
         body = json.load(res)
-    if body.get("errors") or not body["data"]["user"]:
+    if body.get("errors") or not (body.get("data") or {}).get("user"):
         raise SystemExit(f"GitHub devolvió un error: {body.get('errors') or 'usuario no encontrado'}")
-    return body["data"]["user"]["contributionsCollection"]["contributionCalendar"]
+    return body["data"]["user"]
+
+
+def fetch_calendar(user, token):
+    coll = graphql(QUERY, {"login": user}, token)["contributionsCollection"]
+    cal = coll["contributionCalendar"]
+    cal["restricted"] = coll["restrictedContributionsCount"]
+    # Totales por año calendario (el tablero 3D del portfolio los lista)
+    years = sorted(coll["contributionYears"])
+    parts = " ".join(f'y{y}: contributionsCollection(from: "{y}-01-01T00:00:00Z", to: "{y}-12-31T23:59:59Z") '
+                     "{ contributionCalendar { totalContributions } }" for y in years)
+    data = graphql(f"query($login: String!) {{ user(login: $login) {{ {parts} }} }}", {"login": user}, token) if years else {}
+    cal["years"] = {str(y): data[f"y{y}"]["contributionCalendar"]["totalContributions"] for y in years}
+    return cal
+
+
+def write_json(cal, path, private):
+    """Mismo formato que data/github-snapshot.json de portfolio-web: solo días con actividad."""
+    days = [[d["date"], d["contributionCount"]] for w in cal["weeks"] for d in w["contributionDays"] if d["contributionCount"]]
+    path.write_text(json.dumps({
+        "fetchedAt": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+        "total": cal["totalContributions"], "includesPrivate": private,
+        "totals": cal.get("years", {}), "days": days,
+    }, separators=(",", ":")), encoding="utf-8")
 
 
 def sample_calendar():
@@ -135,13 +165,16 @@ def fist(t):
 
 def ora(cal, t, lang, anton, dela, arch, arch_r):
     st = stats(cal)
+    private = cal.get("private", False)
     W, H = 1200, 510
     ink, acc, bg = t["ink"], t["accent"], t["bg"]
     copy = {
         "en": ("CONTRIBUTIONS", "contributions in the last year", ["ACTIVE DAYS", "BEST DAY", "LONGEST STREAK", "CURRENT STREAK"],
-               "Less", "More", "GitHub only counts what it can see; most client work stays in private repos."),
+               "Less", "More", "Public and private repos. Private work counts here; its code stays private."
+               if private else "GitHub only counts what it can see; most client work stays in private repos."),
         "es": ("CONTRIBUCIONES", "contribuciones en el último año", ["DÍAS ACTIVOS", "MEJOR DÍA", "RACHA MÁS LARGA", "RACHA ACTUAL"],
-               "Menos", "Más", "GitHub solo cuenta lo que ve; casi todo el trabajo de clientes está en repos privados."),
+               "Menos", "Más", "Repos públicos y privados. Lo privado cuenta aquí; su código sigue privado."
+               if private else "GitHub solo cuenta lo que ve; casi todo el trabajo de clientes está en repos privados."),
     }[lang]
     m = MONTHS[lang]
     span = f'{m[st["first"].month - 1]} {st["first"].year} – {m[st["last"].month - 1]} {st["last"].year}'
@@ -387,17 +420,27 @@ def main():
 
     if args.sample:
         cal = sample_calendar()
+        cal["private"] = True
     else:
-        token = os.environ.get("GITHUB_TOKEN")
+        own = os.environ.get("ORA_TOKEN")
+        token = own or os.environ.get("GITHUB_TOKEN")
         if not token:
-            raise SystemExit("Falta GITHUB_TOKEN (o usa --sample para probar el diseño).")
+            raise SystemExit("Falta ORA_TOKEN o GITHUB_TOKEN (o usa --sample para probar el diseño).")
         cal = fetch_calendar(args.user, token)
+        # Con el token propio la consulta ve lo privado; con GITHUB_TOKEN solo si el perfil lo comparte.
+        cal["private"] = bool(own) or cal["restricted"] > 0
+        print(f'{cal["totalContributions"]} contribuciones en el último año '
+              f'({"incluye privadas" if cal["private"] else "solo públicas"}; ocultas al token: {cal["restricted"]})')
+        if not cal["private"]:
+            print("::warning::La gráfica solo cuenta repos públicos. Activa \"Private contributions\" en el perfil "
+                  "o guarda un token personal en el secreto ORA_TOKEN.")
 
     fetch_fonts()
     anton, dela = Face("Anton-Regular.ttf"), Face("DelaGothicOne-Regular.ttf")
     arch, arch_r = Face("Archivo.ttf", wght=600, wdth=100), Face("Archivo.ttf", wght=400, wdth=100)
     out = pathlib.Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
+    write_json(cal, out / "contributions.json", cal.get("private", False))
     for lang in ("en", "es"):
         for mode, t in THEMES.items():
             for name, build in (("ora", ora), ("streak", streak_card)):
