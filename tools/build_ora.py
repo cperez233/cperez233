@@ -88,24 +88,33 @@ def write_json(cal, path, private):
     }, separators=(",", ":")), encoding="utf-8")
 
 
+def relevel(cal):
+    """Niveles de color por cuartiles de los días con actividad. Los de GitHub los aplasta un solo día
+    enorme (todo queda en los dos tonos claros); así la cuadrícula muestra el ritmo real."""
+    days = [d for w in cal["weeks"] for d in w["contributionDays"]]
+    nz = sorted(d["contributionCount"] for d in days if d["contributionCount"])
+    q = [nz[int(len(nz) * f)] for f in (.25, .5, .75)] if nz else [1, 1, 1]
+    names = ["FIRST", "SECOND", "THIRD", "FOURTH"]
+    for d in days:
+        n = d["contributionCount"]
+        d["contributionLevel"] = "NONE" if not n else names[sum(n > v for v in q)] + "_QUARTILE"
+    return cal
+
+
 def calendar_from_json(path):
     """Rehace el calendario desde un contributions.json ya publicado (solo para previsualizar)."""
     data = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
     counts = dict(data["days"])
     last = datetime.datetime.fromisoformat(data["fetchedAt"]).date()
     day = last.replace(year=last.year - 1)
-    nz = sorted(c for c in counts.values() if c)
-    q = [nz[int(len(nz) * f)] for f in (.25, .5, .75)] if nz else [1, 1, 1]
-    names = ["FIRST", "SECOND", "THIRD", "FOURTH"]
     weeks, cur = [], []
     while day <= last:
         n = counts.get(day.isoformat(), 0)
-        lvl = "NONE" if not n else names[sum(n > v for v in q)] + "_QUARTILE"
         wd = (day.weekday() + 1) % 7
         if wd == 0 and cur:
             weeks.append({"contributionDays": cur})
             cur = []
-        cur.append({"date": day.isoformat(), "weekday": wd, "contributionCount": n, "contributionLevel": lvl})
+        cur.append({"date": day.isoformat(), "weekday": wd, "contributionCount": n, "contributionLevel": "NONE"})
         day += datetime.timedelta(days=1)
     weeks.append({"contributionDays": cur})
     return {"totalContributions": data["total"], "weeks": weeks, "years": data.get("totals", {}),
@@ -647,6 +656,7 @@ def main():
             print("::warning::La gráfica solo cuenta repos públicos. Activa \"Private contributions\" en el perfil "
                   "o guarda un token personal en el secreto ORA_TOKEN.")
 
+    relevel(cal)
     fetch_fonts()
     anton, dela = Face("Anton-Regular.ttf"), Face("DelaGothicOne-Regular.ttf")
     arch, arch_r = Face("Archivo.ttf", wght=600, wdth=100), Face("Archivo.ttf", wght=400, wdth=100)
