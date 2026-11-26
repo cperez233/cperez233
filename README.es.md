@@ -141,13 +141,13 @@ Hay más de diez páginas publicadas para negocios reales, como Cruz Blanca (un 
 <a href="https://github.com/cperez233">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-es-dark.svg" />
-  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-es-light.svg" alt="Gráfica de contribuciones de GitHub del último año" width="100%" />
+  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-es-light.svg" alt="Gráfica de contribuciones: total, días activos, mejor día y el calendario, a golpe de ORA. Se redibuja cada día." width="100%" />
 </picture>
 </a>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/cperez233/cperez233/output/streak-es-dark.svg" />
-  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/streak-es-light.svg" alt="Rachas de contribuciones: actual, más larga y últimos 30 días" width="100%" />
+  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/streak-es-light.svg" alt="Rachas de contribuciones: la actual y cuánto le falta para el récord, la más larga con la intensidad de cada día, y los últimos 30 días" width="100%" />
 </picture>
 
 <br />

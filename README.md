@@ -141,13 +141,13 @@ More than ten sites are live for real businesses, like Cruz Blanca (a restaurant
 <a href="https://github.com/cperez233">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-dark.svg" />
-  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-light.svg" alt="GitHub contribution graph for the last year" width="100%" />
+  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-light.svg" alt="Contribution graph: total contributions, active days, best day and the calendar, punched by ORA fists. Redrawn every day." width="100%" />
 </picture>
 </a>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/cperez233/cperez233/output/streak-dark.svg" />
-  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/streak-light.svg" alt="Contribution streaks: current, longest and the last 30 days" width="100%" />
+  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/streak-light.svg" alt="Contribution streaks: current streak and how far it is from the record, longest streak with each day's intensity, and the last 30 days" width="100%" />
 </picture>
 
 <br />

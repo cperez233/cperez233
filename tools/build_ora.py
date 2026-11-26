@@ -6,7 +6,11 @@ que publica el resultado en la rama `output`.
 
 La animación depende de los datos: tres puños cruzan el calendario, cada día con
 actividad recibe el golpe cuando el puño pasa por su columna, y la racha más
-larga se encadena como un combo.
+larga se encadena como un combo. El total rueda como un contador al cargar.
+
+Si el año empezó vacío, la cuadrícula se acerca a las semanas con actividad (mínimo NMIN) y
+marca dónde empieza la ráfaga; con celdas grandes, los días fuertes llevan su cifra dentro.
+Cuando el año se llena, vuelve sola al calendario completo de 53 semanas.
 
 Repos privados: el GITHUB_TOKEN de Actions solo ve lo público, salvo que el perfil tenga activado
 "Private contributions". Con ORA_TOKEN (token personal de la cuenta, scope `repo`) la consulta se hace
@@ -16,6 +20,7 @@ Además de los SVG escribe contributions.json, que lee el tablero 3D de portfoli
 
     ORA_TOKEN=... .venv/bin/python tools/build_ora.py --user cperez233 --out dist
     .venv/bin/python tools/build_ora.py --sample --out .preview   # datos falsos, solo para probar el diseño
+    .venv/bin/python tools/build_ora.py --json contributions.json --out .preview   # datos reales ya publicados
 """
 
 import argparse
@@ -43,7 +48,8 @@ MONTHS = {
 # Los puños entran desde fuera del cuadro (borde delantero en FRONT0 < 0), cruzan a velocidad constante y
 # salen por la derecha sin desvanecerse: TRAVEL deja incluso la estela fuera del lienzo.
 CYCLE, T0, DUR, TRAVEL, FRONT0, LEAD = 10.0, 0.3, 8.0, 1600, -20, 10
-GX, GY, PITCH, CELL = 70, 276, 20, 16
+# Cuadrícula: como mínimo NMIN semanas a lo ancho; las filas miden como mucho PMAX px
+NMIN, PMAX = 16, 44
 
 
 def graphql(query, variables, token):
@@ -82,6 +88,30 @@ def write_json(cal, path, private):
     }, separators=(",", ":")), encoding="utf-8")
 
 
+def calendar_from_json(path):
+    """Rehace el calendario desde un contributions.json ya publicado (solo para previsualizar)."""
+    data = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    counts = dict(data["days"])
+    last = datetime.datetime.fromisoformat(data["fetchedAt"]).date()
+    day = last.replace(year=last.year - 1)
+    nz = sorted(c for c in counts.values() if c)
+    q = [nz[int(len(nz) * f)] for f in (.25, .5, .75)] if nz else [1, 1, 1]
+    names = ["FIRST", "SECOND", "THIRD", "FOURTH"]
+    weeks, cur = [], []
+    while day <= last:
+        n = counts.get(day.isoformat(), 0)
+        lvl = "NONE" if not n else names[sum(n > v for v in q)] + "_QUARTILE"
+        wd = (day.weekday() + 1) % 7
+        if wd == 0 and cur:
+            weeks.append({"contributionDays": cur})
+            cur = []
+        cur.append({"date": day.isoformat(), "weekday": wd, "contributionCount": n, "contributionLevel": lvl})
+        day += datetime.timedelta(days=1)
+    weeks.append({"contributionDays": cur})
+    return {"totalContributions": data["total"], "weeks": weeks, "years": data.get("totals", {}),
+            "private": data.get("includesPrivate", False)}
+
+
 def sample_calendar():
     """Calendario inventado, solo para ver el diseño. Nunca se publica."""
     rnd, day = random.Random(11), datetime.date.today() - datetime.timedelta(days=364)
@@ -108,6 +138,8 @@ def num(n, lang):
 
 def stats(cal):
     days = [d for w in cal["weeks"] for d in w["contributionDays"]]
+    # (columna, fila) de cada día: la primera semana del calendario puede venir incompleta
+    pos = [(c, d["weekday"]) for c, w in enumerate(cal["weeks"]) for d in w["contributionDays"]]
     counts = [d["contributionCount"] for d in days]
     # racha más larga (como índices de `days`) y racha actual (hoy puede estar vacío todavía)
     best, run, best_span = 0, 0, (0, -1)
@@ -120,14 +152,15 @@ def stats(cal):
     while end - current >= 0 and counts[end - current]:
         current += 1
     top = max(counts)
-    return dict(days=days, cur_span=(end - current + 1, end) if current else None, total=cal["totalContributions"], active=sum(1 for c in counts if c), top=top, streak=best,
+    first_at = next((i for i, c in enumerate(counts) if c), None)
+    return dict(days=days, pos=pos, first_at=first_at, cur_span=(end - current + 1, end) if current else None, total=cal["totalContributions"], active=sum(1 for c in counts if c), top=top, streak=best,
                 current=current, span=best_span, top_at=counts.index(top) if top else None,
                 first=datetime.date.fromisoformat(days[0]["date"]), last=datetime.date.fromisoformat(days[-1]["date"]))
 
 
-def hit_time(col):
-    """Segundo del ciclo en que el puño líder llega a la columna `col`."""
-    return T0 + (GX + col * PITCH - LEAD - FRONT0) / (TRAVEL / DUR)
+def hit_time(x):
+    """Segundo del ciclo en que el puño líder llega a la coordenada `x`."""
+    return T0 + (x - LEAD - FRONT0) / (TRAVEL / DUR)
 
 
 def star(cx, cy, r_out=15, r_in=6, n=8):
@@ -163,147 +196,251 @@ def fist(t):
     return ghost + cuff + hand + knuckles + thumb
 
 
+def window(cal, st):
+    """Semanas que se dibujan. Si el año empezó vacío, la cuadrícula se acerca a donde hay golpes
+    (desde una semana antes del primero, mínimo NMIN semanas): así no queda medio cuadro vacío."""
+    n_all = len(cal["weeks"])
+    if st["first_at"] is None:
+        return 0
+    first_col = st["pos"][st["first_at"]][0]
+    return max(0, min(first_col - 1, n_all - NMIN))
+
+
+def odometer(face, s, x, y, size, fill, cid, tracking=0.0, delay=.25):
+    """El total como un contador que rueda hasta su cifra (una vuelta entera y luego el dígito).
+    La cifra final queda en su sitio sin animación: con prefers-reduced-motion se ve quieta."""
+    step, parts, keys, xx = size * 1.25, [], [], x
+    digits = [i for i, ch in enumerate(s) if ch.isdigit()]
+    for i, ch in enumerate(s):
+        w = face.width(ch, size)
+        if ch.isdigit():
+            seq = list(range(10)) + list(range(int(ch) + 1))
+            n = len(seq)
+            strip = "".join(face.text(str(k), xx + w / 2, y - (n - 1 - j) * step, size, fill, anchor="middle")
+                            for j, k in enumerate(seq))
+            k = digits.index(i)
+            parts.append(f'<g class="odo" style="animation-name:odo{k};animation-delay:{delay + k * .14:.2f}s">{strip}</g>')
+            keys.append(f"@keyframes odo{k}{{from{{transform:translateY({(n - 1) * step:.0f}px)}}}}")
+        else:
+            parts.append(face.text(ch, xx, y, size, fill))
+        xx += w + tracking
+    clip = (f'<defs><clipPath id="{cid}"><rect x="{x - 12}" y="{y - size * .92:.0f}" width="{xx - x + 24:.0f}" '
+            f'height="{size * .97:.0f}"/></clipPath></defs>')
+    return clip + f'<g clip-path="url(#{cid})">{"".join(parts)}</g>', "".join(keys)
+
+
 def ora(cal, t, lang, anton, dela, arch, arch_r):
     st = stats(cal)
     private = cal.get("private", False)
-    W, H = 1200, 510
+    W = 1200
     ink, acc, bg = t["ink"], t["accent"], t["bg"]
     copy = {
-        "en": ("CONTRIBUTIONS", "contributions in the last year", ["ACTIVE DAYS", "BEST DAY", "LONGEST STREAK", "CURRENT STREAK"],
-               "Less", "More", "Public and private repos. Private work counts here; its code stays private."
-               if private else "GitHub only counts what it can see; most client work stays in private repos."),
-        "es": ("CONTRIBUCIONES", "contribuciones en el último año", ["DÍAS ACTIVOS", "MEJOR DÍA", "RACHA MÁS LARGA", "RACHA ACTUAL"],
-               "Menos", "Más", "Repos públicos y privados. Lo privado cuenta aquí; su código sigue privado."
-               if private else "GitHub solo cuenta lo que ve; casi todo el trabajo de clientes está en repos privados."),
+        "en": dict(title="CONTRIBUTIONS", year="contributions in the last year", since="contributions since {d}",
+                   in_days="in {n} days", in_day="today", labels=["ACTIVE DAYS", "BEST DAY", "PER ACTIVE DAY"],
+                   pct="{p}% of the days", avg="on average", rush="THE RUSH BEGINS", less="Less", more="More",
+                   note="Public and private repos. Private work counts here; its code stays private."
+                   if private else "GitHub only counts what it can see; most client work stays in private repos."),
+        "es": dict(title="CONTRIBUCIONES", year="contribuciones en el último año", since="contribuciones desde el {d}",
+                   in_days="en {n} días", in_day="hoy", labels=["DÍAS ACTIVOS", "MEJOR DÍA", "POR DÍA ACTIVO"],
+                   pct="{p}% de los días", avg="en promedio", rush="EMPIEZA LA RÁFAGA", less="Menos", more="Más",
+                   note="Repos públicos y privados. Lo privado cuenta aquí; su código sigue privado."
+                   if private else "GitHub solo cuenta lo que ve; casi todo el trabajo de clientes está en repos privados."),
     }[lang]
     m = MONTHS[lang]
-    span = f'{m[st["first"].month - 1]} {st["first"].year} – {m[st["last"].month - 1]} {st["last"].year}'
-    weeks = cal["weeks"]
+    days, pos = st["days"], st["pos"]
 
-    b = [f'<rect width="{W}" height="{H}" fill="{bg}"/>', halftone(t, "ho", 1030, 110, 300)]
+    # Ventana y geometría: columnas que llenan el ancho, filas de como mucho PMAX px
+    w0 = window(cal, st)
+    weeks = cal["weeks"][w0:]
+    n = len(weeks)
+    px = (W - 88) / n
+    py = min(px, PMAX)
+    gap = max(4, round(py * .12))
+    cw, ch = px - gap, py - gap
+    big = py >= 30  # celdas grandes: número dentro, trazos más gruesos
+    since = st["first_at"] is not None and st["first_at"] > 30
+    GX, GY = 44, 330 if since else 312
+    grid_bottom = GY + 7 * py - gap
+
+    def xy(i):
+        c, wd = pos[i]
+        return GX + (c - w0) * px, GY + wd * py
+
+    # Desde el primer golpe (si el año empezó vacío) o el año entero
+    first_d = datetime.date.fromisoformat(days[st["first_at"]]["date"]) if st["first_at"] is not None else st["first"]
+    win_first = datetime.date.fromisoformat(weeks[0]["contributionDays"][0]["date"])
+    span = (f'{m[win_first.month - 1]} {win_first.year} – ' if win_first.year != st["last"].year else f'{m[win_first.month - 1]} – ')
+    span += f'{m[st["last"].month - 1]} {st["last"].year}'
+
+    b = [f'<rect width="{W}" height="{{H}}" fill="{bg}"/>', halftone(t, "ho", 1030, 110, 300)]
     b.append(f'<rect x="0" y="0" width="{W}" height="3" fill="{ink}"/>')
-    b.append(anton.text(copy[0], 44, 58, 24, acc, tracking=3))
-    b.append(dela.text("オラオラ", 44 + anton.width(copy[0], 24, 3) + 20, 57, 17, t["muted"], tracking=3))
+    b.append(anton.text(copy["title"], 44, 58, 24, acc, tracking=3))
+    b.append(dela.text("オラオラ", 44 + anton.width(copy["title"], 24, 3) + 20, 57, 17, t["muted"], tracking=3))
     b.append(arch_r.text(span, 1156, 58, 16, t["muted"], anchor="end"))
 
-    # El número grande, como el contador de golpes
-    big = num(st["total"], lang)
-    b.append(anton.text(big, 40, 180, 116, ink, tracking=1))
-    b.append(f'<rect x="44" y="196" width="56" height="4" fill="{ink}"/>')
-    b.append(arch.text(copy[1], 44, 232, 21, ink))
+    # El total rueda como un contador de golpes
+    total_s = num(st["total"], lang)
+    odo, odo_keys = odometer(anton, total_s, 40, 184, 120, ink, f"odo{lang}{t['bg'][1:]}", tracking=1)
+    b.append(odo)
+    b.append(f'<rect x="44" y="202" width="56" height="4" fill="{acc}"/>')
+    if since:
+        n_days = (st["last"] - first_d).days + 1
+        b.append(arch.text(copy["since"].format(d=fmt_day(first_d, lang)), 44, 238, 21, ink))
+        b.append(arch_r.text(copy["in_days"].format(n=n_days) if n_days > 1 else copy["in_day"], 44, 264, 17, t["muted"]))
+    else:
+        n_days = len(days)
+        b.append(arch.text(copy["year"], 44, 238, 21, ink))
 
-    # Dos cifras grandes (las rachas viven en su propia tarjeta, justo debajo)
-    vals = [num(st["active"], lang), str(st["top"])]
-    for i, (v, label) in enumerate(zip(vals, copy[2][:2])):
-        x = 560 + i * 280
-        b.append(anton.text(v, x, 158, 88, acc))
+    # Tres cifras: días activos, mejor día y golpes por día activo
+    avg = st["total"] / max(st["active"], 1)
+    avg_s = num(round(avg), lang) if avg >= 10 else f"{avg:.1f}".replace(".", "," if lang == "es" else ".")
+    best_d = fmt_day(datetime.date.fromisoformat(days[st["top_at"]]["date"]), lang) if st["top_at"] is not None else "—"
+    vals = [num(st["active"], lang), num(st["top"], lang), avg_s]
+    subs = [copy["pct"].format(p=round(100 * st["active"] / max(n_days, 1))), best_d, copy["avg"]]
+    for i, (v, label, sub) in enumerate(zip(vals, copy["labels"], subs)):
+        x = 560 + i * 210
+        b.append(f'<g class="pop" style="animation-delay:{.35 + i * .15:.2f}s">{anton.text(v, x, 158, 88, acc)}</g>')
         b.append(f'<rect x="{x}" y="174" width="44" height="3" fill="{ink}"/>')
-        b.append(arch.text(label, x, 204, 14, t["muted"], tracking=1.4))
+        b.append(arch.text(label, x, 204, 14, ink, tracking=1.4))
+        b.append(arch_r.text(sub, x, 228, 15, t["muted"]))
 
-    # Cuadrícula: 53 semanas × 7 días, cada columna entra como una ráfaga
-    fills = {1: (acc, .35), 2: (acc, .65), 3: (acc, 1), 4: (ink, 1)}
-    s0, s1 = st["span"]
-    combo = st["streak"] >= 3
-
-    cells, fx, marks, last_month = [], [], [], None
+    # Meses arriba de la cuadrícula (sin pisarse)
+    size_m = 16 if big else 13
+    marks, last_month = [], None
     for c, week in enumerate(weeks):
         mo = datetime.date.fromisoformat(week["contributionDays"][0]["date"]).month
         if mo != last_month:
-            if c <= len(weeks) - 3:
-                if marks and c - marks[-1][0] < 3:
+            x = GX + c * px
+            if GX + n * px - x >= 40:
+                if marks and x - marks[-1][0] < 56:
                     marks.pop()
-                marks.append((c, m[mo - 1]))
+                marks.append((x, m[mo - 1]))
             last_month = mo
-        col = []
-        for d in week["contributionDays"]:
-            wd, lvl = d["weekday"], LEVELS.get(d["contributionLevel"], 0)
-            x, y = GX + c * PITCH, GY + wd * PITCH
-            if lvl == 0:
-                col.append(f'<rect x="{x}" y="{y}" width="{CELL}" height="{CELL}" fill="{ink}" fill-opacity=".08"/>')
-                continue
-            f, op = fills[lvl]
-            edge = f' stroke="{ink}" stroke-width="2"' if lvl >= 3 else ""
-            hit = hit_time(c)
-            cls = "p2" if combo and s0 <= c * 7 + wd <= s1 else "p"
-            col.append(f'<rect class="{cls}" style="animation-delay:{hit:.2f}s" x="{x}" y="{y}" width="{CELL}" '
-                       f'height="{CELL}" fill="{f}" fill-opacity="{op}"{edge}/>')
-            fx.append(f'<polygon class="ix" style="animation-delay:{hit:.2f}s" points="{star(x + CELL / 2, y + CELL / 2)}" fill="{ink}"/>')
-            if lvl >= 3:  # aura: pulso lento que sale del cuadro
-                fx.append(f'<rect class="au" style="animation-delay:{(c * 7 + wd) % 11 * .21:.2f}s" x="{x}" y="{y}" '
-                          f'width="{CELL}" height="{CELL}" fill="none" stroke="{acc}" stroke-width="2"/>')
-        cells.append(f'<g class="col" style="animation-delay:{c * 0.025:.3f}s">{"".join(col)}</g>')
+    b += [arch.text(name, x, GY - 14, size_m, t["muted"]) for x, name in marks]
 
-    b += [arch.text(name, GX + c * PITCH, GY - 12, 13, t["muted"]) for c, name in marks]
+    # Empieza la ráfaga: línea en el primer golpe cuando hay semanas vacías antes
+    if st["first_at"] is not None:
+        fx0, fy0 = xy(st["first_at"])
+        if fx0 - GX >= px * .9:
+            lx = fx0 - gap / 2
+            label = f'{copy["rush"]} · {fmt_day(first_d, lang).upper()}'
+            lw = anton.width(label, 15, 2)
+            tx = min(lx + 10, GX + n * px - lw)
+            b.append(f'<path d="M{lx:.1f} {GY - 54}V{grid_bottom + 6}" stroke="{acc}" stroke-width="2" stroke-dasharray="5 4"/>')
+            b.append(f'<path d="M{lx - 6:.1f} {GY - 54}h12" stroke="{acc}" stroke-width="2.5"/>')
+            b.append(anton.text(label, tx, GY - 41, 15, acc, tracking=2))
+
+    # Cuadrícula: cada columna entra como una ráfaga; los días fuertes llevan su cifra
+    fills = {1: (acc, .35), 2: (acc, .65), 3: (acc, 1), 4: (ink, 1)}
+    s0, s1 = st["span"]
+    combo = st["streak"] >= 3
+    sw = 3 if big else 2
+    cols = [[] for _ in range(n)]
+    fx = []
+    for i, d in enumerate(days):
+        c = pos[i][0] - w0
+        if c < 0:
+            continue
+        x, y = xy(i)
+        lvl = LEVELS.get(d["contributionLevel"], 0)
+        if lvl == 0:
+            cols[c].append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{cw:.1f}" height="{ch:.1f}" fill="{ink}" fill-opacity=".08"/>')
+            continue
+        f, op = fills[lvl]
+        edge = f' stroke="{ink}" stroke-width="{sw}"' if lvl >= 3 else ""
+        hit = hit_time(x)
+        cls = "p2" if combo and s0 <= i <= s1 else "p"
+        inner = f'<rect x="{x:.1f}" y="{y:.1f}" width="{cw:.1f}" height="{ch:.1f}" fill="{f}" fill-opacity="{op}"{edge}/>'
+        if big and lvl >= 3:
+            fs = min(ch * .56, cw * .5)
+            inner += anton.text(str(d["contributionCount"]), x + cw / 2, y + ch / 2 + fs * .37, fs, bg, anchor="middle")
+        cols[c].append(f'<g class="{cls}" style="animation-delay:{hit:.2f}s">{inner}</g>')
+        k = min(cw, ch) / 16
+        fx.append(f'<polygon class="ix" style="animation-delay:{hit:.2f}s" points="{star(x + cw / 2, y + ch / 2, 15 * k, 6 * k)}" fill="{ink}"/>')
+        if lvl >= 3:  # aura: pulso lento que sale del cuadro
+            fx.append(f'<rect class="au" style="animation-delay:{i % 11 * .21:.2f}s" x="{x:.1f}" y="{y:.1f}" '
+                      f'width="{cw:.1f}" height="{ch:.1f}" fill="none" stroke="{acc}" stroke-width="{sw}"/>')
+    cells = [f'<g class="col" style="animation-delay:{c * (0.025 if n > 30 else .06):.3f}s">{"".join(col)}</g>' for c, col in enumerate(cols)]
     b.append(f'<g class="shake">{"".join(cells)}{"".join(fx)}</g>')
 
     # Mejor día: marco discontinuo que respira
-    if st["top_at"] is not None:
-        c, wd = divmod(st["top_at"], 7)
-        b.append(f'<rect class="bd" x="{GX + c * PITCH - 4}" y="{GY + wd * PITCH - 4}" width="{CELL + 8}" height="{CELL + 8}" '
+    if st["top_at"] is not None and pos[st["top_at"]][0] >= w0:
+        x, y = xy(st["top_at"])
+        o = 4 if not big else 6
+        b.append(f'<rect class="bd" x="{x - o:.1f}" y="{y - o:.1f}" width="{cw + 2 * o:.1f}" height="{ch + 2 * o:.1f}" '
                  f'fill="none" stroke="{ink}" stroke-width="2" stroke-dasharray="4 3"/>')
 
     # Combo: llave bajo la racha más larga
-    if combo:
-        c0, c1 = s0 // 7, s1 // 7
-        x0, x1 = GX + c0 * PITCH, GX + c1 * PITCH + CELL
-        yb = GY + 7 * PITCH + 10
+    if combo and pos[s0][0] >= w0:
+        x0 = xy(s0)[0]
+        x1 = xy(s1)[0] + cw
+        yb = grid_bottom + 12
         label = f'COMBO X{st["streak"]}'
         half = anton.width(label, 18, 2) / 2
-        mid = min(max((x0 + x1) / 2, GX + half), GX + 53 * PITCH - half)
-        b.append(f'<path d="M{x0} {yb - 6}V{yb}H{x1}V{yb - 6}" fill="none" stroke="{acc}" stroke-width="2.5" stroke-linejoin="round"/>')
-        b.append(f'<g class="cb" style="animation-delay:{hit_time(c1):.2f}s">{anton.text(label, mid, yb + 24, 18, ink, tracking=2, anchor="middle")}</g>')
+        mid = min(max((x0 + x1) / 2, GX + half), GX + n * px - half)
+        b.append(f'<path d="M{x0:.1f} {yb - 6}V{yb}H{x1:.1f}V{yb - 6}" fill="none" stroke="{acc}" stroke-width="2.5" stroke-linejoin="round"/>')
+        b.append(f'<g class="cb" style="animation-delay:{hit_time(xy(s1)[0]):.2f}s">{anton.text(label, mid, yb + 24, 18, ink, tracking=2, anchor="middle")}</g>')
 
     # Los puños van encima de la cuadrícula: ráfagas en tres filas, el líder marca el ritmo
     glyphs = "オラオラ"
     gw = dela.width(glyphs, 22, 2)
+    sc = min(1.5, max(1, py / 26))
     for k, row in enumerate((1, 3, 5)):
-        y = GY + row * PITCH + CELL / 2
-        x = FRONT0 - 8 - k * 40
+        y = GY + row * py + ch / 2
+        x = FRONT0 - 8 * sc - k * 40 * sc
         lines = "".join(f'<rect x="{-58 - gw - 70 + j * 18:.0f}" y="{-8 + j * 8}" width="{62 - j * 14}" height="2.5" '
                         f'fill="{acc}" fill-opacity=".7"/>' for j in range(3))
         glyph = (f'<path d="{dela.path(glyphs, -58, 8, 22, 2, anchor="end")}" fill="{acc}" stroke="{bg}" '
                  f'stroke-width="3.5" stroke-linejoin="round" paint-order="stroke"/>')
-        b.append(f'<g transform="translate({x} {y})"><g class="sw"><g class="ln">{lines}</g>'
+        b.append(f'<g transform="translate({x:.1f} {y:.1f}) scale({sc:.2f})"><g class="sw" style="animation-name:sweep{k}"><g class="ln">{lines}</g>'
                  f'<g class="bob" style="animation-delay:-{k * .11:.2f}s">{glyph}{fist(t)}</g></g></g>')
 
     # Leyenda y nota
-    ly = GY + 7 * PITCH + 56
-    b.append(arch_r.text(copy[5], 44, ly + 12, 14, t["muted"]))
-    lx = 1156 - 5 * PITCH - arch_r.width(copy[4], 14) - 14
+    ly = grid_bottom + 58
+    H = ly + 40
+    b.append(arch_r.text(copy["note"], 44, ly + 12, 14, t["muted"]))
+    lx = 1156 - 5 * 20 - arch_r.width(copy["more"], 14) - 14
 
     def key_square(x, lvl):
         if lvl == 0:
-            return f'<rect x="{x}" y="{ly}" width="{CELL}" height="{CELL}" fill="{ink}" fill-opacity=".08"/>'
+            return f'<rect x="{x}" y="{ly}" width="16" height="16" fill="{ink}" fill-opacity=".08"/>'
         f, op = fills[lvl]
         edge = f' stroke="{ink}" stroke-width="2"' if lvl >= 3 else ""
-        return f'<rect x="{x}" y="{ly}" width="{CELL}" height="{CELL}" fill="{f}" fill-opacity="{op}"{edge}/>'
+        return f'<rect x="{x}" y="{ly}" width="16" height="16" fill="{f}" fill-opacity="{op}"{edge}/>'
 
-    b.append(arch_r.text(copy[4], 1156, ly + 12, 14, t["muted"], anchor="end"))
-    b += [key_square(lx + lvl * PITCH, lvl) for lvl in range(5)]
-    b.append(arch_r.text(copy[3], lx - 10, ly + 12, 14, t["muted"], anchor="end"))
+    b.append(arch_r.text(copy["more"], 1156, ly + 12, 14, t["muted"], anchor="end"))
+    b += [key_square(lx + lvl * 20, lvl) for lvl in range(5)]
+    b.append(arch_r.text(copy["less"], lx - 10, ly + 12, 14, t["muted"], anchor="end"))
+    b[0] = b[0].replace("{H}", f"{H:.0f}")
 
     p0, p1 = T0 / CYCLE * 100, (T0 + DUR) / CYCLE * 100
+    # Cada fila de puños se escala distinto: el recorrido en su sistema de coordenadas se compensa
+    sweeps = "".join(f"@keyframes sweep{k}{{0%,{p0:.2f}%{{transform:translateX(0)}}{p1:.2f}%,100%{{transform:translateX({TRAVEL / sc:.0f}px)}}}}"
+                     for k in range(3))
     style = (
         ".col{transform-box:fill-box;transform-origin:bottom;animation:col .5s cubic-bezier(.2,.9,.2,1.2) both}"
         "@keyframes col{from{opacity:0;transform:translateX(-10px) scaleY(.4)}}"
+        ".odo{animation-duration:1.7s;animation-timing-function:cubic-bezier(.12,.8,.18,1);animation-fill-mode:both}" + odo_keys +
+        ".pop{transform-box:fill-box;transform-origin:left bottom;animation:pop .6s cubic-bezier(.2,.9,.2,1.4) both}"
+        "@keyframes pop{from{opacity:0;transform:scale(.4) rotate(-6deg)}}"
         # golpe normal, golpe de combo, destello de impacto y aura
         f".p,.p2{{transform-box:fill-box;transform-origin:center;animation:punch {CYCLE}s linear infinite}}"
         ".p2{animation-name:punch2}"
-        "@keyframes punch{0%,5%,100%{transform:none}1.2%{transform:scale(1.55) rotate(-8deg)}"
-        "2.6%{transform:scale(.8) rotate(4deg)}3.8%{transform:scale(1.12)}}"
-        "@keyframes punch2{0%,6%,100%{transform:none}1.2%{transform:scale(2) rotate(-12deg)}"
-        "2.8%{transform:scale(.7) rotate(6deg)}4.4%{transform:scale(1.2)}}"
+        # celdas grandes: golpe más corto, que no tape a las vecinas
+        f"@keyframes punch{{0%,5%,100%{{transform:none}}1.2%{{transform:scale({1.22 if big else 1.55}) rotate(-{4 if big else 8}deg)}}"
+        f"2.6%{{transform:scale(.86) rotate(3deg)}}3.8%{{transform:scale(1.06)}}}}"
+        f"@keyframes punch2{{0%,6%,100%{{transform:none}}1.2%{{transform:scale({1.38 if big else 2}) rotate(-{6 if big else 12}deg)}}"
+        f"2.8%{{transform:scale(.8) rotate(5deg)}}4.4%{{transform:scale(1.12)}}}}"
         f".ix{{opacity:0;transform-box:fill-box;transform-origin:center;animation:ix {CYCLE}s linear infinite}}"
         "@keyframes ix{0%,5%,100%{opacity:0;transform:scale(.3)}.4%{opacity:.95;transform:scale(.7)}"
         "2.2%{opacity:0;transform:scale(1.5)}}"
         ".au{opacity:0;transform-box:fill-box;transform-origin:center;animation:au 2.4s ease-out infinite}"
-        "@keyframes au{0%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(1.9)}}"
+        "@keyframes au{0%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(1.5)}}"
         ".bd{animation:bd 1.6s ease-in-out infinite}@keyframes bd{0%,100%{opacity:1}50%{opacity:.3}}"
         f".cb{{transform-box:fill-box;transform-origin:center;animation:cb {CYCLE}s linear infinite}}"
         "@keyframes cb{0%,8%,100%{transform:none}1.5%{transform:scale(1.7)}3.5%{transform:scale(.9)}5%{transform:scale(1.15)}}"
         # puños y temblor
-        f".sw{{animation:sweep {CYCLE}s linear infinite}}"
-        f"@keyframes sweep{{0%,{p0:.2f}%{{transform:translateX(0)}}{p1:.2f}%,100%{{transform:translateX({TRAVEL}px)}}}}"
+        f".sw{{animation-duration:{CYCLE}s;animation-timing-function:linear;animation-iteration-count:infinite}}" + sweeps +
         # vaivén de golpe del puño y estela de líneas que parpadea
         ".bob{transform-box:fill-box;transform-origin:center;animation:bob .32s ease-in-out infinite alternate}"
         "@keyframes bob{from{transform:translateY(-2px) rotate(-3deg)}to{transform:translateY(2px) rotate(3deg)}}"
@@ -311,13 +448,14 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
         "@keyframes ln{from{opacity:.35;transform:translateX(-6px)}to{opacity:1;transform:translateX(5px)}}"
         f".shake{{animation:shake {CYCLE}s steps(1,end) infinite}}" + shake_keyframes()
     )
+    since_txt = {"en": f" since {fmt_day(first_d, 'en')}", "es": f" desde el {fmt_day(first_d, 'es')}"}[lang] if since else ""
     label = {
-        "en": f'Contribution graph: {st["total"]} contributions in the last year, {st["active"]} active days, '
-              f'longest streak {st["streak"]} days, current streak {st["current"]}.',
-        "es": f'Gráfica de contribuciones: {st["total"]} contribuciones en el último año, {st["active"]} días activos, '
-              f'racha más larga de {st["streak"]} días, racha actual de {st["current"]}.',
+        "en": f'Contribution graph: {st["total"]} contributions{since_txt or " in the last year"}, {st["active"]} active days, '
+              f'best day {st["top"]}, longest streak {st["streak"]} days, current streak {st["current"]}.',
+        "es": f'Gráfica de contribuciones: {st["total"]} contribuciones{since_txt or " en el último año"}, {st["active"]} días activos, '
+              f'mejor día {st["top"]}, racha más larga de {st["streak"]} días, racha actual de {st["current"]}.',
     }[lang]
-    return svg(W, H, label, "".join(b), style)
+    return svg(W, int(H), label, "".join(b), style)
 
 
 def fmt_day(d, lang):
@@ -334,15 +472,19 @@ FLAME = ("M0 -15C3 -9 10 -5 10 3C10 10 5 15 0 15C-5 15 -10 10 -10 3C-10 -1 -7 -4
 
 
 def streak_card(cal, t, lang, anton, dela, arch, arch_r):
-    """Rachas: la actual en un anillo, la más larga en grande y los últimos 30 días en una tira."""
+    """Rachas: la actual en un anillo (lleno = igualar el récord), la más larga en grande con la
+    intensidad de cada día debajo, y los últimos 30 días en una tira."""
     st = stats(cal)
     days = st["days"]
     W, H = 1200, 262
     ink, acc, bg = t["ink"], t["accent"], t["bg"]
     copy = {
-        "en": ("CURRENT STREAK", "LONGEST STREAK", "LAST 30 DAYS", "DAYS", "No active streak", "active days"),
-        "es": ("RACHA ACTUAL", "RACHA MÁS LARGA", "ÚLTIMOS 30 DÍAS", "DÍAS", "Sin racha activa", "días activos"),
+        "en": ("CURRENT STREAK", "LONGEST STREAK", "LAST 30 DAYS", "DAYS", "No active streak", "active days",
+               "{n} more to beat the record", "NEW RECORD", "contributions", "today"),
+        "es": ("RACHA ACTUAL", "RACHA MÁS LARGA", "ÚLTIMOS 30 DÍAS", "DÍAS", "Sin racha activa", "días activos",
+               "{n} más para batir el récord", "NUEVO RÉCORD", "contribuciones", "hoy"),
     }[lang]
+    counts = [d["contributionCount"] for d in days]
     b = [f'<rect width="{W}" height="{H}" fill="{bg}"/>', halftone(t, "hk", 600, 120, 420)]
     b.append(f'<rect x="0" y="0" width="{W}" height="3" fill="{ink}"/>')
     for x in (420, 820):
@@ -362,6 +504,14 @@ def streak_card(cal, t, lang, anton, dela, arch, arch_r):
     b.append(anton.text(str(st["current"]), cx, cy + 26, 76, ink, anchor="middle"))
     b.append(anton.text(copy[0], cx, 216, 21, acc, tracking=2.5, anchor="middle"))
     sub = span_text(days, st["cur_span"], lang) if st["cur_span"] else copy[4]
+    if st["current"] and st["current"] >= st["streak"]:
+        # la racha actual es la más larga: sello de récord junto al anillo
+        rec = copy[7]
+        rw = anton.width(rec, 15, 2) + 20
+        b.append(f'<g class="rec" transform="translate({cx + r + 8} {cy - 26}) rotate(-8)"><rect x="0" y="-14" width="{rw:.0f}" '
+                 f'height="26" fill="{acc}" stroke="{ink}" stroke-width="2"/>{anton.text(rec, 10, 6, 15, bg, tracking=2)}</g>')
+    elif st["current"]:
+        sub += " · " + copy[6].format(n=st["streak"] - st["current"] + 1)
     b.append(arch_r.text(sub, cx, 241, 15, t["muted"], anchor="middle"))
 
     # B · racha más larga, en grande
@@ -371,10 +521,22 @@ def streak_card(cal, t, lang, anton, dela, arch, arch_r):
     x0 = mx - (nw + 16 + uw) / 2
     b.append(anton.text(num_s, x0, 150, 128, ink, tracking=1))
     b.append(anton.text(copy[3], x0 + nw + 16, 150, 26, acc, tracking=2))
-    b.append(f'<rect x="{mx - 22}" y="168" width="44" height="3" fill="{ink}"/>')
     b.append(anton.text(copy[1], mx, 216, 21, acc, tracking=2.5, anchor="middle"))
     if st["streak"]:
-        b.append(arch_r.text(span_text(days, st["span"], lang), mx, 241, 15, t["muted"], anchor="middle"))
+        # una barra por día de la racha, alta según cuántos golpes hubo ese día
+        run = counts[st["span"][0]:st["span"][1] + 1][-40:]
+        top = max(run)
+        bw = min(16, (240 - 3 * (len(run) - 1)) / len(run))
+        bx = mx - (len(run) * (bw + 3) - 3) / 2
+        for j, c in enumerate(run):
+            h = 3 + 15 * c / top
+            fill = ink if c == top else acc
+            b.append(f'<rect class="bar" style="animation-delay:{.3 + j * .05:.2f}s" x="{bx + j * (bw + 3):.1f}" y="{186 - h:.1f}" '
+                     f'width="{bw:.1f}" height="{h:.1f}" fill="{fill}"/>')
+        hits = sum(run)
+        b.append(arch_r.text(f'{span_text(days, st["span"], lang)} · {num(hits, lang)} {copy[8]}', mx, 241, 15, t["muted"], anchor="middle"))
+    else:
+        b.append(f'<rect x="{mx - 22}" y="168" width="44" height="3" fill="{ink}"/>')
 
     # C · últimos 30 días: 3 filas × 10, el hoy es el último cuadro
     last = days[-30:]
@@ -392,9 +554,15 @@ def streak_card(cal, t, lang, anton, dela, arch, arch_r):
             edge = f' stroke="{ink}" stroke-width="2.2"' if (len(days) - 30 + i) in cur else ""
             rect = f'<rect x="{x:.0f}" y="{y}" width="{cell}" height="{cell}" fill="{f}" fill-opacity="{op}"{edge}/>'
         b.append(f'<g class="dot" style="animation-delay:{i * .03:.2f}s">{rect}</g>')
+    # hoy: el último cuadro late
+    x, y = gx0 + 9 * pitch, gy0 + 2 * pitch
+    b.append(f'<rect class="today" x="{x - 4:.0f}" y="{y - 4}" width="{cell + 8}" height="{cell + 8}" fill="none" '
+             f'stroke="{acc}" stroke-width="2" stroke-dasharray="4 3"/>')
+    b.append(arch_r.text(copy[9], x + cell / 2, y + cell + 22, 13, t["muted"], anchor="middle"))
     active = sum(1 for d in last if d["contributionCount"])
+    month_hits = sum(d["contributionCount"] for d in last)
     b.append(anton.text(copy[2], 988, 216, 21, acc, tracking=2.5, anchor="middle"))
-    b.append(arch_r.text(f"{active} {copy[5]}", 988, 241, 15, t["muted"], anchor="middle"))
+    b.append(arch_r.text(f"{active} {copy[5]} · {num(month_hits, lang)} {copy[8]}", 988, 241, 15, t["muted"], anchor="middle"))
 
     style = (
         ".fl{transform-box:fill-box;transform-origin:50% 100%;animation:fl 1.1s ease-in-out infinite}"
@@ -403,6 +571,10 @@ def streak_card(cal, t, lang, anton, dela, arch, arch_r):
         "@keyframes ring{from{stroke-dasharray:0 1000}}"
         ".dot{transform-box:fill-box;transform-origin:center;animation:dot .45s cubic-bezier(.2,.9,.2,1.3) both}"
         "@keyframes dot{from{opacity:0;transform:scale(.3)}}"
+        ".bar{transform-box:fill-box;transform-origin:bottom;animation:bar .5s cubic-bezier(.2,.9,.2,1.3) both}"
+        "@keyframes bar{from{transform:scaleY(0)}}"
+        ".today{animation:bd 1.6s ease-in-out infinite}@keyframes bd{0%,100%{opacity:1}50%{opacity:.25}}"
+        ".rec{animation:rec 2.4s ease-in-out infinite}@keyframes rec{0%,100%{opacity:1}50%{opacity:.75}}"
     )
     label = {
         "en": f'Streaks: current {st["current"]} days, longest {st["streak"]} days. {active} active days in the last 30.',
@@ -416,9 +588,12 @@ def main():
     ap.add_argument("--user", default=os.environ.get("GITHUB_REPOSITORY_OWNER", "cperez233"))
     ap.add_argument("--out", default="dist")
     ap.add_argument("--sample", action="store_true", help="datos inventados para probar el diseño")
+    ap.add_argument("--json", help="rehace el calendario desde un contributions.json (previsualizar con datos reales)")
     args = ap.parse_args()
 
-    if args.sample:
+    if args.json:
+        cal = calendar_from_json(args.json)
+    elif args.sample:
         cal = sample_calendar()
         cal["private"] = True
     else:

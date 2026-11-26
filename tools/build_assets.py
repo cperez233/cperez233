@@ -298,6 +298,12 @@ PARTS = {
     "part-3": (3, {"en": "ARSENAL", "es": "ARSENAL"}, "武器"),
     "part-4": (4, {"en": "ORA ORA ORA", "es": "ORA ORA ORA"}, "オラオラ"),
 }
+# Bajada y ゴゴゴ de algunas partes: (texto por idioma, puntos de ゴ como en menacing())
+PART_EXTRA = {
+    "part-4": ({"en": "Every contribution is a punch. Redrawn every day.",
+                "es": "Cada contribución es un golpe. Se redibuja cada día."},
+               [(925, 70, 30, -10), (968, 98, 24, 6), (1006, 62, 20, -4)]),
+}
 
 
 def part(key):
@@ -311,7 +317,16 @@ def part(key):
         b.append(dela.text(kana, 1156, 104, 24, t["accent"], tracking=4, anchor="end"))
         b.append(f'<rect x="44" y="118" width="{W - 88}" height="4" fill="{t["ink"]}"/>')
         label = f'{"Part" if lang == "en" else "Parte"} {num} — {title[lang].title()}'
-        return svg(W, H, label, "".join(b))
+        style = ""
+        if key in PART_EXTRA:
+            sub, spots = PART_EXTRA[key]
+            x = 40 + anton.width(title[lang], 66, 1) + 28
+            b.append(f'<rect x="{x:.0f}" y="62" width="3" height="42" fill="{t["accent"]}"/>')
+            b.append(arch_r.text(sub[lang], x + 16, 98, 18, t["muted"]))
+            b.append(menacing(dela, t, spots))
+            label += f'. {sub[lang]}'
+            style = GO_CSS
+        return svg(W, H, label, "".join(b), style)
 
     return build
 
