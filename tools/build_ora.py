@@ -32,7 +32,7 @@ import pathlib
 import random
 import urllib.request
 
-from build_assets import THEMES, Face, fetch_fonts, halftone, svg
+from build_assets import GO_CSS, THEMES, Face, fetch_fonts, halftone, menacing, svg
 
 QUERY = """query($login: String!) { user(login: $login) { contributionsCollection {
   contributionYears restrictedContributionsCount
@@ -206,8 +206,9 @@ def window(cal, st):
     return max(0, min(first_col - 1, n_all - NMIN))
 
 
-def odometer(face, s, x, y, size, fill, cid, tracking=0.0, delay=.25):
-    """El total como un contador que rueda hasta su cifra (una vuelta entera y luego el dígito).
+def odometer(face, s, x, y, size, fill, cid, tracking=0.0):
+    """El total como un contador que rueda hasta su cifra (una vuelta entera y luego el dígito), al
+    principio de cada ciclo: así se ve aunque la imagen haya cargado antes de llegar a ella.
     La cifra final queda en su sitio sin animación: con prefers-reduced-motion se ve quieta."""
     step, parts, keys, xx = size * 1.25, [], [], x
     digits = [i for i, ch in enumerate(s) if ch.isdigit()]
@@ -219,8 +220,10 @@ def odometer(face, s, x, y, size, fill, cid, tracking=0.0, delay=.25):
             strip = "".join(face.text(str(k), xx + w / 2, y - (n - 1 - j) * step, size, fill, anchor="middle")
                             for j, k in enumerate(seq))
             k = digits.index(i)
-            parts.append(f'<g class="odo" style="animation-name:odo{k};animation-delay:{delay + k * .14:.2f}s">{strip}</g>')
-            keys.append(f"@keyframes odo{k}{{from{{transform:translateY({(n - 1) * step:.0f}px)}}}}")
+            a, z = 1 + k * 1.6, 17 + k * 1.6  # % del ciclo: arranca y se asienta
+            parts.append(f'<g class="odo" style="animation-name:odo{k}">{strip}</g>')
+            keys.append(f"@keyframes odo{k}{{0%,{a:.1f}%{{transform:translateY({(n - 1) * step:.0f}px)}}"
+                        f"{z:.1f}%,100%{{transform:none}}}}")
         else:
             parts.append(face.text(ch, xx, y, size, fill))
         xx += w + tracking
@@ -281,7 +284,11 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
     # El total rueda como un contador de golpes
     total_s = num(st["total"], lang)
     odo, odo_keys = odometer(anton, total_s, 40, 184, 120, ink, f"odo{lang}{t['bg'][1:]}", tracking=1)
-    b.append(odo)
+    b.append(f'<g class="slam">{odo}</g>')
+    # ゴゴゴ junto al total: la amenaza no para
+    gx = 40 + anton.width(total_s, 120, 1) + 70
+    if gx < 430:
+        b.append(menacing(dela, t, [(gx, 118, 34, -10), (gx + 62, 162, 26, 8), (gx + 104, 100, 22, -4)]))
     b.append(f'<rect x="44" y="202" width="56" height="4" fill="{acc}"/>')
     if since:
         n_days = (st["last"] - first_d).days + 1
@@ -370,6 +377,23 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
         b.append(f'<rect class="bd" x="{x - o:.1f}" y="{y - o:.1f}" width="{cw + 2 * o:.1f}" height="{ch + 2 * o:.1f}" '
                  f'fill="none" stroke="{ink}" stroke-width="2" stroke-dasharray="4 3"/>')
 
+    # Golpe al mejor día: destello de toda la tarjeta y estallido ¡ORA! de cómic
+    if st["top_at"] is not None and pos[st["top_at"]][0] >= w0:
+        x, y = xy(st["top_at"])
+        hit = hit_time(x)
+        cx = min(max(x + cw / 2, 110), W - 110)
+        cy = max(y - 34, GY - 10)
+        pts = []
+        for j in range(28):
+            r = (78 if j % 2 == 0 else 50) * (1 - .12 * ((j * 7) % 3) / 2)
+            a = math.pi * j / 14
+            pts.append(f"{cx + r * 1.25 * math.cos(a):.1f},{cy + r * math.sin(a):.1f}")
+        word = "ORA!"
+        b.append(f'<rect class="flash" style="animation-delay:{hit:.2f}s" width="{W}" height="100%" fill="{acc}"/>')
+        b.append(f'<g class="burst" style="animation-delay:{hit:.2f}s"><polygon points="{" ".join(pts)}" fill="{acc}" stroke="{ink}" '
+                 f'stroke-width="3.5" stroke-linejoin="round"/>'
+                 f'{anton.text(word, cx, cy + 17, 46, bg, tracking=2, anchor="middle")}</g>')
+
     # Combo: llave bajo la racha más larga
     if combo and pos[s0][0] >= w0:
         x0 = xy(s0)[0]
@@ -420,9 +444,18 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
     style = (
         ".col{transform-box:fill-box;transform-origin:bottom;animation:col .5s cubic-bezier(.2,.9,.2,1.2) both}"
         "@keyframes col{from{opacity:0;transform:translateX(-10px) scaleY(.4)}}"
-        ".odo{animation-duration:1.7s;animation-timing-function:cubic-bezier(.12,.8,.18,1);animation-fill-mode:both}" + odo_keys +
-        ".pop{transform-box:fill-box;transform-origin:left bottom;animation:pop .6s cubic-bezier(.2,.9,.2,1.4) both}"
-        "@keyframes pop{from{opacity:0;transform:scale(.4) rotate(-6deg)}}"
+        f".odo{{animation-duration:{CYCLE}s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.12,.8,.18,1)}}" + odo_keys +
+        # cuando el último puño sale, el total recibe el remate
+        f".slam{{transform-box:fill-box;transform-origin:left bottom;animation:slam {CYCLE}s linear infinite}}"
+        "@keyframes slam{0%,83%,100%{transform:none}84.5%{transform:scale(1.14) rotate(-2deg)}86.5%{transform:scale(.96)}88%{transform:none}}"
+        f".pop{{transform-box:fill-box;transform-origin:left bottom;animation:pop {CYCLE}s cubic-bezier(.2,.9,.2,1.4) infinite}}"
+        "@keyframes pop{0%{opacity:0;transform:scale(.4) rotate(-6deg)}6%{opacity:1;transform:scale(1.1) rotate(2deg)}9%,100%{opacity:1;transform:none}}"
+        f".burst{{opacity:0;transform-box:fill-box;transform-origin:center;animation:burst {CYCLE}s linear infinite}}"
+        "@keyframes burst{0%{opacity:1;transform:scale(.2) rotate(-25deg)}1.8%{opacity:1;transform:scale(1.2) rotate(-4deg)}"
+        "3.5%{opacity:1;transform:scale(.95) rotate(-9deg)}5%{opacity:1;transform:scale(1.03) rotate(-7deg)}"
+        "11%{opacity:1;transform:scale(1) rotate(-8deg)}13.5%,100%{opacity:0;transform:scale(1.35) rotate(-8deg)}}"
+        f".flash{{opacity:0;animation:flash {CYCLE}s linear infinite}}"
+        "@keyframes flash{0%{opacity:.22}3%,100%{opacity:0}}" + GO_CSS +
         # golpe normal, golpe de combo, destello de impacto y aura
         f".p,.p2{{transform-box:fill-box;transform-origin:center;animation:punch {CYCLE}s linear infinite}}"
         ".p2{animation-name:punch2}"
@@ -501,15 +534,15 @@ def streak_card(cal, t, lang, anton, dela, arch, arch_r):
     b.append(f'<circle cx="{cx}" cy="{cy - r}" r="22" fill="{bg}"/>')
     b.append(f'<g transform="translate({cx} {cy - r})"><g class="fl"><path d="{FLAME}" fill="{acc}" stroke="{ink}" stroke-width="2.5" stroke-linejoin="round"/>'
              f'<path d="M0 3C3 6 4 9 0 12C-4 9 -3 6 0 3Z" fill="{bg}"/></g></g>')
-    b.append(anton.text(str(st["current"]), cx, cy + 26, 76, ink, anchor="middle"))
+    b.append(f'<g class="big">{anton.text(str(st["current"]), cx, cy + 26, 76, ink, anchor="middle")}</g>')
     b.append(anton.text(copy[0], cx, 216, 21, acc, tracking=2.5, anchor="middle"))
     sub = span_text(days, st["cur_span"], lang) if st["cur_span"] else copy[4]
     if st["current"] and st["current"] >= st["streak"]:
         # la racha actual es la más larga: sello de récord junto al anillo
         rec = copy[7]
         rw = anton.width(rec, 15, 2) + 20
-        b.append(f'<g class="rec" transform="translate({cx + r + 8} {cy - 26}) rotate(-8)"><rect x="0" y="-14" width="{rw:.0f}" '
-                 f'height="26" fill="{acc}" stroke="{ink}" stroke-width="2"/>{anton.text(rec, 10, 6, 15, bg, tracking=2)}</g>')
+        b.append(f'<g class="rec" transform="translate({cx + r + 8} {cy - 26}) rotate(-8)"><g class="rb"><rect x="0" y="-14" width="{rw:.0f}" '
+                 f'height="26" fill="{acc}" stroke="{ink}" stroke-width="2"/>{anton.text(rec, 10, 6, 15, bg, tracking=2)}</g></g>')
     elif st["current"]:
         sub += " · " + copy[6].format(n=st["streak"] - st["current"] + 1)
     b.append(arch_r.text(sub, cx, 241, 15, t["muted"], anchor="middle"))
@@ -519,7 +552,7 @@ def streak_card(cal, t, lang, anton, dela, arch, arch_r):
     num_s = str(st["streak"])
     nw, uw = anton.width(num_s, 128, 1), anton.width(copy[3], 26, 2)
     x0 = mx - (nw + 16 + uw) / 2
-    b.append(anton.text(num_s, x0, 150, 128, ink, tracking=1))
+    b.append(f'<g class="big" style="animation-delay:.4s">{anton.text(num_s, x0, 150, 128, ink, tracking=1)}</g>')
     b.append(anton.text(copy[3], x0 + nw + 16, 150, 26, acc, tracking=2))
     b.append(anton.text(copy[1], mx, 216, 21, acc, tracking=2.5, anchor="middle"))
     if st["streak"]:
@@ -553,7 +586,7 @@ def streak_card(cal, t, lang, anton, dela, arch, arch_r):
             f, op = levels[lvl]
             edge = f' stroke="{ink}" stroke-width="2.2"' if (len(days) - 30 + i) in cur else ""
             rect = f'<rect x="{x:.0f}" y="{y}" width="{cell}" height="{cell}" fill="{f}" fill-opacity="{op}"{edge}/>'
-        b.append(f'<g class="dot" style="animation-delay:{i * .03:.2f}s">{rect}</g>')
+        b.append(f'<g class="dot" style="animation-delay:{3 + i * .05:.2f}s">{rect}</g>')
     # hoy: el último cuadro late
     x, y = gx0 + 9 * pitch, gy0 + 2 * pitch
     b.append(f'<rect class="today" x="{x - 4:.0f}" y="{y - 4}" width="{cell + 8}" height="{cell + 8}" fill="none" '
@@ -567,14 +600,18 @@ def streak_card(cal, t, lang, anton, dela, arch, arch_r):
     style = (
         ".fl{transform-box:fill-box;transform-origin:50% 100%;animation:fl 1.1s ease-in-out infinite}"
         "@keyframes fl{0%,100%{transform:scale(1,1)}50%{transform:scale(.92,1.1) rotate(-3deg)}}"
-        ".ring{animation:ring 1.4s cubic-bezier(.2,.8,.2,1) both .2s}"
-        "@keyframes ring{from{stroke-dasharray:0 1000}}"
-        ".dot{transform-box:fill-box;transform-origin:center;animation:dot .45s cubic-bezier(.2,.9,.2,1.3) both}"
-        "@keyframes dot{from{opacity:0;transform:scale(.3)}}"
-        ".bar{transform-box:fill-box;transform-origin:bottom;animation:bar .5s cubic-bezier(.2,.9,.2,1.3) both}"
-        "@keyframes bar{from{transform:scaleY(0)}}"
+        f".ring{{animation:ring {CYCLE}s cubic-bezier(.2,.8,.2,1) infinite}}"
+        f"@keyframes ring{{0%{{stroke-dasharray:0 {circ:.1f}}}16%,100%{{stroke-dasharray:{circ * frac:.1f} {circ:.1f}}}}}"
+        f".big{{transform-box:fill-box;transform-origin:center bottom;animation:big {CYCLE}s cubic-bezier(.2,.9,.2,1.4) infinite}}"
+        "@keyframes big{0%{transform:scale(.3);opacity:0}6%{transform:scale(1.15);opacity:1}10%,100%{transform:none;opacity:1}}"
+        # ola que recorre los últimos 30 días a mitad del ciclo
+        f".dot{{transform-box:fill-box;transform-origin:center;animation:dot {CYCLE}s ease-out infinite}}"
+        "@keyframes dot{0%{transform:none}2.5%{transform:scale(1.3) translateY(-3px)}6%,100%{transform:none}}"
+        f".bar{{transform-box:fill-box;transform-origin:bottom;animation:bar {CYCLE}s cubic-bezier(.2,.9,.2,1.3) infinite}}"
+        "@keyframes bar{0%{transform:scaleY(0)}5%{transform:scaleY(1.25)}8%,100%{transform:none}}"
         ".today{animation:bd 1.6s ease-in-out infinite}@keyframes bd{0%,100%{opacity:1}50%{opacity:.25}}"
-        ".rec{animation:rec 2.4s ease-in-out infinite}@keyframes rec{0%,100%{opacity:1}50%{opacity:.75}}"
+        ".rb{transform-box:fill-box;transform-origin:center;animation:rec 1.2s ease-in-out infinite}"
+        "@keyframes rec{0%,100%{transform:none}50%{transform:scale(1.08) rotate(2deg)}}"
     )
     label = {
         "en": f'Streaks: current {st["current"]} days, longest {st["streak"]} days. {active} active days in the last 30.',
