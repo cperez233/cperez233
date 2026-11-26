@@ -29,8 +29,8 @@ SOURCES = {
 }
 
 THEMES = {
-    "dark": dict(bg="#111013", ink="#ece6d8", muted="#9a948a", accent="#e3b341", line="#2a272c"),
-    "light": dict(bg="#f1ebdf", ink="#161418", muted="#6b655c", accent="#9a6a0c", line="#d9d1c2"),
+    "dark": dict(bg="#111013", ink="#ece6d8", muted="#9a948a", accent="#e3b341", line="#2a272c", vine="#a377e6"),
+    "light": dict(bg="#f1ebdf", ink="#161418", muted="#6b655c", accent="#9a6a0c", line="#d9d1c2", vine="#6a35a8"),
 }
 
 
@@ -300,8 +300,8 @@ PARTS = {
 }
 # Bajada y ゴゴゴ de algunas partes: (texto por idioma, puntos de ゴ como en menacing())
 PART_EXTRA = {
-    "part-4": ({"en": "Every contribution is a punch. Redrawn every day.",
-                "es": "Cada contribución es un golpe. Se redibuja cada día."},
+    "part-4": ({"en": "Hermit Purple traces every contribution. Redrawn every day.",
+                "es": "Hermit Purple recorre cada contribución. Se redibuja cada día."},
                [(925, 70, 30, -10), (968, 98, 24, 6), (1006, 62, 20, -4)]),
 }
 

@@ -141,7 +141,7 @@ Hay más de diez páginas publicadas para negocios reales, como Cruz Blanca (un 
 <a href="https://github.com/cperez233">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-es-dark.svg" />
-  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-es-light.svg" alt="Gráfica de contribuciones: total, días activos, mejor día y el calendario, a golpe de ORA. Se redibuja cada día." width="100%" />
+  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-es-light.svg" alt="Gráfica de contribuciones: total, días activos, mejor día y el calendario: una enredadera de Hermit Purple recorre cada semana activa y cada día se enciende con Hamon. Se redibuja cada día." width="100%" />
 </picture>
 </a>
 

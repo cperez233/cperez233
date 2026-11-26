@@ -141,7 +141,7 @@ More than ten sites are live for real businesses, like Cruz Blanca (a restaurant
 <a href="https://github.com/cperez233">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-dark.svg" />
-  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-light.svg" alt="Contribution graph: total contributions, active days, best day and the calendar, punched by ORA fists. Redrawn every day." width="100%" />
+  <img src="https://raw.githubusercontent.com/cperez233/cperez233/output/ora-light.svg" alt="Contribution graph: total contributions, active days, best day and the calendar: a Hermit Purple vine grows through every active week and each day lights up with Hamon. Redrawn every day." width="100%" />
 </picture>
 </a>
 

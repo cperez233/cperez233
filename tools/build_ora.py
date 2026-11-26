@@ -4,9 +4,13 @@ Lee el calendario de GitHub (GraphQL) y lo dibuja con la misma tinta, trama y
 trazos que el resto de piezas. Lo corre el workflow .github/workflows/ora.yml,
 que publica el resultado en la rama `output`.
 
-La animación depende de los datos: tres puños cruzan el calendario, cada día con
-actividad recibe el golpe cuando el puño pasa por su columna, y la racha más
-larga se encadena como un combo. El total rueda como un contador al cargar.
+La animación depende de los datos y se repite cada 10 s:
+- Hermit Purple: una enredadera con espinas crece de izquierda a derecha, semana a semana, a la
+  altura media de los días con actividad, y pasa por detrás de los cuadros.
+- Hamon: cada día se enciende con una onda dorada cuando la punta llega a su columna.
+- Impact frame en el mejor día, como el "special scene coloring" del anime: la paleta pasa a
+  negativo y luego a morado, líneas de concentración de manga y un estallido ¡ORA!.
+- El total rueda como un contador y la racha más larga se marca como combo.
 
 Si el año empezó vacío, la cuadrícula se acerca a las semanas con actividad (mínimo NMIN) y
 marca dónde empieza la ráfaga; con celdas grandes, los días fuertes llevan su cifra dentro.
@@ -43,11 +47,9 @@ MONTHS = {
     "es": ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
 }
 
-# Barrage: cada 9 s tres puños cruzan la gráfica (de T0 a T0+DUR). Los días con actividad
-# reciben el golpe justo cuando el puño pasa por su columna.
-# Los puños entran desde fuera del cuadro (borde delantero en FRONT0 < 0), cruzan a velocidad constante y
-# salen por la derecha sin desvanecerse: TRAVEL deja incluso la estela fuera del lienzo.
-CYCLE, T0, DUR, TRAVEL, FRONT0, LEAD = 10.0, 0.3, 8.0, 1600, -20, 10
+# Ciclo de 10 s. Hermit Purple: la enredadera crece de VT0 a VT0+VDUR pasando por los días con actividad
+# en orden; cada día recibe el Hamon justo cuando la punta llega a él. Luego se desvanece y vuelve a empezar.
+CYCLE, VT0, VDUR, THORN_GAP = 10.0, 0.8, 6.2, 24
 # Cuadrícula: como mínimo NMIN semanas a lo ancho; las filas miden como mucho PMAX px
 NMIN, PMAX = 16, 44
 
@@ -167,42 +169,51 @@ def stats(cal):
                 first=datetime.date.fromisoformat(days[0]["date"]), last=datetime.date.fromisoformat(days[-1]["date"]))
 
 
-def hit_time(x):
-    """Segundo del ciclo en que el puño líder llega a la coordenada `x`."""
-    return T0 + (x - LEAD - FRONT0) / (TRAVEL / DUR)
+def vine_path(centers, x0, y0, x1, y1):
+    """Enredadera de Hermit Purple que avanza de izquierda a derecha por `centers` (uno por semana),
+    con curvas Catmull-Rom. Devuelve el trazado, las espinas (x, y, ángulo, lado, segundo en que
+    brotan), el largo total y el largo acumulado al llegar a cada punto (para sincronizar el Hamon)."""
+    if not centers:
+        return "", [], 0, []
+    pts = [(max(x0 - 14, centers[0][0] - 70), centers[0][1])] + centers
+    clamp = lambda q: (min(max(q[0], x0 - 12), x1 + 12), min(max(q[1], y0 - 6), y1 + 6))
+    d, cum, thorns, total, next_thorn, side = [f"M{pts[0][0]:.1f} {pts[0][1]:.1f}"], [], [], 0.0, 18.0, 1
+    segs = []
+    for i in range(len(pts) - 1):
+        p0, p1, p2 = pts[max(i - 1, 0)], pts[i], pts[i + 1]
+        p3 = pts[min(i + 2, len(pts) - 1)]
+        c1 = clamp((p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6))
+        c2 = clamp((p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6))
+        d.append(f"C{c1[0]:.1f} {c1[1]:.1f} {c2[0]:.1f} {c2[1]:.1f} {p2[0]:.1f} {p2[1]:.1f}")
+        segs.append((p1, c1, c2, p2))
+    for (a_, b_, c_, e_) in segs:
+        prev = a_
+        for k in range(1, 33):
+            u = k / 32
+            q = tuple((1 - u) ** 3 * a_[j] + 3 * (1 - u) ** 2 * u * b_[j] + 3 * (1 - u) * u * u * c_[j] + u ** 3 * e_[j] for j in (0, 1))
+            step = math.dist(prev, q)
+            total += step
+            while total >= next_thorn and step:
+                ang = math.degrees(math.atan2(q[1] - prev[1], q[0] - prev[0]))
+                thorns.append((q[0], q[1], ang, side, next_thorn))
+                side, next_thorn = -side, next_thorn + THORN_GAP
+            prev = q
+        cum.append(total)
+    thorns = [(x, y, ang, sd, VT0 + VDUR * at / total) for x, y, ang, sd, at in thorns]
+    return "".join(d), thorns, total, cum
 
 
-def star(cx, cy, r_out=15, r_in=6, n=8):
-    pts = []
-    for i in range(n * 2):
-        r = r_out if i % 2 == 0 else r_in
-        a = math.pi * i / n - math.pi / 2
-        pts.append(f"{cx + r * math.cos(a):.1f},{cy + r * math.sin(a):.1f}")
-    return " ".join(pts)
-
-
-def shake_keyframes():
-    """La cuadrícula tiembla mientras pasan los puños: saltos de ~1 px cada 80 ms."""
-    offs = [(1.2, 0), (-1, .8), (.8, -1), (-1.2, 0), (0, 1), (1, -.6)]
-    shake_len = (1200 + 100 - FRONT0) / (TRAVEL / DUR)  # mientras algún puño está dentro del lienzo
-    p0, p1 = T0 / CYCLE * 100, (T0 + shake_len) / CYCLE * 100
-    steps, n = [], int(shake_len / .08)
+def shake_keyframes(at):
+    """La cuadrícula tiembla ~0,6 s tras el golpe al mejor día: saltos de ~1,5 px cada 60 ms."""
+    if at is None:
+        return "@keyframes shake{}"
+    offs = [(1.8, 0), (-1.5, 1.2), (1.2, -1.5), (-1.8, 0), (0, 1.5), (1.5, -.9)]
+    p0, p1 = at / CYCLE * 100, (at + .6) / CYCLE * 100
+    steps, n = [], 10
     for i in range(n):
         x, y = offs[i % len(offs)]
         steps.append(f"{p0 + (p1 - p0) * i / n:.2f}%{{transform:translate({x}px,{y}px)}}")
-    return f"@keyframes shake{{0%,{p0:.2f}%{{transform:none}}{''.join(steps)}{p1:.2f}%,100%{{transform:none}}}}"
-
-
-def fist(t):
-    """Puño de Star Platinum de perfil, mirando a la derecha; el borde delantero queda en x = 8."""
-    ink, acc = t["ink"], t["accent"]
-    hand = (f'<path d="M-34 -6Q-34 -12 -28 -12H2Q8 -12 8 -6V6Q8 12 2 12H-28Q-34 12 -34 6Z" '
-            f'fill="{acc}" stroke="{ink}" stroke-width="2.5" stroke-linejoin="round"/>')
-    knuckles = "".join(f'<path d="M-4 {y}H8" stroke="{ink}" stroke-width="2" stroke-linecap="round"/>' for y in (-5, 0.5, 6))
-    thumb = f'<rect x="-26" y="3" width="22" height="9" rx="4.5" fill="{acc}" stroke="{ink}" stroke-width="2.2"/>'
-    cuff = f'<rect x="-48" y="-9" width="14" height="18" rx="2" fill="{ink}"/>'
-    ghost = f'<g opacity=".28" transform="translate(-16 0)">{hand}</g>'
-    return ghost + cuff + hand + knuckles + thumb
+    return f"@keyframes shake{{0%,{max(p0 - .01, 0):.2f}%{{transform:none}}{''.join(steps)}{p1:.2f}%,100%{{transform:none}}}}"
 
 
 def window(cal, st):
@@ -346,7 +357,48 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
             b.append(f'<path d="M{lx - 6:.1f} {GY - 54}h12" stroke="{acc}" stroke-width="2.5"/>')
             b.append(anton.text(label, tx, GY - 41, 15, acc, tracking=2))
 
-    # Cuadrícula: cada columna entra como una ráfaga; los días fuertes llevan su cifra
+    # Hermit Purple: la enredadera recorre los días con actividad en orden; cuando la punta llega a uno,
+    # el Hamon lo enciende (onda dorada, como el Sunlight Yellow Overdrive)
+    # El tallo pasa una vez por semana, a la altura media de sus días con actividad (pesada por golpes);
+    # en las semanas vacías ondula. Va por detrás de los cuadros: se ve entre ellos, como si los rodeara.
+    active = [i for i, d in enumerate(days) if d["contributionCount"] and pos[i][0] >= w0]
+    vine_x, centers, hits = [], [], {}
+    if active:
+        # con columnas angostas (año completo) un punto cada `k` semanas, para que la curva respire
+        k = max(1, math.ceil(56 / px))
+        by_grp = {}
+        for i in active:
+            by_grp.setdefault((pos[i][0] - w0) // k, []).append((pos[i][1], days[i]["contributionCount"]))
+        g_first, g_last = min(by_grp), max(by_grp)
+        y_prev = None
+        for g in range(g_first, g_last + 1):
+            if g in by_grp:
+                rows = by_grp[g]
+                yr = sum(r * c for r, c in rows) / sum(c for _, c in rows)
+            else:
+                yr = 3 + 2.2 * math.sin(g * 1.7)
+            yr = min(max(yr, .2), 5.8)
+            y = GY + yr * py + ch / 2
+            if y_prev is not None and abs(y - y_prev) < py * .6:  # que siempre ondule un poco
+                y += py * .7 * (1 if g % 2 else -1)
+            x = GX + (min(g * k + (k - 1) / 2, n - 1)) * px + cw / 2
+            centers.append((x, y))
+            y_prev = y
+    vine_d, thorns, L, cum = vine_path(centers, GX, GY, GX + n * px - gap, grid_bottom)
+    if L:
+        # cada día se enciende cuando la punta pasa por su columna (interpolando el largo según x),
+        # un poco escalonado de arriba abajo
+        xs = [q[0] for q in centers]
+        def at_x(xc):
+            if xc <= xs[0]:
+                return cum[0]
+            for j in range(1, len(xs)):
+                if xc <= xs[j]:
+                    u = (xc - xs[j - 1]) / (xs[j] - xs[j - 1])
+                    return cum[j - 1] + u * (cum[j] - cum[j - 1])
+            return cum[-1]
+        hits = {i: VT0 + VDUR * at_x(xy(i)[0] + cw / 2) / L + pos[i][1] * .03 for i in active}
+
     fills = {1: (acc, .35), 2: (acc, .65), 3: (acc, 1), 4: (ink, 1)}
     s0, s1 = st["span"]
     combo = st["streak"] >= 3
@@ -364,20 +416,48 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
             continue
         f, op = fills[lvl]
         edge = f' stroke="{ink}" stroke-width="{sw}"' if lvl >= 3 else ""
-        hit = hit_time(x)
+        hit = hits[i]
         cls = "p2" if combo and s0 <= i <= s1 else "p"
         inner = f'<rect x="{x:.1f}" y="{y:.1f}" width="{cw:.1f}" height="{ch:.1f}" fill="{f}" fill-opacity="{op}"{edge}/>'
         if big and lvl >= 3:
             fs = min(ch * .56, cw * .5)
             inner += anton.text(str(d["contributionCount"]), x + cw / 2, y + ch / 2 + fs * .37, fs, bg, anchor="middle")
         cols[c].append(f'<g class="{cls}" style="animation-delay:{hit:.2f}s">{inner}</g>')
-        k = min(cw, ch) / 16
-        fx.append(f'<polygon class="ix" style="animation-delay:{hit:.2f}s" points="{star(x + cw / 2, y + ch / 2, 15 * k, 6 * k)}" fill="{ink}"/>')
+        # onda de Hamon: dos anillos en los días fuertes
+        r0 = min(cw, ch) * .55
+        for k in range(1 if lvl < 3 else 2):
+            fx.append(f'<circle class="rp" style="animation-delay:{hit + k * .16:.2f}s" cx="{x + cw / 2:.1f}" cy="{y + ch / 2:.1f}" '
+                      f'r="{r0:.1f}" fill="none" stroke="{acc}" stroke-width="{2.5 if k == 0 else 1.6}"/>')
         if lvl >= 3:  # aura: pulso lento que sale del cuadro
             fx.append(f'<rect class="au" style="animation-delay:{i % 11 * .21:.2f}s" x="{x:.1f}" y="{y:.1f}" '
                       f'width="{cw:.1f}" height="{ch:.1f}" fill="none" stroke="{acc}" stroke-width="{sw}"/>')
     cells = [f'<g class="col" style="animation-delay:{c * (0.025 if n > 30 else .06):.3f}s">{"".join(col)}</g>' for c, col in enumerate(cols)]
-    b.append(f'<g class="shake">{"".join(cells)}{"".join(fx)}</g>')
+
+    # La enredadera: contorno del color del fondo, tallo morado y espinas que brotan a su paso.
+    # Las espinas se agrupan por el momento en que brotan (cada 1 % del ciclo) para compartir keyframes.
+    vine, vine_css = "", ""
+    if L:
+        vc = t["vine"]
+        tw = 6 if big else 4
+        q0, q1 = VT0 / CYCLE * 100, (VT0 + VDUR) / CYCLE * 100
+        buckets = {}
+        for tx, ty, ang, side, at in thorns:
+            buckets.setdefault(round(at / CYCLE * 100), []).append(
+                f'<path transform="translate({tx:.1f} {ty:.1f}) rotate({ang:.0f})" d="M-5 0L{4 * side} {-11 * side}L5 0Z" fill="{vc}"/>')
+        groups = []
+        for k, (pct, items) in enumerate(sorted(buckets.items())):
+            groups.append(f'<g class="th" style="animation-name:th{k}">{"".join(items)}</g>')
+            vine_css += f"@keyframes th{k}{{0%,{pct:.1f}%{{opacity:0}}{pct + .6:.1f}%,100%{{opacity:1}}}}"
+        dash = f'stroke-dasharray="{L + 2:.0f} {L + 20:.0f}"'
+        vine = (f'<g class="vg"><path class="vn" d="{vine_d}" fill="none" stroke="{bg}" stroke-width="{tw + 4}" '
+                f'stroke-linecap="round" stroke-linejoin="round" {dash}/>'
+                f'<path class="vn" d="{vine_d}" fill="none" stroke="{vc}" stroke-width="{tw}" stroke-linecap="round" '
+                f'stroke-linejoin="round" {dash}/>{"".join(groups)}</g>')
+        vine_css += (f".vn{{animation:vn {CYCLE}s linear infinite}}"
+                     f"@keyframes vn{{0%,{q0:.2f}%{{stroke-dashoffset:{L + 2:.0f}}}{q1:.2f}%,100%{{stroke-dashoffset:0}}}}"
+                     f".th{{opacity:0;animation-duration:{CYCLE}s;animation-iteration-count:infinite;animation-timing-function:linear}}"
+                     f".vg{{animation:vg {CYCLE}s linear infinite}}@keyframes vg{{0%,90%{{opacity:1}}97%,100%{{opacity:0}}}}")
+    b.append(f'<g class="shake">{vine}{"".join(cells)}{"".join(fx)}</g>')
 
     # Mejor día: marco discontinuo que respira
     if st["top_at"] is not None and pos[st["top_at"]][0] >= w0:
@@ -386,25 +466,38 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
         b.append(f'<rect class="bd" x="{x - o:.1f}" y="{y - o:.1f}" width="{cw + 2 * o:.1f}" height="{ch + 2 * o:.1f}" '
                  f'fill="none" stroke="{ink}" stroke-width="2" stroke-dasharray="4 3"/>')
 
-    # Golpe al mejor día: destello de toda la tarjeta y estallido ¡ORA! de cómic
-    if st["top_at"] is not None and pos[st["top_at"]][0] >= w0:
+    # Impact frame en el mejor día, como en el anime ("special scene coloring"): la paleta pasa a negativo y
+    # luego a morado, líneas de concentración hacia el cuadro y estallido ¡ORA! de cómic
+    impact = None
+    if st["top_at"] in hits:
         x, y = xy(st["top_at"])
-        hit = hit_time(x)
-        cx = min(max(x + cw / 2, 110), W - 110)
+        impact = hits[st["top_at"]]
+        hx, hy = x + cw / 2, y + ch / 2
+        b.append(f'<rect class="neg" style="animation-delay:{impact:.2f}s" width="{W}" height="100%" fill="#fff"/>')
+        b.append(f'<rect class="tint" style="animation-delay:{impact + .3:.2f}s" width="{W}" height="100%" fill="{t["vine"]}"/>')
+        rnd = random.Random(st["top"])
+        wedges = []
+        for j in range(64):
+            a = 2 * math.pi * (j + rnd.random() * .6) / 64
+            r_in, half = 95 + rnd.random() * 90, .004 + rnd.random() * .012
+            pa = (hx + r_in * 1.3 * math.cos(a), hy + r_in * math.sin(a))
+            pb = (hx + 1700 * math.cos(a - half), hy + 1700 * math.sin(a - half))
+            pc = (hx + 1700 * math.cos(a + half), hy + 1700 * math.sin(a + half))
+            wedges.append(f"M{pa[0]:.0f} {pa[1]:.0f}L{pb[0]:.0f} {pb[1]:.0f}L{pc[0]:.0f} {pc[1]:.0f}Z")
+        b.append(f'<path class="conc" style="animation-delay:{impact:.2f}s" d="{"".join(wedges)}" fill="{ink}"/>')
+        cx = min(max(hx, 110), W - 110)
         cy = max(y - 34, GY - 10)
         pts = []
         for j in range(28):
             r = (78 if j % 2 == 0 else 50) * (1 - .12 * ((j * 7) % 3) / 2)
             a = math.pi * j / 14
             pts.append(f"{cx + r * 1.25 * math.cos(a):.1f},{cy + r * math.sin(a):.1f}")
-        word = "ORA!"
-        b.append(f'<rect class="flash" style="animation-delay:{hit:.2f}s" width="{W}" height="100%" fill="{acc}"/>')
-        b.append(f'<g class="burst" style="animation-delay:{hit:.2f}s"><polygon points="{" ".join(pts)}" fill="{acc}" stroke="{ink}" '
+        b.append(f'<g class="burst" style="animation-delay:{impact:.2f}s"><polygon points="{" ".join(pts)}" fill="{acc}" stroke="{ink}" '
                  f'stroke-width="3.5" stroke-linejoin="round"/>'
-                 f'{anton.text(word, cx, cy + 17, 46, bg, tracking=2, anchor="middle")}</g>')
+                 f'{anton.text("ORA!", cx, cy + 17, 46, bg, tracking=2, anchor="middle")}</g>')
 
     # Combo: llave bajo la racha más larga
-    if combo and pos[s0][0] >= w0:
+    if combo and s1 in hits and pos[s0][0] >= w0:
         x0 = xy(s0)[0]
         x1 = xy(s1)[0] + cw
         yb = grid_bottom + 12
@@ -412,21 +505,7 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
         half = anton.width(label, 18, 2) / 2
         mid = min(max((x0 + x1) / 2, GX + half), GX + n * px - half)
         b.append(f'<path d="M{x0:.1f} {yb - 6}V{yb}H{x1:.1f}V{yb - 6}" fill="none" stroke="{acc}" stroke-width="2.5" stroke-linejoin="round"/>')
-        b.append(f'<g class="cb" style="animation-delay:{hit_time(xy(s1)[0]):.2f}s">{anton.text(label, mid, yb + 24, 18, ink, tracking=2, anchor="middle")}</g>')
-
-    # Los puños van encima de la cuadrícula: ráfagas en tres filas, el líder marca el ritmo
-    glyphs = "オラオラ"
-    gw = dela.width(glyphs, 22, 2)
-    sc = min(1.5, max(1, py / 26))
-    for k, row in enumerate((1, 3, 5)):
-        y = GY + row * py + ch / 2
-        x = FRONT0 - 8 * sc - k * 40 * sc
-        lines = "".join(f'<rect x="{-58 - gw - 70 + j * 18:.0f}" y="{-8 + j * 8}" width="{62 - j * 14}" height="2.5" '
-                        f'fill="{acc}" fill-opacity=".7"/>' for j in range(3))
-        glyph = (f'<path d="{dela.path(glyphs, -58, 8, 22, 2, anchor="end")}" fill="{acc}" stroke="{bg}" '
-                 f'stroke-width="3.5" stroke-linejoin="round" paint-order="stroke"/>')
-        b.append(f'<g transform="translate({x:.1f} {y:.1f}) scale({sc:.2f})"><g class="sw" style="animation-name:sweep{k}"><g class="ln">{lines}</g>'
-                 f'<g class="bob" style="animation-delay:-{k * .11:.2f}s">{glyph}{fist(t)}</g></g></g>')
+        b.append(f'<g class="cb" style="animation-delay:{hits[s1]:.2f}s">{anton.text(label, mid, yb + 24, 18, ink, tracking=2, anchor="middle")}</g>')
 
     # Leyenda y nota
     ly = grid_bottom + 58
@@ -446,15 +525,11 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
     b.append(arch_r.text(copy["less"], lx - 10, ly + 12, 14, t["muted"], anchor="end"))
     b[0] = b[0].replace("{H}", f"{H:.0f}")
 
-    p0, p1 = T0 / CYCLE * 100, (T0 + DUR) / CYCLE * 100
-    # Cada fila de puños se escala distinto: el recorrido en su sistema de coordenadas se compensa
-    sweeps = "".join(f"@keyframes sweep{k}{{0%,{p0:.2f}%{{transform:translateX(0)}}{p1:.2f}%,100%{{transform:translateX({TRAVEL / sc:.0f}px)}}}}"
-                     for k in range(3))
     style = (
         ".col{transform-box:fill-box;transform-origin:bottom;animation:col .5s cubic-bezier(.2,.9,.2,1.2) both}"
         "@keyframes col{from{opacity:0;transform:translateX(-10px) scaleY(.4)}}"
         f".odo{{animation-duration:{CYCLE}s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.12,.8,.18,1)}}" + odo_keys +
-        # cuando el último puño sale, el total recibe el remate
+        # cuando la enredadera termina, el total recibe el remate
         f".slam{{transform-box:fill-box;transform-origin:left bottom;animation:slam {CYCLE}s linear infinite}}"
         "@keyframes slam{0%,83%,100%{transform:none}84.5%{transform:scale(1.14) rotate(-2deg)}86.5%{transform:scale(.96)}88%{transform:none}}"
         f".pop{{transform-box:fill-box;transform-origin:left bottom;animation:pop {CYCLE}s cubic-bezier(.2,.9,.2,1.4) infinite}}"
@@ -463,9 +538,8 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
         "@keyframes burst{0%{opacity:1;transform:scale(.2) rotate(-25deg)}1.8%{opacity:1;transform:scale(1.2) rotate(-4deg)}"
         "3.5%{opacity:1;transform:scale(.95) rotate(-9deg)}5%{opacity:1;transform:scale(1.03) rotate(-7deg)}"
         "11%{opacity:1;transform:scale(1) rotate(-8deg)}13.5%,100%{opacity:0;transform:scale(1.35) rotate(-8deg)}}"
-        f".flash{{opacity:0;animation:flash {CYCLE}s linear infinite}}"
-        "@keyframes flash{0%{opacity:.22}3%,100%{opacity:0}}" + GO_CSS +
-        # golpe normal, golpe de combo, destello de impacto y aura
+        + GO_CSS +
+        # el Hamon enciende cada día (más fuerte en la racha del combo)
         f".p,.p2{{transform-box:fill-box;transform-origin:center;animation:punch {CYCLE}s linear infinite}}"
         ".p2{animation-name:punch2}"
         # celdas grandes: golpe más corto, que no tape a las vecinas
@@ -473,22 +547,22 @@ def ora(cal, t, lang, anton, dela, arch, arch_r):
         f"2.6%{{transform:scale(.86) rotate(3deg)}}3.8%{{transform:scale(1.06)}}}}"
         f"@keyframes punch2{{0%,6%,100%{{transform:none}}1.2%{{transform:scale({1.38 if big else 2}) rotate(-{6 if big else 12}deg)}}"
         f"2.8%{{transform:scale(.8) rotate(5deg)}}4.4%{{transform:scale(1.12)}}}}"
-        f".ix{{opacity:0;transform-box:fill-box;transform-origin:center;animation:ix {CYCLE}s linear infinite}}"
-        "@keyframes ix{0%,5%,100%{opacity:0;transform:scale(.3)}.4%{opacity:.95;transform:scale(.7)}"
-        "2.2%{opacity:0;transform:scale(1.5)}}"
+        f".rp{{opacity:0;transform-box:fill-box;transform-origin:center;animation:rp {CYCLE}s ease-out infinite}}"
+        "@keyframes rp{0%{opacity:.95;transform:scale(.4)}8%{opacity:0;transform:scale(2.6)}100%{opacity:0}}"
         ".au{opacity:0;transform-box:fill-box;transform-origin:center;animation:au 2.4s ease-out infinite}"
         "@keyframes au{0%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(1.5)}}"
         ".bd{animation:bd 1.6s ease-in-out infinite}@keyframes bd{0%,100%{opacity:1}50%{opacity:.3}}"
         f".cb{{transform-box:fill-box;transform-origin:center;animation:cb {CYCLE}s linear infinite}}"
         "@keyframes cb{0%,8%,100%{transform:none}1.5%{transform:scale(1.7)}3.5%{transform:scale(.9)}5%{transform:scale(1.15)}}"
-        # puños y temblor
-        f".sw{{animation-duration:{CYCLE}s;animation-timing-function:linear;animation-iteration-count:infinite}}" + sweeps +
-        # vaivén de golpe del puño y estela de líneas que parpadea
-        ".bob{transform-box:fill-box;transform-origin:center;animation:bob .32s ease-in-out infinite alternate}"
-        "@keyframes bob{from{transform:translateY(-2px) rotate(-3deg)}to{transform:translateY(2px) rotate(3deg)}}"
-        ".ln{animation:ln .14s steps(2,end) infinite alternate}"
-        "@keyframes ln{from{opacity:.35;transform:translateX(-6px)}to{opacity:1;transform:translateX(5px)}}"
-        f".shake{{animation:shake {CYCLE}s steps(1,end) infinite}}" + shake_keyframes()
+        + vine_css +
+        # impact frame: negativo (difference con blanco), tinte morado (exclusion) y líneas de concentración
+        f".neg{{opacity:0;mix-blend-mode:difference;animation:neg {CYCLE}s steps(1,end) infinite}}"
+        "@keyframes neg{0%{opacity:1}1.2%{opacity:0}1.8%{opacity:1}3%,100%{opacity:0}}"
+        f".tint{{opacity:0;mix-blend-mode:exclusion;animation:tint {CYCLE}s steps(1,end) infinite}}"
+        "@keyframes tint{0%{opacity:.85}2.2%,100%{opacity:0}}"
+        f".conc{{opacity:0;animation:conc {CYCLE}s ease-out infinite}}"
+        "@keyframes conc{0%{opacity:.95}9%{opacity:.8}14%,100%{opacity:0}}"
+        f".shake{{animation:shake {CYCLE}s steps(1,end) infinite}}" + shake_keyframes(impact)
     )
     since_txt = {"en": f" since {fmt_day(first_d, 'en')}", "es": f" desde el {fmt_day(first_d, 'es')}"}[lang] if since else ""
     label = {
